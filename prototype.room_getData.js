@@ -1,45 +1,67 @@
 
-
+/*
 Room.prototype.getData = {
-    run: function (room) {
+    
+    room: this,
+  */  
+Room.prototype.getData = function () {
+        
+        if(!this.memory){
+            Memory.rooms[room.name] = {};
+        }
         
         /****************************/
         /* Functions performed once */
         /****************************/
         
-        this.getSources(room);
+        this.getSources();
         
         /**********************************/
         /* Functions performed every tick */
         /**********************************/
         
-        this.getStructures(room);
+        this.getStructures();
         
-        this.getConstructionSites(room);
+        this.getConstructionSites();
         
-        this.getDroppedEnergy(room);
+        this.getDroppedEnergy();
         
-    },
+    }
     
     
     
-    getSources: function (room) {
+Room.prototype.getSources = function () {
         
-        
-        
-        let roomSources = room.find(FIND_SOURCES);
-        
-        let formattedSources = {};
-        
-        _.forEach(roomSources, source => formattedSources[source.id] = {});
-        
-        room.memory.sources = formattedSources;
-        
-    },
+        if(!this.memory.sources){
+            
+            
+            let roomSources = this.find(FIND_SOURCES);
+            
+            let formattedSources = {};
+            
+            let room = this;
+            
+            _.forEach(roomSources, function(source) {
+                
+                formattedSources[source.id] = {};
+                
+                let adjacentTiles = room.lookForAtArea(LOOK_TERRAIN, source.pos.y -1, source.pos.x -1, 
+                                                                     source.pos.y +1, source.pos.x + 1, true)
+                
+                let walkableTiles = _.filter(adjacentTiles, t => t.terrain != "wall");
+                
+                formattedSources[source.id]["accessTiles"] = _.map(walkableTiles, tile => [tile.x, tile.y]);
+                
+            });
+            
+            this.memory.sources = formattedSources;
+            
+        }
+    }
     
     
     
-    getStructures: function (room) {
+Room.prototype.getStructures = function () {
         
         
         
@@ -55,38 +77,38 @@ Room.prototype.getData = {
         
         let sortedStructures = {};
         
-        let roomStructures = room.find(FIND_STRUCTURES);
+        let roomStructures = this.find(FIND_STRUCTURES);
         
         _.forEach(structuresConstants, function(constant) {
             sortedStructures[constant] = _.map(_.remove(roomStructures, s => s.structureType == constant), o => o.id);
         });
         
-        room.memory.structures = sortedStructures;
+        this.memory.structures = sortedStructures;
         
         
         
-    },
+    }
     
     
     
-    getConstructionSites: function (room) {
+Room.prototype.getConstructionSites = function () {
         
         
         
-        let roomConstructionSites = _.filter(Game.constructionSites, cs => cs.pos.roomName == room.name);
+        let roomConstructionSites = _.filter(Game.constructionSites, cs => cs.pos.roomName == this.name);
         
-        room.memory.constructionSites = _.map(roomConstructionSites, cs => cs.id);
+        this.memory.constructionSites = _.map(roomConstructionSites, cs => cs.id);
         
         
-    },
+    }
     
     
     
-    getDroppedEnergy: function (room) {
+Room.prototype.getDroppedEnergy = function () {
         
         
         
-        let roomDrops = room.find(FIND_DROPPED_RESOURCES, { 
+        let roomDrops = this.find(FIND_DROPPED_RESOURCES, { 
             filter: { resourceType: RESOURCE_ENERGY } });
         
         
@@ -94,12 +116,9 @@ Room.prototype.getData = {
         
         _.forEach(roomDrops, de => formattedDrops[de.id] = de.amount );
         
-        room.memory.droppedEnergy = formattedDrops;
+        this.memory.droppedEnergy = formattedDrops;
         
         
             
-    },
+    }
     
-    
-    
-};
