@@ -11,6 +11,7 @@
   <h2>prototype.Room_Jobs</h2>
   <h2>prototype.Room_Spawn</h2>
   <h2>prototype.Spawn</h2>
+  <h2>prototype.Flags</h2>
   <h2>role.Harvester</h2>
   <h2>role.Miner</h2>
   <h2>role.Worker</h2>
