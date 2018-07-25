@@ -1,6 +1,6 @@
 # ScreepSquad
   <h2>Overlord</h2>
-  <h2>Overseerer</h2>
+  <h2>Overseer</h2>
   <h2>Aux Functions</h2>
   <h2>Memory Management</h2>
   <h2>prototype.Creep_Domestic</h2>
