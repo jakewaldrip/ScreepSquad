@@ -28,6 +28,7 @@ require('role.Worker');
 
 module.exports.loop = function () {
         
+    //Example usage, can be relocated
     _.forEach(Game.rooms, room => room.getData() );    
 
 
