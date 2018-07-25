@@ -38,7 +38,7 @@
   <h2>prototype.Flags</h2>
   Class written by jake that finds the closest room to the flag you placed down and assigns an object who's key is the flag room name, and will have a numOfSources property applied to it once applicable, but picks 1 source by default.
   
-  <h2>prototype.Flags</h2>
+  <h2>prototype.Structures</h2>
   Class containing functions to do work or get energy from structures such as container.doWork (inserts energy into the container) and container.getEnergy (pulls energy from the container)
   
   <h2>role.Harvester</h2>
