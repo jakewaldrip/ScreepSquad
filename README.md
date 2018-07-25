@@ -1,7 +1,7 @@
 # ScreepSquad
 <ul>
-  <li>Overlord</li>
-  <li>Overseerer</li>
+  <li><h2>Overlord</h2></li>
+  <li><h2>Overseerer</h2></li>
   <li>Aux Functions</li>
   <li>Memory Management</li>
   <li>prototype.Creep_Domestic</li>
