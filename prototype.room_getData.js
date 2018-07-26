@@ -26,6 +26,7 @@ Room.prototype.getData = function () {
         
         this.getDroppedEnergy();
         
+        this.getRepairTargets();
     }
     
     
@@ -126,11 +127,16 @@ Room.prototype.getDroppedEnergy = function () {
 Room.prototype.getRepairTargets = function () {
 	
 	//get all objects that need to be repaired in the Room
+	/*
 	var repairTargets = this.find(FIND_STRUCTURES, {
             filter: (s) => (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
             && s.hits < s.hitsMax
 	});
-
+    */
+    // We already have the structures in memory //
+    var repairTargets = _.filter(this.getStructureObjects(), s => s.structureType != STRUCTURE_WALL 
+                                && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
+    
 	let formattedTargets = {};
 
 	_.forEach(repairTargets, rd => formattedTargets[rd.id] = rd.amount) ;
