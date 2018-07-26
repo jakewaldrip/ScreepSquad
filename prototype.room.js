@@ -2,24 +2,47 @@
 
 //check if the room is owned by you
 Room.prototype.isOwnedRoom = function () {
-
+	
+	//check if controller exists and if i own it
+	if(this.controller != undefined && this.controller.my)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 //-----
 
 
 //check if the room is owned by an ally
 Room.prototype.isAllyRoom = function () {
-
+	
+	//checks if the room is friendly (owned by your or an ally)
+	if(this.controller != undefined)
+	{
+		if(this.controller.owner === 'jakesboy2' || this.controller.owner === 'UhmBrock')
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 //-----
 
 
 //set room state to memory
 Room.prototype.setRoomState = function () {
-
+	
 }
 //------
 
+
+//gets all the structures in the room as objects
 Room.prototype.getStructureObjects = function() {
     
     let returnArray = [];
