@@ -20,3 +20,17 @@ Room.prototype.setRoomState = function () {
 }
 //------
 
+//get structure objects from memory
+Room.prototype.getStructureObjects = function() {
+    
+    let returnArray = [];
+    
+    _.forEach(this.memory.structures, function(structFolder) {
+        
+       _.forEach(structFolder, structID => returnArray.push(Game.getObjectById(structID))); 
+       
+    });
+    
+    return returnArray;
+    
+}

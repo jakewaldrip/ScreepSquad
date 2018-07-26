@@ -27,6 +27,7 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 		state: 'STATE_SPAWNING',
 		workTarget: 'none'
 	}});
+	
 }
 //----
 
@@ -60,6 +61,7 @@ StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
 		state: 'STATE_SPAWNING',
 		workTarget: 'none'
 	}});
+	
 }
 //----
 
@@ -110,5 +112,6 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 		state: 'STATE_SPAWNING',
 		workTarget: 'none'
 	}});
+	
 }
 //----

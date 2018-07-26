@@ -1,9 +1,18 @@
 //get job queue for creeps of each role
 Room.prototype.getJobQueues = function() {
+    
+    
+    
     this.memory.jobQueues = {};
     
     this.getMinerJobQueue();
+    
+    
+    
 }
+
+
+
 //get job queue for miners
 Room.prototype.getMinerJobQueue = function () {
     
@@ -51,8 +60,9 @@ Room.prototype.getMinerJobQueue = function () {
         
     });
     
+    //descending by default, use .reverse() to make ascending
+    targetSources = _.sortBy(targetSources, source => source.pos.getRangeTo(room.memory.structures[STRUCTURE_SPAWN][0])).reverse();
     
-    targetSources = _.sortBy(targetSources, source => source.pos.getRangeTo(room.memory.structures[STRUCTURE_SPAWN][0]));
     
     room.memory.jobQueues.minerJobs = {};
     
