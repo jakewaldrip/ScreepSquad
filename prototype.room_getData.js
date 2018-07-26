@@ -139,9 +139,9 @@ Room.prototype.getRepairTargets = function () {
                                 && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
     
 	let formattedTargets = {};
-
-	_.forEach(repairTargets, rd => formattedTargets[rd.id] = rd.amount) ;
-
-	this.memory.repairTarget =  formattedTargets;
+	
+	_.forEach(repairTargets, rd => formattedTargets[rd.id] = (rd.hits / rd.hitsMax));
+	
+	this.memory.repairTargets =  formattedTargets;
 }
     

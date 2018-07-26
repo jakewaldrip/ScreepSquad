@@ -11,6 +11,8 @@ Room.prototype.getJobQueues = function() {
     
     this.getHarvesterJobQueue();
     
+    this.getWorkerJobQueue();
+    
     this.getEnergyJobQueue();
     
 }
@@ -96,8 +98,39 @@ Room.prototype.getHarvesterJobQueue = function () {
 
 
 //get job queue for workers
+//Priority: Repairs under 75% hp, construction sites, repairs over 75% hp, controller upgrading
+// Returns [ [id, action], [], ... ] 
 Room.prototype.getWorkerJobQueue = function () {
-
+    
+    let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
+    
+    _.sortBy(constSites, cs => cs.progress / cs.progressTotal);
+    
+    let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
+    
+    _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this);
+    
+    let priorityRepairTargets = _.takeRightWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
+    
+    let controller = this.controller;
+    
+    let formattedTargets = {};
+    
+    //Not sure which you prefer, commented out one just sets each id = "STATE_USE_ENERGY"
+    // Uncommented one sets each target to the action you perform on it.
+    /*
+    let targets = priorityRepairTargets.concat(constSites, repairTargets, controller);
+    
+    _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_ENERGY");
+    */
+    
+    _.forEach(priorityRepairTargets, t => formattedTargets[t.id] = "REPAIR");
+    _.forEach(constSites, t => formattedTargets[t.id] = "BUILD");
+    _.forEach(repairTargets, t => formattedTargets[t.id] = "REPAIR");
+    formattedTargets[controller.id] = "UPGRADE";
+    
+    this.memory.jobQueues.workerJobs = formattedTargets;
+    
 }
 //----
 
