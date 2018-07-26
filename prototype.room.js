@@ -41,6 +41,28 @@ Room.prototype.setRoomState = function () {
 }
 //------
 
+//Create a property - Room.structures.
+//Almost exactly the same as Room.prototype.getStructureObjects();
+Object.defineProperty(Room.prototype, 'structures', {
+    
+    get: function() {
+        
+        if(!this.memory.structures){
+            this.getStructures();
+        }
+        
+        let returnArray = [];
+    
+        _.forEach(this.memory.structures, function(structFolder) {
+            
+           _.forEach(structFolder, structID => returnArray.push(Game.getObjectById(structID))); 
+           
+        });
+        
+        return returnArray;
+    }
+
+});
 
 //gets all the structures in the room as objects
 Room.prototype.getStructureObjects = function() {

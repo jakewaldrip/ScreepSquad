@@ -186,6 +186,7 @@ Room.prototype.getEnergyJobQueue = function() {
         
     }
     
+    //get array into descending order
     sortedArray.reverse();
     
     let formattedEnergy = {};
