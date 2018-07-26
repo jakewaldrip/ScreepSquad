@@ -135,7 +135,7 @@ Room.prototype.getRepairTargets = function () {
 	});
     */
     // We already have the structures in memory //
-    var repairTargets = _.filter(this.getStructureObjects(), s => s.structureType != STRUCTURE_WALL 
+    var repairTargets = _.filter(this.structures, s => s.structureType != STRUCTURE_WALL 
                                 && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
     
 	let formattedTargets = {};

@@ -82,7 +82,7 @@ Room.prototype.getMinerJobQueue = function () {
 
 //get job queue for harvesters
 Room.prototype.getHarvesterJobQueue = function () {
-    let fillStructures = _.filter(this.getStructureObjects(), s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
+    let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
     let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
     

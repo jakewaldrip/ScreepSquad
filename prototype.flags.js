@@ -1,6 +1,5 @@
 'use strict';
 
-
 //sets the flag into a room memory based on the closest owned room to it
 Flag.prototype.assignRemoteFlagToRoom = function () {
         
