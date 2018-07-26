@@ -27,6 +27,7 @@ Room.prototype.getData = function () {
         this.getDroppedEnergy();
         
         this.getRepairTargets();
+        
     }
     
     

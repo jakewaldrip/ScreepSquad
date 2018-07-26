@@ -1,3 +1,5 @@
+//Requires that room.getData() has been run.
+
 //get job queue for creeps of each role
 Room.prototype.getJobQueues = function() {
     
@@ -9,11 +11,14 @@ Room.prototype.getJobQueues = function() {
     
     
     
+    this.getEnergyJobQueue();
+    
 }
 
 
 
 //get job queue for miners
+//returns [ [id, state], [], ... ]
 Room.prototype.getMinerJobQueue = function () {
     
     
@@ -75,7 +80,7 @@ Room.prototype.getMinerJobQueue = function () {
 
 //get job queue for harvesters
 Room.prototype.getHarvesterJobQueue = function () {
-
+    
 }
 //----
 
@@ -85,5 +90,81 @@ Room.prototype.getWorkerJobQueue = function () {
 
 }
 //----
+
+
+//get energy targets for STATE_GET_ENERGY
+//returns [ [id, dropType], [], ... ]
+Room.prototype.getEnergyJobQueue = function() {
+    const MIN_TARGET_AMOUNT = 300;
+    
+    let dropArray = [], 
+        containerArray = [], 
+        mergedArray = [];
+        
+    dropArray = _.map(Object.keys(this.memory.droppedEnergy), id => Game.getObjectById(id));
+    
+    if (this.memory.structures[STRUCTURE_CONTAINER].length > 0){
+        
+        containerArray = _.map(this.memory.structures[STRUCTURE_CONTAINER], id => Game.getObjectById(id));
+        
+    }
+    
+    mergedArray = dropArray.concat(containerArray);
+    
+    let sortedArray = _.sortBy(mergedArray, function(obj) {
+        
+        if(obj instanceof Energy){
+            return obj.amount;
+        }
+        else {
+            return obj.store[RESOURCE_ENERGY];
+        }
+        
+    });
+    
+    //Insert storage into the job queue at MIN_TARGET_AMOUNT of energy.
+    //This allows us to prioritize containers and drops before we use storage.
+    if (this.storage){
+        
+        let index = _.sortedIndex(sortedArray, MIN_TARGET_AMOUNT, function(obj) {
+            
+            if(obj instanceof Energy){
+                return obj.amount;
+            }
+            else if(obj instanceof Structure){
+                return obj.store[RESOURCE_ENERGY];
+            }
+            else{
+                return obj;
+            }
+            
+        });
+        sortedArray.splice(index, 0, this.storage);
+        
+    }
+    
+    sortedArray.reverse();
+    
+    let formattedEnergy = {};
+    
+    _.forEach(sortedArray, function(obj) {
+        if(obj instanceof Energy){
+            formattedEnergy[obj.id] = obj.resourceType;
+        }
+        else{
+            formattedEnergy[obj.id] = obj.structureType;
+        }
+    });
+    
+    this.memory.jobQueues.getEnergyJobs = formattedEnergy;
+}
+//----
+
+
+
+
+
+
+
 
 
