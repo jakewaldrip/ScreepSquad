@@ -9,7 +9,7 @@ Room.prototype.getJobQueues = function() {
     
     this.getMinerJobQueue();
     
-    
+    this.getHarvesterJobQueue();
     
     this.getEnergyJobQueue();
     
@@ -80,7 +80,17 @@ Room.prototype.getMinerJobQueue = function () {
 
 //get job queue for harvesters
 Room.prototype.getHarvesterJobQueue = function () {
+    let fillStructures = _.filter(this.getStructureObjects(), s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
+    let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
+    
+    fillStructures = _.sortBy(fillStructures, obj => spawn.pos.getRangeTo(obj.pos), this);
+    
+    let formattedStructures = {};
+    
+    _.forEach(fillStructures, s => formattedStructures[s.id] = "STATE_USE_ENERGY");
+    
+    this.memory.jobQueues.harvesterJobs = formattedStructures;
 }
 //----
 
