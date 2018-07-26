@@ -25,7 +25,7 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 		role: 'miner',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none';
+		workTarget: 'none'
 	}});
 }
 //----
@@ -58,7 +58,7 @@ StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
 		role: 'harvester',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none';
+		workTarget: 'none'
 	}});
 }
 //----
@@ -108,7 +108,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 		role: 'worker',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none';
+		workTarget: 'none'
 	}});
 }
 //----
