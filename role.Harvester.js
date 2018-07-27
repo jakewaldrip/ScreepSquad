@@ -36,7 +36,7 @@ module.exports = {
 			break;
 
 
-			case 'STATE_GET_RESOURCES':
+			case 'STATE_HARVESTING':
 
 
 
