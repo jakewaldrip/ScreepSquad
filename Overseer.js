@@ -1,11 +1,46 @@
 module.exports = {
     assignJobs: function(room) {
         
+        //this.assignRoleJobs(room, "miner");
+        //this.assignRoleJobs(room, "drone");
+        
         this.assignMinerJobs(room);
         
         this.assignDroneJobs(room);
         
         this.assignWorkerJobs(room);
+        
+    },
+    
+    //Generic assignJobs, potentially useful for DRY programming
+    //not using it until I'm sure of how we will handle not duplicating tasks
+    //for drones and workers. Miners should already handle duplication in
+    //their jobQueue creation.
+    assignRoleJobs: function(room, role){
+        
+        let idleCreeps = _.filter(Game.creeps, creep =>
+            (creep.home == room.name && creep.role == role 
+            && creep.workTarget == null));
+        
+        if(idleCreeps.length > 0){
+            
+            let jobQueue = _.pairs( room.jobQueues[role + "Jobs"] );
+            
+            _.forEach(idleCreeps, function(creep) {
+                
+                if(jobQueue.length > 0){
+                    
+                    let job = jobQueue.shift();
+                    
+                    delete room.jobQueues[role + "Jobs"][job[0]];
+                    
+                    creep.workTarget = job[0];
+                    creep.state = job[1];
+                    
+                }
+            });
+            
+        }
     },
     
     assignMinerJobs: function(room) {
