@@ -27,6 +27,18 @@ module.exports = {
             }
 
         });
+    },
+    
+    assignDroneJobs: function(room) {
+        
+        
+        
+    },
+    
+    assignWorkerJobs: function(room) {
+        
+        
+        
     }
     
 }

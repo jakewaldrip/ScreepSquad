@@ -7,7 +7,7 @@ Room.prototype.getJobQueues = function() {
     
     this.getMinerJobQueue();
     
-    this.getHarvesterJobQueue();
+    this.getDroneJobQueue();
     
     this.getWorkerJobQueue();
     
@@ -78,8 +78,8 @@ Room.prototype.getMinerJobQueue = function () {
 //----
 
 
-//get job queue for harvesters
-Room.prototype.getHarvesterJobQueue = function () {
+//get job queue for drones
+Room.prototype.getDroneJobQueue = function () {
     let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
     let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
@@ -90,7 +90,7 @@ Room.prototype.getHarvesterJobQueue = function () {
     
     _.forEach(fillStructures, s => formattedStructures[s.id] = "STATE_USE_ENERGY");
     
-    this.memory.jobQueues.harvesterJobs = formattedStructures;
+    this.memory.jobQueues.droneJobs = formattedStructures;
 }
 //----
 
@@ -122,10 +122,10 @@ Room.prototype.getWorkerJobQueue = function () {
     _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_ENERGY");
     */
     
-    formattedTargets[controller.id] = "UPGRADE";
     _.forEach(priorityRepairTargets, t => formattedTargets[t.id] = "REPAIR");
     _.forEach(constSites, t => formattedTargets[t.id] = "BUILD");
     _.forEach(repairTargets, t => formattedTargets[t.id] = "REPAIR");
+    formattedTargets[controller.id] = "UPGRADE";
     
     this.memory.jobQueues.workerJobs = formattedTargets;
     
