@@ -22,7 +22,7 @@ require('prototype.spawn');
 /*      Roles     */
 /******************/
 
-require('role.Harvester');
+require('role.Drone');
 require('role.Miner');
 require('role.Worker');
 
