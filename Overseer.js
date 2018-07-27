@@ -38,8 +38,27 @@ module.exports = {
     
     assignDroneJobs: function(room) {
         
+        let idleDrones = _.filter(Game.creeps, creep =>
+            (creep.home == room.name && creep.role == "drone" 
+            && creep.workTarget == null));
         
-        
+        if (idleDrones.length > 0){
+            
+            let jobQueue = _.pairs( room.jobQueues.droneJobs );
+            
+            _.forEach(idleDrones, function(drone) {
+               
+               if(jobQueue.length > 0){
+                   
+                   let job = jobQueue.shift();
+                   
+                   delete room.jobQueues.droneJobs[job[0]];
+                   
+                   miner.workTarget = job[0];
+                   miner.state = job[1];
+               } 
+            });
+        }
     },
     
     assignWorkerJobs: function(room) {
