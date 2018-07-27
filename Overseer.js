@@ -3,30 +3,37 @@ module.exports = {
         
         this.assignMinerJobs(room);
         
+        this.assignDroneJobs(room);
+        
+        this.assignWorkerJobs(room);
     },
     
     assignMinerJobs: function(room) {
         //miners that need a task
-        let waitingMiners = _.filter(Game.creeps, creep => 
+        let idleMiners = _.filter(Game.creeps, creep => 
             (creep.home == room.name && creep.role == "miner" 
             && creep.workTarget == null) );
         
-        let jobQueue = _.pairs( room.jobQueues.minerJobs );
-           
-        _.forEach(waitingMiners, function(miner) {
-            
-            if(jobQueue.length > 0){
+        if(idleMiners.length > 0){
+        
+            let jobQueue = _.pairs( room.jobQueues.minerJobs );
+               
+            _.forEach(idleMiners, function(miner) {
                 
-                let job = jobQueue.shift();
-                
-                delete room.jobQueues.minerJobs[job[0]];
-                
-                miner.workTarget = job[0];
-                miner.state = job[1];
-                
-            }
-
-        });
+                if(jobQueue.length > 0){
+                    
+                    let job = jobQueue.shift();
+                    
+                    delete room.jobQueues.minerJobs[job[0]];
+                    
+                    miner.workTarget = job[0];
+                    miner.state = job[1];
+                    
+                }
+    
+            });
+        
+        }
     },
     
     assignDroneJobs: function(room) {
@@ -36,8 +43,50 @@ module.exports = {
     },
     
     assignWorkerJobs: function(room) {
+        let upgradingController = false;
         
+        let workers = _.filter(Game.creeps, creep => (creep.home == room.name && creep.role == "worker"));
         
+        let idleWorkers = [];
+        
+        _.forEach(workers, function(worker) {
+           
+           if(worker.workTarget == null){
+               idleWorkers.push(worker);
+           }
+           else if(worker.workTarget == room.controller.id){
+               upgradingController = true;
+           }
+            
+        });
+        
+        if(idleWorkers.length > 0){
+            
+            let jobQueue = _.pairs( room.jobQueues.workerJobs );
+            
+            _.forEach(idleWorkers, function(worker) {
+               
+               let job;
+               
+               if(upgradingController == false || jobQueue.length == 0){
+                   job = [];
+                   job[0] = room.controller.id;
+                   job[1] = "UPGRADE";
+                   upgradingController = true;
+                }
+                else{
+                    
+                    job = jobQueue.shift();
+                    
+                    delete room.jobQueues.workerJobs[job[0]];
+                }
+                
+                worker.workTarget = job[0];
+                worker.state = "STATE_USE_ENERGY";
+                
+            });
+            
+        }
         
     }
     

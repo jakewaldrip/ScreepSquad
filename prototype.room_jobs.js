@@ -125,7 +125,6 @@ Room.prototype.getWorkerJobQueue = function () {
     _.forEach(priorityRepairTargets, t => formattedTargets[t.id] = "REPAIR");
     _.forEach(constSites, t => formattedTargets[t.id] = "BUILD");
     _.forEach(repairTargets, t => formattedTargets[t.id] = "REPAIR");
-    formattedTargets[controller.id] = "UPGRADE";
     
     this.memory.jobQueues.workerJobs = formattedTargets;
     
