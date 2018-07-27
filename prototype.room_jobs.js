@@ -3,8 +3,6 @@
 //get job queue for creeps of each role
 Room.prototype.getJobQueues = function() {
     
-    
-    
     this.memory.jobQueues = {};
     
     this.getMinerJobQueue();
@@ -124,10 +122,10 @@ Room.prototype.getWorkerJobQueue = function () {
     _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_ENERGY");
     */
     
+    formattedTargets[controller.id] = "UPGRADE";
     _.forEach(priorityRepairTargets, t => formattedTargets[t.id] = "REPAIR");
     _.forEach(constSites, t => formattedTargets[t.id] = "BUILD");
     _.forEach(repairTargets, t => formattedTargets[t.id] = "REPAIR");
-    formattedTargets[controller.id] = "UPGRADE";
     
     this.memory.jobQueues.workerJobs = formattedTargets;
     

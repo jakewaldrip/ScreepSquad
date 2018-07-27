@@ -5,6 +5,10 @@
   <h2>Overseer</h2>
   This class controls the room. Things such as collecting all the required information about a room, running the AI director, and sending proper information to the memory manager.
   
+  <ul>
+  <li> assignJobs - Accepts room argument. Runs each of the assignRoleJobs functions.
+  <li> assignMinerJobs - accepts room argument. Assigns jobs to all idle miner creeps that belong to the room.</li>
+  </ul>
   <h2>Aux Functions</h2>
   These are helper functions. Can be used to do things such as converting an array of ID's into an array of objects, getting distance between rooms or objects, getting movement costs, etc.
   
@@ -17,7 +21,14 @@
   <ul>
   <li>garbageCollection - no parameters, cleans up non-existing objects from memory</li>
   </ul>
-  
+  <h2>prototype.Creep</h2>
+  Creep commands and properties that apply to all creep types.
+  <ul>
+  <li> Creep.role - returns creep.memory.role.</li>
+  <li> Creep.home - returns creep.memory.home.</li>
+  <li> Creep.state - returns creep.memory.state</li>
+  <li> Creep.workTarget - returns creep.memory.workTarget</li>
+  </ul>
   <h2>prototype.Creep_Domestic</h2>
   Creep commands for domestic creeps. Functions such as creep.getEnergy, creep.doWork, etc. (Might be redundant with ai director, we can mess around with it and see how exactly we're gonna make it work)
   
@@ -52,6 +63,7 @@
       -defined as property in room.prototype
   <li>getStructureObjects - gets all structures objects in a room</li>
       -defined as property in room.prototype
+  <li>Room.jobQueues - returns room.memory.jobqueues </li>
   </ul>
   
   <h2>prototype.Room_getData</h2>

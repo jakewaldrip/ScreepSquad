@@ -79,9 +79,9 @@ Object.defineProperty(Room.prototype, 'roomState', {
        return this._roomState;
        
    },
-   set: function (newValue) {
+   set: function (value) {
        //Can do validation if needed
-       this._roomState = newValue;
+       this._roomState = value;
    }
    
 });
@@ -112,6 +112,18 @@ Object.defineProperty(Room.prototype, 'structures', {
         return returnArray;
     }
 
+});
+//object-array read-only property Room.jobQueues
+Object.defineProperty(Room.prototype, 'jobQueues', {
+    
+    get: function() {
+        if(!this.memory.jobQueues){
+            this.getJobQueues();
+        }
+        
+        return this.memory.jobQueues;
+    }
+    
 });
 
 //gets all the structures in the room as objects
