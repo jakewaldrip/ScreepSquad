@@ -1,3 +1,19 @@
+Creep.prototype.run = function() {
+    
+    let role = {
+        
+        drone: require('role.Drone'),
+        
+        miner: require('role.Miner'),
+        
+        worker: require('role.Worker')
+        
+    };
+    
+    role[this.role].run(this);
+    
+}
+
 Object.defineProperty(Creep.prototype, 'role', {
     
     get: function() {
@@ -15,19 +31,19 @@ Object.defineProperty(Creep.prototype, 'role', {
     
 });
 
-Object.defineProperty(Creep.prototype, 'home', {
+Object.defineProperty(Creep.prototype, 'homeRoom', {
     
     get: function() {
-        if(!this.memory.home){
+        if(!this.memory.homeRoom){
             return undefined;
         }
         else{
-            return this.memory.home;
+            return this.memory.homeRoom;
         }
     },
     set: function(value) {
         
-        this.memory.home = value;
+        this.memory.homeRoom = value;
     }
     
 });

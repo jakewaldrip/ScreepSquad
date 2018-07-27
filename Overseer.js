@@ -19,7 +19,7 @@ module.exports = {
     assignRoleJobs: function(room, role){
         
         let idleCreeps = _.filter(Game.creeps, creep =>
-            (creep.home == room.name && creep.role == role 
+            (creep.homeRoom == room.name && creep.role == role 
             && creep.workTarget == null));
         
         if(idleCreeps.length > 0){
@@ -35,7 +35,7 @@ module.exports = {
                     delete room.jobQueues[role + "Jobs"][job[0]];
                     
                     creep.workTarget = job[0];
-                    creep.state = job[1];
+                    //creep.state = job[1];
                     
                 }
             });
@@ -46,7 +46,7 @@ module.exports = {
     assignMinerJobs: function(room) {
         //miners that need a task
         let idleMiners = _.filter(Game.creeps, creep => 
-            (creep.home == room.name && creep.role == "miner" 
+            (creep.homeRoom == room.name && creep.role == "miner" 
             && creep.workTarget == null) );
         
         if(idleMiners.length > 0){
@@ -62,7 +62,7 @@ module.exports = {
                     delete room.jobQueues.minerJobs[job[0]];
                     
                     miner.workTarget = job[0];
-                    miner.state = job[1];
+                    //miner.state = job[1];
                     
                 }
     
@@ -74,7 +74,7 @@ module.exports = {
     assignDroneJobs: function(room) {
         
         let idleDrones = _.filter(Game.creeps, creep =>
-            (creep.home == room.name && creep.role == "drone" 
+            (creep.homeRoom == room.name && creep.role == "drone" 
             && creep.workTarget == null));
         
         if (idleDrones.length > 0){
@@ -90,7 +90,7 @@ module.exports = {
                    delete room.jobQueues.droneJobs[job[0]];
                    
                    miner.workTarget = job[0];
-                   miner.state = job[1];
+                   //miner.state = job[1];
                } 
             });
         }
@@ -99,7 +99,7 @@ module.exports = {
     assignWorkerJobs: function(room) {
         let upgradingController = false;
         
-        let workers = _.filter(Game.creeps, creep => (creep.home == room.name && creep.role == "worker"));
+        let workers = _.filter(Game.creeps, creep => (creep.homeRoom == room.name && creep.role == "worker"));
         
         let idleWorkers = [];
         
@@ -136,7 +136,7 @@ module.exports = {
                 }
                 
                 worker.workTarget = job[0];
-                worker.state = "STATE_USE_ENERGY";
+                //worker.state = "STATE_USE_ENERGY";
                 
             });
             
