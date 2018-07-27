@@ -5,27 +5,32 @@
 StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	
 	//random num for name
-	var rand = Game.time.toString();
+	var name = 'miner - ' + Game.time.toString();
 	var body = [];
-
-	//550 energy (first available miner)
-	//4 work, 2 move, 1 carry
-	if(energyCost > 550)
-	{
-		body = [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
-	}
-	else
-	{
-		//anything above 550, 5 work, 3 move, 1 carry (700 energy)
-		body = [WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, CARRY];
-	}
-
+	
+    let w = 0, m = 0, c = 0;
+    if(energyCost >= 700){
+        w = 5;
+        m = 3;
+        c = 1;
+    }
+    else{
+        let x = Math.floor(energyCost / 250);
+    	
+	    w = 2 * x;
+	    m = 1 * x;
+	    
+    }
+    	body = _.times(w, () => WORK);
+    	body = body.concat(_.times(m, () => MOVE) );
+        body = body.concat(_.times(c, () => CARRY));
+    
 	//create the creep
-	this.spawnCreep(body, 'miner - ' + rand, { memory: {
+	this.spawnCreep(body, name, { memory: {
 		role: 'miner',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none'
+		workTarget: null
 	}});
 	
 }
@@ -59,7 +64,7 @@ StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
 		role: 'harvester',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none'
+		workTarget: null
 	}});
 	
 }
@@ -110,7 +115,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 		role: 'worker',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
-		workTarget: 'none'
+		workTarget: null
 	}});
 	
 }
