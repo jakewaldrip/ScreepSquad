@@ -3,6 +3,29 @@
 //get the next creep to spawn
 Room.prototype.getNextCreepToSpawn = function () {
 
+    //get number of all the creeps in the room
+    var numMiners = this.getCreepSum('miner');
+    var numDrones = this.getCreepSum('drone');
+    var numWorkers = this.getCreepSum('worker');
+
+    //get creep limits of all creeps in the room
+    var minerLimit = this.memory.creepLimits["miners"];
+    var droneLimit = this.memory.creepLimits["drones"];
+    var workerLimit = this.memory.creepLimits["workers"];
+
+    //get the next creep in the correct order based on the amount of creeps needed and creeps currently there
+    if(numMiners < minerLimit)
+    {
+        return 'miner';
+    }
+    else if(numDrones < droneLimit)
+    {
+        return 'drone';
+    }
+    else if(numWorkers < workerLimit)
+    {
+        return 'worker';
+    }
 }
 //-----
 
@@ -15,7 +38,7 @@ Room.prototype.spawnNextCreep = function () {
 
 
 //get the next creep to spawn
-Room.prototype.getCreepSpawnEnergyCost = function () {
+Room.prototype.getCreepSpawnEnergyCost = function (role) {
 
 }
 //-----
@@ -34,28 +57,31 @@ Room.prototype.getCreepLimits = function () {
     {
         //for beginner room state
         case 'ROOM_STATE_BEGINNER':
+            
+            let numOfSources = this.memory.sources.length;
+            let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
 
-            this.memory.creepLimits["miners"] = 4;
-            this.memory.creepLimits["drones"] = 4;
-            this.memory.creepLimits["workers"] = 4;
-
+            numMiners = Math.ceil(5 / workPerCreep) * numOfSources;
+            numDrones = 4;
+            numWorkers = 5;
+           
             break;
 
         //for intermediate room state
         case 'ROOM_STATE_INTERMEDIATE':
 
-            this.memory.creepLimits["miners"] = 2;
-            this.memory.creepLimits["drones"] = 3;
-            this.memory.creepLimits["workers"] = 6;
+            numMiners = this.memory.sources.length;
+            numDrones = 3;
+            numWorkers = 4 + (this.memory.remoteRooms.length * 2);
 
             break;
 
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
-
-            this.memory.creepLimits["miners"] = 2;
-            this.memory.creepLimits["drones"] = 4;
-            this.memory.creepLimits["workers"] = 4;
+            
+            numMiners = this.memory.sources.length;
+            numDrones = 4;
+            numWorkers = 4 + (this.memory.remoteRooms.length * 2);
 
             break;
 
@@ -66,6 +92,21 @@ Room.prototype.getCreepLimits = function () {
 
             break;
     }
+
+    //commit values to memory from here
+    this.memory.creepLimits["miners"] = numMiners;
+    this.memory.creepLimits["drones"] = numDrones;
+    this.memory.creepLimits["workers"] = numWorkers;
 }
 //------
+
+
+//passes creep role and returns the number of existing creeps in the room of this role
+Room.prototype.getCreepSum = function (role) {
+
+    var creepsInRoom = this.memory.creepsInRoom;
+    var numOfRole = _.sum(creepsInRoom, c => c.memory.role === role);
+
+    return numOfRole;
+}
 
