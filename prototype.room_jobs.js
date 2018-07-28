@@ -201,7 +201,153 @@ Room.prototype.getEnergyJobQueue = function() {
 }
 //----
 
+//Use Job Queues
+//--------------------------------------------------------------------------------------------//
 
+Room.prototype.assignJobs = function() {
+    
+    //this.assignRoleJobs("miner");
+    //this.assignRoleJobs("drone");
+    
+    this.assignMinerJobs();
+    
+    this.assignDroneJobs();
+    
+    this.assignWorkerJobs();
+    
+}
+    
+//Generic assignJobs, potentially useful for DRY programming
+//not using it until I'm sure of how we will handle not duplicating tasks
+//for drones and workers. Miners should already handle duplication in
+//their jobQueue creation.
+Room.prototype.assignRoleJobs = function(role){
+        
+    let idleCreeps = _.filter(Game.creeps, creep =>
+        (creep.homeRoom == this.name && creep.role == role 
+        && creep.workTarget == null));
+    
+    if(idleCreeps.length > 0){
+        
+        let jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
+        
+        _.forEach(idleCreeps, function(creep) {
+            
+            if(jobQueue.length > 0){
+                
+                let job = jobQueue.shift();
+                
+                delete this.jobQueues[role + "Jobs"][job[0]];
+                
+                creep.workTarget = job[0];
+                //creep.state = job[1];
+                
+            }
+        }, this);
+        
+    }
+}
+    
+Room.prototype.assignMinerJobs = function() {
+    //miners that need a task
+    let idleMiners = _.filter(Game.creeps, creep => 
+        (creep.homeRoom == this.name && creep.role == "miner" 
+        && creep.workTarget == null) );
+    
+    if(idleMiners.length > 0){
+    
+        let jobQueue = _.pairs( this.jobQueues.minerJobs );
+           
+        _.forEach(idleMiners, function(miner) {
+            
+            if(jobQueue.length > 0){
+                
+                let job = jobQueue.shift();
+                
+                delete this.jobQueues.minerJobs[job[0]];
+                
+                miner.workTarget = job[0];
+                //miner.state = job[1];
+                
+            }
+
+        }, this);
+    
+    }
+}
+    
+Room.prototype.assignDroneJobs = function() {
+        
+    let idleDrones = _.filter(Game.creeps, creep =>
+        (creep.homeRoom == this.name && creep.role == "drone" 
+        && creep.workTarget == null));
+    
+    if (idleDrones.length > 0){
+        
+        let jobQueue = _.pairs( this.jobQueues.droneJobs );
+        
+        _.forEach(idleDrones, function(drone) {
+           
+           if(jobQueue.length > 0){
+               
+               let job = jobQueue.shift();
+               
+               delete this.jobQueues.droneJobs[job[0]];
+               
+               miner.workTarget = job[0];
+               //miner.state = job[1];
+           } 
+        }, this);
+    }
+}
+    
+Room.prototype.assignWorkerJobs = function() {
+    let upgradingController = false;
+    
+    let workers = _.filter(Game.creeps, creep => (creep.homeRoom == this.name && creep.role == "worker"));
+    
+    let idleWorkers = [];
+    
+    _.forEach(workers, function(worker) {
+       
+       if(worker.workTarget == null){
+           idleWorkers.push(worker);
+       }
+       else if(worker.workTarget == this.controller.id){
+           upgradingController = true;
+       }
+        
+    }, this);
+    
+    if(idleWorkers.length > 0){
+        
+        let jobQueue = _.pairs( this.jobQueues.workerJobs );
+        
+        _.forEach(idleWorkers, function(worker) {
+           
+           let job;
+           
+           if(upgradingController == false || jobQueue.length == 0){
+               job = [];
+               job[0] = this.controller.id;
+               job[1] = "UPGRADE";
+               upgradingController = true;
+            }
+            else{
+                
+                job = jobQueue.shift();
+                
+                delete this.jobQueues.workerJobs[job[0]];
+            }
+            
+            worker.workTarget = job[0];
+            //worker.state = "STATE_USE_ENERGY";
+            
+        }, this);
+        
+    }
+    
+}
 
 
 

@@ -34,7 +34,7 @@ module.exports.loop = function () {
     _.forEach(Game.rooms, function(room) {
         room.getData();
         room.getJobQueues();
-        overseer.assignJobs(room);
+        room.assignJobs();
     });
     
     _.forEach(Game.creeps, creep => creep.run());
