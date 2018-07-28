@@ -9,8 +9,8 @@ Creep.prototype.run = function() {
         worker: require('role.Worker')
         
     };
-    
-    role[this.role].run(this);
+    if(role[this.role])
+        role[this.role].run(this);
     
 }
 

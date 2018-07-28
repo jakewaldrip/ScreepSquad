@@ -39,7 +39,7 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 
 //create harvester
 //PARAMS: homeRoom, energyCost
-StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
+StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	
 	//random num for name
 	var rand = Game.time.toString();
@@ -50,7 +50,7 @@ StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
 	energyCost -= 200;
 
 	//get max parts of the remaining energy
-	var maxParts = Math.floor(energy/100);
+	var maxParts = Math.floor(energyCost/100);
 
 	//loop through and add carry and move parts
 	for(let i = 0; i < maxParts; ++i)
@@ -60,8 +60,8 @@ StructureSpawn.prototype.createHarvester = function (homeRoom, energyCost) {
 	}
 
 	//create the creep
-	this.spawnCreep(body, 'harvester - ' + rand, { memory: {
-		role: 'harvester',
+	this.spawnCreep(body, 'drone - ' + rand, { memory: {
+		role: 'drone',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
 		workTarget: null

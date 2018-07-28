@@ -82,6 +82,8 @@ Room.prototype.getMinerJobQueue = function () {
 Room.prototype.getDroneJobQueue = function () {
     let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
+    fillStructures = removeClaimedJobs(fillStructures);
+    
     let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
     
     fillStructures = _.sortBy(fillStructures, obj => spawn.pos.getRangeTo(obj.pos), this);
@@ -102,21 +104,22 @@ Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
     
+    constSites = removeClaimedJobs(constSites);
+    
     _.sortBy(constSites, cs => cs.progress / cs.progressTotal);
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     
-    _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this);
+    repairTargets = removeClaimedJobs(repairTargets);
     
-    let priorityRepairTargets = _.takeRightWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
+    _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
     
-    let controller = this.controller;
+    let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
     
     let formattedTargets = {};
     
-    //Not sure which you prefer, commented out one just sets each id = "STATE_USE_ENERGY"
-    // Uncommented one sets each target to the action you perform on it.
-    /*
+    
+    /* Will change to this if we don't use the REPAIR/BUILD value in worker.run().
     let targets = priorityRepairTargets.concat(constSites, repairTargets, controller);
     
     _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_ENERGY");
@@ -200,6 +203,24 @@ Room.prototype.getEnergyJobQueue = function() {
     this.memory.jobQueues.getEnergyJobs = formattedEnergy;
 }
 //----
+
+//Takes an array of ids
+//Removes any ids that are being targetted by a creep already.
+const removeClaimedJobs = function(checkValues){
+    let returnValues = [];
+    
+    for(i = 0; i < checkValues.length; i++){ 
+        let value = checkValues[i];
+        //catch objects passed instead of id strings
+        if(value.id)
+            value = value.id;
+            
+        if(!_.any(Game.creeps, creep => creep.workTarget == value) )
+            returnValues.push(checkValues[i]);
+    }
+    
+    return returnValues;
+}
 
 //Use Job Queues
 //--------------------------------------------------------------------------------------------//
@@ -294,8 +315,8 @@ Room.prototype.assignDroneJobs = function() {
                
                delete this.jobQueues.droneJobs[job[0]];
                
-               miner.workTarget = job[0];
-               //miner.state = job[1];
+               drone.workTarget = job[0];
+               //drone.state = job[1];
            } 
         }, this);
     }
