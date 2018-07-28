@@ -3,6 +3,18 @@
 //get the next creep to spawn
 Room.prototype.getNextCreepToSpawn = function () {
 
+    this.getCreepLimits();
+    
+    //Descending Priority - Miner -> Drone -> Worker
+    const rolePriority = [
+        "miner",
+        "drone",
+        "worker"
+    ];
+    
+    //go through each priorityRole and check if it has less than creepLimit
+    // but also has to have at least one of each
+
 }
 //-----
 
@@ -22,6 +34,7 @@ Room.prototype.getCreepSpawnEnergyCost = function () {
 
 
 //get limit of the creeps for the room
+//NEEDS UPDATED TO BE DYNAMIC
 Room.prototype.getCreepLimits = function () {
 
     var roomState = this.memory.roomState;

@@ -42,25 +42,26 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	
 	//random num for name
-	var rand = Game.time.toString();
+	var name = 'drone - ' + Game.time.toString();
 	var body = [];
-
+    
+    let w = 0, c = 0, m = 0;
 	//harvester body, 2 works subtract 200 from energy
-	body = [WORK, WORK];
+	w += 2;
 	energyCost -= 200;
 
 	//get max parts of the remaining energy
 	var maxParts = Math.floor(energyCost/100);
+    
+    c += maxParts;
+    m += maxParts;
 
-	//loop through and add carry and move parts
-	for(let i = 0; i < maxParts; ++i)
-	{
-		body.push(CARRY);
-		body.push(MOVE);
-	}
-
+    body = _.times(w, () => WORK);
+	body = body.concat(_.times(m, () => MOVE) );
+    body = body.concat(_.times(c, () => CARRY));
+    
 	//create the creep
-	this.spawnCreep(body, 'drone - ' + rand, { memory: {
+	this.spawnCreep(body, name, { memory: {
 		role: 'drone',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',
@@ -76,42 +77,44 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 	
 	//random num for name
-	var rand = Game.time.toString();
+	var name = 'worker - ' + Game.time.toString();
 	var body = [];
-
+    
+    let w = 0, m = 0, c = 0;
 	//create proper amount of work parts and subtract energy based on available energy
-	if(energy < 550)
+	if(energyCost < 550 && energyCost >= 200)
 	{
-		body = [WORK, WORK];
+		w += 2;
 		energyCost -= 200;
 	}
 	else if(energyCost < 800)
 	{
-	    body = [WORK, WORK, WORK];
+	    w += 3;
 	    energyCost -= 300;
 	}
     else if(energyCost < 1100)
 	{
-        body = [WORK, WORK, WORK, WORK];
+        w += 4;
         energyCost -= 400;
     }
     else
 	{
-        body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK];
+        w += 7;
         energyCost -= 700;
     }
 
 	//get number of carry and move parts possible
 	var maxParts = Math.floor(energy / 100);
     
-    //loop through and add carry and move parts the remaining allowed amount
-    for(let i = 0; i < maxParts; ++i){
-        body.push(CARRY);
-        body.push(MOVE);
-    }
+    c += maxParts;
+    m += maxParts;
 
+    body = _.times(w, () => WORK);
+	body = body.concat(_.times(m, () => MOVE) );
+    body = body.concat(_.times(c, () => CARRY));
+    
 	//create the creep
-	this.spawnCreep(body, 'worker - ' + rand, { memory: {
+	this.spawnCreep(body, name, { memory: {
 		role: 'worker',
 		homeRoom: homeRoom,
 		state: 'STATE_SPAWNING',

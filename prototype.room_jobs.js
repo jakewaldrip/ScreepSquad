@@ -22,12 +22,9 @@ Room.prototype.getJobQueues = function() {
 Room.prototype.getMinerJobQueue = function () {
     
     
+    let sources = _.map(Object.keys(this.memory.sources), id => Game.getObjectById(id));
     
-    const room = this;
-    
-    let sources = _.map(Object.keys(room.memory.sources), id => Game.getObjectById(id));
-    
-    let miners = _.filter(Game.creeps, creep => (creep.memory.role === "miner" && creep.memory.home === room.name));
+    let miners = _.filter(Game.creeps, creep => (creep.memory.role === "miner" && creep.memory.home === this.name), this);
     
     let targetSources = _.filter(sources, function(source) {
         
@@ -43,7 +40,7 @@ Room.prototype.getMinerJobQueue = function () {
              
              if(_.sum(minersTargeting, c => 
                 c.getActiveBodyparts(WORK)) < (source.energyCapacity / 600)
-                && minersTargeting.length < room.memory.sources[source.id].accessTiles.length ){ //600 is 5 work parts over 300 ticks
+                && minersTargeting.length < this.memory.sources[source.id].accessTiles.length ){ //600 is 5 work parts over 300 ticks
                 
                  return true;
              
@@ -63,16 +60,16 @@ Room.prototype.getMinerJobQueue = function () {
             
         }
         
-    });
+    }, this);
     
     //descending by default, use .reverse() to make ascending
-    targetSources = _.sortBy(targetSources, source => source.pos.getRangeTo(room.memory.structures[STRUCTURE_SPAWN][0])).reverse();
+    targetSources = _.sortBy(targetSources, source => source.pos.getRangeTo(this.memory.structures[STRUCTURE_SPAWN][0])).reverse();
     
     
-    room.memory.jobQueues.minerJobs = {};
+    this.memory.jobQueues.minerJobs = {};
     
     for(i = 0; i < targetSources.length; i++)
-        room.memory.jobQueues.minerJobs[targetSources[i].id] = "STATE_HARVESTING";
+        this.memory.jobQueues.minerJobs[targetSources[i].id] = "STATE_HARVESTING";
         
 }
 //----
