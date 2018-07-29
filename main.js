@@ -33,6 +33,7 @@ module.exports.loop = function () {
     //Example usage, can be relocated
     _.forEach(Game.rooms, function(room) {
         room.getData();
+        room.setRoomState();
         room.getJobQueues();
         room.assignJobs();
     });

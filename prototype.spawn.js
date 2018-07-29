@@ -1,9 +1,22 @@
 //Create creep functions for each role
-
+StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role){
+    var roleFunction = {
+        miner: this.createMiner,
+        
+        drone: this.createDrone,
+        
+        worker: this.createWorker
+    };
+    
+    if(roleFunction.hasOwnProperty(role)){
+        console.log(`${this.name} is hatching a ${role}!`);
+        roleFunction[role].call(this, homeRoom, energyCost);
+    }
+        
+}
 //create miner
 //PARAMS: homeRoom, energyCost
 StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
-	
 	//random num for name
 	var name = 'miner - ' + Game.time.toString();
 	var body = [];
@@ -104,7 +117,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     }
 
 	//get number of carry and move parts possible
-	var maxParts = Math.floor(energy / 100);
+	var maxParts = Math.floor(energyCost / 100);
     
     c += maxParts;
     m += maxParts;

@@ -19,7 +19,7 @@ Object.defineProperty(Creep.prototype, 'role', {
     get: function() {
         if(!this.memory.role){
             return undefined;
-        }
+        } 
         else{
             return this.memory.role;
         }
