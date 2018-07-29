@@ -44,7 +44,8 @@ Room.prototype.getNextCreepToSpawn = function () {
 //-----
 
 
-//get the next creep to spawn
+//This function runs getNextCreepToSpawn, getCreepSpawnEnergyCost, and then passes
+//the params to spawner.createRole, assuming there is an available spawn.
 Room.prototype.spawnNextCreep = function () {
     
     let emptySpawner = _.find(this.memory.structures[STRUCTURE_SPAWN], spawn => spawn.spawning == null);
