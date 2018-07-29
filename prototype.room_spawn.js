@@ -1,45 +1,45 @@
 //handles spawning for each room
 
 //get the next creep to spawn
+//Will spawn one of each creep type with a limit > 0
+//and then max out each spawn in order of rolePriority.
 Room.prototype.getNextCreepToSpawn = function () {
 
-<<<<<<< HEAD
     this.getCreepLimits();
     
-    //Descending Priority - Miner -> Drone -> Worker
+    //Ascending Priority - Miner -> Drone -> Worker
+    //Important for the proper queueing of creeps.
     const rolePriority = [
-        "miner",
+        "worker",
         "drone",
-        "worker"
+        "miner"
     ];
     
-    //go through each priorityRole and check if it has less than creepLimit
-    // but also has to have at least one of each
-
-//All code below here is temporary. Will follow ^ logic after tonight.
-    //get number of all the creeps in the room
-    var numMiners = this.getCreepSum('miner');
-    var numDrones = this.getCreepSum('drone');
-    var numWorkers = this.getCreepSum('worker');
-
-    //get creep limits of all creeps in the room
-    var minerLimit = this.memory.creepLimits["miners"];
-    var droneLimit = this.memory.creepLimits["drones"];
-    var workerLimit = this.memory.creepLimits["workers"];
-
-    //get the next creep in the correct order based on the amount of creeps needed and creeps currently there
-    if(numMiners < minerLimit)
-    {
-        return 'miner';
+    let nextCreep, counts = {};
+    //could check here if creeps count >= rolePriority.count to save CPU in later stages
+    //or just check this if roomState == BEGINNER
+    _.forEach(rolePriority, function(role) {
+        
+        counts[role] = this.getCreepSum(role);
+        
+        if(counts[role] === 0 && counts[role] < this.memory.creepLimits[role])
+            nextCreep = role;
+            
+    });
+    
+    if(nextCreep == null){
+        
+        _.forEach(rolePriority, function(role) {
+            
+           if(count < this.memory.creepLimits[role]){
+               nextCreep = role;
+           }
+            
+        });
+        
     }
-    else if(numDrones < droneLimit)
-    {
-        return 'drone';
-    }
-    else if(numWorkers < workerLimit)
-    {
-        return 'worker';
-    }
+    
+    return nextCreep;
 }
 //-----
 
@@ -120,7 +120,7 @@ Room.prototype.getCreepLimits = function () {
 Room.prototype.getCreepSum = function (role) {
 
     var creepsInRoom = this.memory.creepsInRoom;
-    var numOfRole = _.sum(creepsInRoom, c => c.memory.role === role);
+    var numOfRole = _.sum(creepsInRoom, c => Game.creeps[c].memory.role === role);
 
     return numOfRole;
 }
