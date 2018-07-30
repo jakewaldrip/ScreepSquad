@@ -9,9 +9,7 @@ module.exports = {
 		{
 			case 'STATE_SPAWNING':
 
-                if(!creep.spawning && creep.workTarget != null){
-                    creep.state = "STATE_MOVING";
-                }
+                creep.runSpawningDomestic();
 
 			break;
 

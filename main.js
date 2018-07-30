@@ -36,6 +36,7 @@ module.exports.loop = function () {
         room.setRoomState();
         room.getJobQueues();
         room.assignJobs();
+        room.spawnNextCreep();
     });
     
     _.forEach(Game.creeps, creep => creep.run());

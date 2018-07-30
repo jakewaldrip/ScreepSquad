@@ -9,10 +9,57 @@ Creep.prototype.run = function() {
         worker: require('role.Worker')
         
     };
+    
     if(role[this.role])
         role[this.role].run(this);
     
 }
+
+Creep.prototype.useEnergy = function(targetObj) {
+    
+    if(targetObj instanceof String){
+        targetObj = Game.getObjectById(targetObj);
+    }
+    
+    
+    if(targetObj instanceof ConstructionSite){
+        return creep.build(targetObj);
+    }
+    else if(targetObj instanceof StructureController){
+        return creep.upgradeController(targetObj);
+    }
+    else if(targetObj instanceof Structure){
+        return creep.repair(targetObj);
+    }
+    else{
+        return ERR_INVALID_TARGET;
+    }
+}
+
+Creep.prototype.getEnergy = function(targetObj){
+    
+    if(targetObj instanceof String){
+        targetObj = Game.getObjectById(targetObj);
+    }
+    
+    if(targetObj instanceof Energy || targetObj instanceof Mineral){
+        return creep.pickup(targetObj);
+    }
+    else if(targetObj instanceof Structure){
+        return creep.withdraw(targetObj);
+    }
+    else{
+        return ERR_INVALID_TARGET;
+    }
+}
+
+Object.defineProperty(Creep.prototype, 'Full', {
+    get: function(){ return (_.sum(this.carry) == this.carryCapacity); }
+});
+
+Object.defineProperty(Creep.prototype, 'Empty', {
+    get: function(){ return (_.sum(this.carry) == 0); }
+});
 
 Object.defineProperty(Creep.prototype, 'role', {
     
@@ -81,3 +128,4 @@ Object.defineProperty(Creep.prototype, 'state', {
     }
     
 });
+

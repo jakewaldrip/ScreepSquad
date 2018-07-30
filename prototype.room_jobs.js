@@ -86,7 +86,7 @@ Room.prototype.getDroneJobQueue = function () {
     
     let formattedStructures = {};
     
-    _.forEach(fillStructures, s => formattedStructures[s.id] = "STATE_USE_ENERGY");
+    _.forEach(fillStructures, s => formattedStructures[s.id] = "STATE_USE_RESOURCES");
     
     this.memory.jobQueues.droneJobs = formattedStructures;
 }
@@ -99,31 +99,24 @@ Room.prototype.getDroneJobQueue = function () {
 Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
-    
-    constSites = removeClaimedJobs(constSites);
-    
+
     _.sortBy(constSites, cs => cs.progress / cs.progressTotal);
+    
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     
-    repairTargets = removeClaimedJobs(repairTargets);
-    
     _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
+    
     
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
     
     let formattedTargets = {};
     
+    let targets = priorityRepairTargets.concat(constSites, repairTargets);
     
-    /* Will change to this if we don't use the REPAIR/BUILD value in worker.run().
-    let targets = priorityRepairTargets.concat(constSites, repairTargets, controller);
+    targets = removeClaimedJobs(targets);
     
-    _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_ENERGY");
-    */
-    
-    _.forEach(priorityRepairTargets, t => formattedTargets[t.id] = "REPAIR");
-    _.forEach(constSites, t => formattedTargets[t.id] = "BUILD");
-    _.forEach(repairTargets, t => formattedTargets[t.id] = "REPAIR");
+    _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_RESOURCES");
     
     this.memory.jobQueues.workerJobs = formattedTargets;
     
@@ -211,6 +204,7 @@ const removeClaimedJobs = function(checkValues){
         if(value.id)
             value = value.id;
             
+        //might need to unshift instead of push here
         if(!_.any(Game.creeps, creep => creep.workTarget == value) )
             returnValues.push(checkValues[i]);
     }
@@ -223,21 +217,18 @@ const removeClaimedJobs = function(checkValues){
 
 Room.prototype.assignJobs = function() {
     
-    //this.assignRoleJobs("miner");
-    //this.assignRoleJobs("drone");
+    this.assignRoleJobs("miner");
+    this.assignRoleJobs("drone");
     
-    this.assignMinerJobs();
+    //this.assignMinerJobs();
     
-    this.assignDroneJobs();
+    //this.assignDroneJobs();
     
     this.assignWorkerJobs();
     
 }
     
 //Generic assignJobs, potentially useful for DRY programming
-//not using it until I'm sure of how we will handle not duplicating tasks
-//for drones and workers. Miners should already handle duplication in
-//their jobQueue creation.
 Room.prototype.assignRoleJobs = function(role){
         
     let idleCreeps = _.filter(Game.creeps, creep =>
@@ -358,7 +349,7 @@ Room.prototype.assignWorkerJobs = function() {
             }
             
             worker.workTarget = job[0];
-            //worker.state = "STATE_USE_ENERGY";
+            //worker.state = "STATE_USE_RESOURCES";
             
         }, this);
         
