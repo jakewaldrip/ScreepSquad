@@ -1,22 +1,43 @@
 'use strict';
+
+
 //checks if the creep has a target and switches state based on target
 Creep.prototype.runSpawningDomestic = function () {
     
-    if(!this.spawning && this.workTarget != null){
+    //check if the creep done spawning, get the next state
+    if(!this.spawning){
+        this.getTarget();
         this.getNextStateDomestic();
     }
     
 }
+//------
+
+
 //moves the creep to the target and switches to the proper state upon arrival
 Creep.prototype.runMovingDomestic = function () {
-
-    let target = Game.getObjectById(this.workTarget);
     
-    if(!this.pos.isNearTo(target)){
-        this.moveTo(target, { reusePath: 10 }); //double path use for CPU conservation
+    //get work target object
+    var target = Game.getObjectById(this.workTarget);
+
+    //check if creep is in the correct room
+    if(this.homeRoom != this.room.name)
+    {
+        target = new RoomPosition(25, 25, homeRoom);
     }
-    else{
-        this.getNextStateDomestic();
+    else
+    {
+        //creep is in the correct room check if we're at the target
+        if(this.isNearTo(target))
+        {
+            //get next state 
+            this.getNextStateDomestic();
+        }
+        else
+        {
+            //move to target
+            this.moveTo(target, {reusePath: 10});
+        }
     }
 }
 //--------
@@ -24,16 +45,8 @@ Creep.prototype.runMovingDomestic = function () {
 
 //gets energy for the creep and switches to proper state upon becoming full
 Creep.prototype.runHarvestingDomestic = function () {
-    let target = Game.getObjectById(this.workTarget);
-    let result = this.harvest(target);
     
-    if(result == 0){
-        //maintain container here if this.Full
-    }
-    else if(result == ERR_INVALID_TARGET){
-        this.workTarget = null;
-        this.state = "STATE_SPAWNING";
-    }
+
 }
 //--------
 
@@ -41,48 +54,39 @@ Creep.prototype.runHarvestingDomestic = function () {
 //works the creep's target and switches to proper state upon using up all energy or finishing the job
 Creep.prototype.runWorkDomestic = function () {
 
-    if(!this.Empty){
-        
-        let target = Game.getObjectById(this.worktarget);
-        
-        this.useEnergy(target);
-        
-    }
+
 }
 //---------
 
+
+//i have no idea what this is supposed to do im hoping brock tells me lol
 Creep.prototype.runGatherDomestic = function () {
     
+
 }
+//------
+
 
 //switches the creep to the next state
 Creep.prototype.getNextStateDomestic = function () {
-    let target = Game.getObjectById(this.workTarget);
-    
-    if(this.pos.isNearTo(target)){
-        
-        if(target instanceof Energy || !this.Full){
-            
-        }
-        //set state USE/GET_RESOURCES
-        
-    }
-    
-    else{
-        this.state = "STATE_MOVING";
-    }
+
+
 }
 //---------
 
-//assigns the creep a workTarget
-Creep.prototype.getWorkTarget = function () { 
-    
-    this.workTarget = this.room.getWorkJob(this.role); 
-    
-}
 
-Creep.prototype.getEnergyTarget = function () {
+//decides if the creep should get an energy target or a work target
+Creep.prototype.getTarget = function () {
     
-    this.workTarget = this.room.getEnergyJob();
-    
+    //check if the creep is empty to decide which target to get
+    if(this.Empty)
+    {
+        //if creep has no energy, get an energy job
+        this.workTarget = this.room.getEnergyJob();
+    }
+    else
+    {
+        //if creep has energy, get a work job
+        this.workTarget = this.room.getWorkJob(this.role);
+    }
 }
