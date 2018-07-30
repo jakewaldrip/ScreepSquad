@@ -21,16 +21,9 @@ module.exports = {
 			break;
 
 
-			case 'STATE_HARVESTING':
-
-
-
-			break;
-
-
 			case 'STATE_USE_RESOURCES':
 
-
+                creep.runWorkDomestic();
 
 			break;
 

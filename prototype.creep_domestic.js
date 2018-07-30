@@ -28,7 +28,7 @@ Creep.prototype.runMovingDomestic = function () {
     else
     {
         //creep is in the correct room check if we're at the target
-        if(this.isNearTo(target))
+        if(this.pos.isNearTo(target))
         {
             //get next state 
             this.getNextStateDomestic();
@@ -69,7 +69,27 @@ Creep.prototype.runGatherDomestic = function () {
 
 //switches the creep to the next state
 Creep.prototype.getNextStateDomestic = function () {
-
+    let target = Game.getObjectById(this.workTarget);
+    
+    switch(this.state){
+        case "STATE_SPAWNING":
+            if(this.workTarget != null){
+                this.state = "STATE_MOVING";
+            }
+        break;
+        
+        case "STATE_MOVING":
+            
+            if(target instanceof Source)
+                this.state = "STATE_HARVESTING";
+            else if(target instanceof Structure && this.Empty)
+                this.state = "STATE_GET_RESOURCES";
+            else
+                this.state = "STATE_USE_RESOURCES";
+            
+            
+        break;
+    }
 
 }
 //---------
@@ -79,7 +99,7 @@ Creep.prototype.getNextStateDomestic = function () {
 Creep.prototype.getTarget = function () {
     
     //check if the creep is empty to decide which target to get
-    if(this.Empty)
+    if(this.Empty && this.role != "miner")
     {
         //if creep has no energy, get an energy job
         this.workTarget = this.room.getEnergyJob();
