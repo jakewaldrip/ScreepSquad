@@ -75,61 +75,32 @@ Room.prototype.spawnNextCreep = function () {
 Room.prototype.getCreepSpawnEnergyCost = function (role) {
     
     var roomState = this.memory.roomState;
-    var energyAvailable = this.energyAvailable;
     var energyCapacity = this.energyCapacityAvailable;
     var energyCost;
-
-    //check the role of the creep needing an energy cost
-    switch(role)
-    {
-        case 'miner':
-            
-            if(energyCapacity > 700)
-            {
-                energyCost = 700;
-            }
-            else
-            {
-                energyCost = energyCapacity;
-            }
-
-            break;
-
-
-        case 'drone':
-
-            if(energyCapacity > 1200)
-            {
-                energyCost = 1200;
-            }
-            else
-            {
-                energyCost = energyCapacity;
-            }
-
-            break;
-
-
-        case 'worker':
-
-            if(energyCapacity > 1700)
-            {
-                energyCost = 1700;
-            }
-            else
-            {
-                energyCost = energyCapacity;
-            }
-
-            break;
-
-
-        default: 
-
-            console.log("Invalid role passed to getCreepSpawnEnergyCost");
-
-            break;
+    
+    //roomState Beginner
+    var roleMaxCost = {
+        miner: 700,
+        drone: 1200,
+        worker: 1700
     }
+    
+    if(roomState == "STATE_INTERMEDIATE"){
+        roleMaxCost = {
+            miner: 700,
+            drone: 1200,
+            worker: 1700
+        }
+    }
+    
+    if(roleMaxCost[role] && energyCapacity >= roleMaxCost[role]){
+        energyCost = roleMaxCost[role];
+    }
+    else{
+        energyCost = energyCapacity;
+    }
+    
+    return energyCost;
 }
 //-----
 

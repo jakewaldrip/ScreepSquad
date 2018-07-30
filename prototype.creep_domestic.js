@@ -42,6 +42,7 @@ Creep.prototype.runHarvestingDomestic = function () {
 Creep.prototype.runWorkDomestic = function () {
 
     if(!this.Empty){
+        
         let target = Game.getObjectById(this.worktarget);
         
         this.useEnergy(target);
