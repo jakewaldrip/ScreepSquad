@@ -1,9 +1,7 @@
-module.exports = {
-
 	//converts ID's into objects
 	//PARAMS: ID's
 	//RETURNS: objects associated with ID's
-	getObjectsFromIDArray: function (idArray)
+var getObjectsFromIDArray = function (idArray)
 	{
 		let formattedObjects = {};
 
@@ -13,5 +11,6 @@ module.exports = {
 	}
 	//-------
 
-    
-};
+String.prototype.capitalizeFirst = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}    

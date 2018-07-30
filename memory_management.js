@@ -24,7 +24,12 @@ module.exports = {
 				//if not, delete the memory entry
 				 delete Memory.rooms[room];
 			  }
+			  else{
+			      //if it exists, delete stale data
+			      Memory.rooms[room].jobQueues = {};
+			  }
 		  }
+		  
       }
       //------------------
 };

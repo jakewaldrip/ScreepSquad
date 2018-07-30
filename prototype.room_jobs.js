@@ -110,12 +110,15 @@ Room.prototype.getWorkerJobQueue = function () {
     
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
     
-    let formattedTargets = {};
     
-    let targets = priorityRepairTargets.concat(constSites, repairTargets);
+    let controller = this.controller.id;
+    
+    
+    let targets = controller.concat(priorityRepairTargets, constSites, repairTargets);
     
     targets = removeClaimedJobs(targets);
     
+    let formattedTargets = {};
     _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_RESOURCES");
     
     this.memory.jobQueues.workerJobs = formattedTargets;
@@ -215,148 +218,36 @@ const removeClaimedJobs = function(checkValues){
 //Use Job Queues
 //--------------------------------------------------------------------------------------------//
 
-Room.prototype.assignJobs = function() {
+//Generic assignJob
+Room.prototype.assignJob = function(creep){
     
-    this.assignRoleJobs("miner");
-    this.assignRoleJobs("drone");
+    let role = creep.role;
     
-    //this.assignMinerJobs();
-    
-    //this.assignDroneJobs();
-    
-    this.assignWorkerJobs();
-    
-}
-    
-//Generic assignJobs, potentially useful for DRY programming
-Room.prototype.assignRoleJobs = function(role){
+    if(!this.memory.jobQueues[role + "Jobs"]){
         
-    let idleCreeps = _.filter(Game.creeps, creep =>
-        (creep.homeRoom == this.name && creep.role == role 
-        && creep.workTarget == null));
-    
-    if(idleCreeps.length > 0){
-        
-        let jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
-        
-        _.forEach(idleCreeps, function(creep) {
-            
-            if(jobQueue.length > 0){
-                
-                let job = jobQueue.shift();
-                
-                delete this.jobQueues[role + "Jobs"][job[0]];
-                
-                creep.workTarget = job[0];
-                //creep.state = job[1];
-                
-            }
-        }, this);
-        
-    }
-}
-    
-Room.prototype.assignMinerJobs = function() {
-    //miners that need a task
-    let idleMiners = _.filter(Game.creeps, creep => 
-        (creep.homeRoom == this.name && creep.role == "miner" 
-        && creep.workTarget == null) );
-    
-    if(idleMiners.length > 0){
-    
-        let jobQueue = _.pairs( this.jobQueues.minerJobs );
-           
-        _.forEach(idleMiners, function(miner) {
-            
-            if(jobQueue.length > 0){
-                
-                let job = jobQueue.shift();
-                
-                delete this.jobQueues.minerJobs[job[0]];
-                
-                miner.workTarget = job[0];
-                //miner.state = job[1];
-                
-            }
-
-        }, this);
-    
-    }
-}
-    
-Room.prototype.assignDroneJobs = function() {
-        
-    let idleDrones = _.filter(Game.creeps, creep =>
-        (creep.homeRoom == this.name && creep.role == "drone" 
-        && creep.workTarget == null));
-    
-    if (idleDrones.length > 0){
-        
-        let jobQueue = _.pairs( this.jobQueues.droneJobs );
-        
-        _.forEach(idleDrones, function(drone) {
-           
-           if(jobQueue.length > 0){
-               
-               let job = jobQueue.shift();
-               
-               delete this.jobQueues.droneJobs[job[0]];
-               
-               drone.workTarget = job[0];
-               //drone.state = job[1];
-           } 
-        }, this);
-    }
-}
-    
-Room.prototype.assignWorkerJobs = function() {
-    let upgradingController = false;
-    
-    let workers = _.filter(Game.creeps, creep => (creep.homeRoom == this.name && creep.role == "worker"));
-    
-    let idleWorkers = [];
-    
-    _.forEach(workers, function(worker) {
-       
-       if(worker.workTarget == null){
-           idleWorkers.push(worker);
-       }
-       else if(worker.workTarget == this.controller.id){
-           upgradingController = true;
-       }
-        
-    }, this);
-    
-    if(idleWorkers.length > 0){
-        
-        let jobQueue = _.pairs( this.jobQueues.workerJobs );
-        
-        _.forEach(idleWorkers, function(worker) {
-           
-           let job;
-           
-           if(upgradingController == false || jobQueue.length == 0){
-               job = [];
-               job[0] = this.controller.id;
-               job[1] = "UPGRADE";
-               upgradingController = true;
-            }
-            else{
-                
-                job = jobQueue.shift();
-                
-                delete this.jobQueues.workerJobs[job[0]];
-            }
-            
-            worker.workTarget = job[0];
-            //worker.state = "STATE_USE_RESOURCES";
-            
-        }, this);
+        let funct = "get" + role.capitalizeFirst() + "JobQueue";
+        this[funct].call(this);
         
     }
     
+    let jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
+    
+    if(jobQueue.length > 0){
+            
+        let job = jobQueue.shift();
+        
+        delete this.jobQueues[role + "Jobs"][job[0]];
+        
+        creep.workTarget = job[0];
+        //creep.state = job[1];
+            
+    }
+    //things to do if there are no jobs available, per role
+    else if(role == "worker"){
+        creep.workTarget == this.controller.id;
+    }
 }
-
+    
 
 
 
