@@ -71,12 +71,65 @@ Room.prototype.spawnNextCreep = function () {
 //-----
 
 
-//get the next creep to spawn
+//get the energy cost of the next creep
 Room.prototype.getCreepSpawnEnergyCost = function (role) {
     
-    //For testing only
-    return 300;
-    
+    var roomState = this.memory.roomState;
+    var energyAvailable = this.energyAvailable;
+    var energyCapacity = this.energyCapacityAvailable;
+    var energyCost;
+
+    //check the role of the creep needing an energy cost
+    switch(role)
+    {
+        case 'miner':
+            
+            if(energyCapacity > 700)
+            {
+                energyCost = 700;
+            }
+            else
+            {
+                energyCost = energyCapacity;
+            }
+
+            break;
+
+
+        case 'drone':
+
+            if(energyCapacity > 1200)
+            {
+                energyCost = 1200;
+            }
+            else
+            {
+                energyCost = energyCapacity;
+            }
+
+            break;
+
+
+        case 'worker':
+
+            if(energyCapacity > 1700)
+            {
+                energyCost = 1700;
+            }
+            else
+            {
+                energyCost = energyCapacity;
+            }
+
+            break;
+
+
+        default: 
+
+            console.log("Invalid role passed to getCreepSpawnEnergyCost");
+
+            break;
+    }
 }
 //-----
 
@@ -90,6 +143,8 @@ Room.prototype.getCreepLimits = function () {
     var numMiners = 0;
     var numDrones = 0;
     var numWorkers = 0;
+    
+    var energyCap = this.energyCapacityAvailable;
 
     switch(roomState)
     {
@@ -99,27 +154,42 @@ Room.prototype.getCreepLimits = function () {
             let numOfSources = Object.keys(this.memory.sources).length;
             let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
 
+            //get number of miners needed to saturate the sources
             numMiners = Math.ceil(5 / workPerCreep) * numOfSources;
-            numDrones = 4;
-            numWorkers = 5;
+
+            //change creep limits based on available energy
+            if (energyCap < 550)
+            {
+                numDrones = 4;
+                numWorkers = 4;
+            }
+            else
+            {
+                numDrones = 3;
+                numWorkers = 5;
+            }
+            
            
             break;
 
         //for intermediate room state
         case 'ROOM_STATE_INTERMEDIATE':
 
+            //1 miner per source at this point will saturate the sources
             numMiners = this.memory.sources.length;
             numDrones = 3;
-            numWorkers = 4 + (this.memory.remoteRooms.length * 2);
+            numWorkers = 5 + numRemoteRooms;
+
 
             break;
 
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
             
+            //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
             numMiners = this.memory.sources.length + this.memory.structures[STRUCTURE_EXTRACTOR].length;
             numDrones = 4;
-            numWorkers = 4 + (this.memory.remoteRooms.length * 2);
+            numWorkers = 4 + numRemoteRooms;
 
             break;
 
@@ -130,6 +200,7 @@ Room.prototype.getCreepLimits = function () {
 
             break;
     }
+
     this.memory.creepLimits = {};
     //commit values to memory from here
     this.memory.creepLimits["miner"] = numMiners;
