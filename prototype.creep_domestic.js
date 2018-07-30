@@ -75,8 +75,14 @@ Creep.prototype.getNextStateDomestic = function () {
 //---------
 
 //assigns the creep a workTarget
-Creep.prototype.getWorkTarget = function () {
+Creep.prototype.getWorkTarget = function () { 
     
-    this.room.assignJob(this);
+    this.workTarget = this.room.getWorkJob(this.role); 
+    
+}
+
+Creep.prototype.getEnergyTarget = function () {
+    
+    this.workTarget = this.room.getEnergyJob();
     
 }

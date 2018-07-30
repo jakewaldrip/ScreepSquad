@@ -1,22 +1,5 @@
 //Requires that room.getData() has been run.
 
-//get job queue for creeps of each role
-Room.prototype.getJobQueues = function() {
-    
-    this.memory.jobQueues = {};
-    
-    this.getMinerJobQueue();
-    
-    this.getDroneJobQueue();
-    
-    this.getWorkerJobQueue();
-    
-    this.getEnergyJobQueue();
-    
-}
-
-
-
 //get job queue for miners
 //returns [ [id, state], [], ... ]
 Room.prototype.getMinerJobQueue = function () {
@@ -219,9 +202,10 @@ const removeClaimedJobs = function(checkValues){
 //--------------------------------------------------------------------------------------------//
 
 //Generic assignJob
-Room.prototype.assignJob = function(creep){
-    
-    let role = creep.role;
+Room.prototype.getWorkJob = function(role){
+    //catches creep object being passed 
+    if(role instanceof Creep)
+        role = role.role;
     
     if(!this.memory.jobQueues[role + "Jobs"]){
         
@@ -232,23 +216,43 @@ Room.prototype.assignJob = function(creep){
     
     let jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
     
+    let job = [null, null];
+    
     if(jobQueue.length > 0){
             
-        let job = jobQueue.shift();
+        job = jobQueue.shift();
         
         delete this.jobQueues[role + "Jobs"][job[0]];
         
-        creep.workTarget = job[0];
-        //creep.state = job[1];
-            
     }
     //things to do if there are no jobs available, per role
     else if(role == "worker"){
-        creep.workTarget == this.controller.id;
+        job[0] = this.controller.id;
     }
+    
+    return job[0];
 }
     
-
+Room.prototype.getEnergyJob = function() {
+    
+    if(!this.memory.jobQueues["getEnergyJobs"]){
+        this.getEnergyJobQueue();
+    }
+    
+    let jobQueue = _.pairs( this.jobQueues["getEnergyJobs"] );
+    
+    let job = [null, null];
+    
+    if(jobQueue.length > 0){
+        
+        job = jobQueue.shift();
+        
+        delete this.jobQueues["getEnergyJobs"][job[0]];
+        
+    }
+    
+    return job[0];
+}
 
 
 
