@@ -21,9 +21,9 @@ module.exports = {
 			break;
 
 
-		    case 'STATE_HARVESTING':
+		    case 'STATE_GET_RESOURCES':
 
-                creep.harvest(Game.getObjectById(creep.workTarget));
+                creep.runHarvestingDomestic();
 
 			break;
 

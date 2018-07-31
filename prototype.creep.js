@@ -21,15 +21,17 @@ Creep.prototype.useEnergy = function(targetObj) {
         targetObj = Game.getObjectById(targetObj);
     }
     
-    
+    if(targetObj instanceof StructureSpawn || targetObj instanceof StructureExtension){
+        return this.transfer(targetObj, RESOURCE_ENERGY);
+    }
     if(targetObj instanceof ConstructionSite){
-        return creep.build(targetObj);
+        return this.build(targetObj);
     }
     else if(targetObj instanceof StructureController){
-        return creep.upgradeController(targetObj);
+        return this.upgradeController(targetObj);
     }
     else if(targetObj instanceof Structure){
-        return creep.repair(targetObj);
+        return this.repair(targetObj);
     }
     else{
         return ERR_INVALID_TARGET;
@@ -43,10 +45,10 @@ Creep.prototype.getEnergy = function(targetObj){
     }
     
     if(targetObj instanceof Energy || targetObj instanceof Mineral){
-        return creep.pickup(targetObj);
+        return this.pickup(targetObj);
     }
     else if(targetObj instanceof Structure){
-        return creep.withdraw(targetObj);
+        return this.withdraw(targetObj);
     }
     else{
         return ERR_INVALID_TARGET;

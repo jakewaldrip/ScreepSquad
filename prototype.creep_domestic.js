@@ -21,7 +21,7 @@ Creep.prototype.runMovingDomestic = function () {
     var target = Game.getObjectById(this.workTarget);
 
 
-	if(target != null)
+	if(target != null && target != undefined)
 	{
 		//check if creep is in the correct room
 		if(this.homeRoom != this.room.name)
@@ -56,20 +56,22 @@ Creep.prototype.runMovingDomestic = function () {
 //gets energy for the creep and switches to proper state upon becoming full
 Creep.prototype.runHarvestingDomestic = function () {
     
-	var target = this.workTarget;
-
+	var target = Game.getObjectById(this.workTarget);
+	if(target == null){
+	    this.getTarget();
+	    this.state = 'STATE_MOVING';
+	}
 	//if creep is a miner, let it mine forever in this state
 	if(this.role === 'miner')
 	{
-		//check if the container can be repaired
-		//otherwise, mine religiously
+	    this.harvest(target);
 	}
 	else
 	{
-		if(!creep.Full)
+		if(!this.Full)
 		{
 			//if creep is not full, get energy
-		    this.harvest(target);
+		    this.getEnergy(target);
 		}
 		else
 		{
@@ -94,7 +96,7 @@ Creep.prototype.runWorkDomestic = function () {
 		if(target == null)
 		{
 			this.getTarget();
-			target = this.workTarget;
+			target = Game.getObjectById(this.workTarget);
 		}
 
 		//try to do work, catch invalid target (sometimes takes a couple ticks to catch up with a null target)
@@ -135,7 +137,7 @@ Creep.prototype.getNextStateDomestic = function () {
 	var nextState;
 
 	//if creep is a miner only give access to get resources
-	if(this.role === 'miner')
+	if(this.role === 'miner' || target instanceof Source)
 	{
 		nextState = 'STATE_GET_RESOURCES';
 	}
@@ -149,6 +151,8 @@ Creep.prototype.getNextStateDomestic = function () {
 		//if creep has no resources, get them some
 		nextState = 'STATE_GET_RESOURCES'; 
 	}
+	
+	this.state = nextState;
 }
 //---------
 

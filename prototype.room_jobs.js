@@ -94,16 +94,18 @@ Room.prototype.getWorkerJobQueue = function () {
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
     
     
-    let controller = this.controller.id;
-    
+    let controller = [this.controller];
     
     let targets = controller.concat(priorityRepairTargets, constSites, repairTargets);
     
+    //console.log("Before dupe removal: " + targets);
     targets = removeClaimedJobs(targets);
+    //console.log("After dupe removal: " + targets);
     
     let formattedTargets = {};
     _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_RESOURCES");
     
+    //console.log(JSON.stringify(formattedTargets));
     this.memory.jobQueues.workerJobs = formattedTargets;
     
 }
@@ -213,9 +215,8 @@ Room.prototype.getWorkJob = function(role){
         this[funct].call(this);
         
     }
-    
-    let jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
-    
+    let jobQueue = [];
+    jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
     let job = [null, null];
     
     if(jobQueue.length > 0){
@@ -229,7 +230,6 @@ Room.prototype.getWorkJob = function(role){
     else if(role == "worker"){
         job[0] = this.controller.id;
     }
-    
     return job[0];
 }
     
