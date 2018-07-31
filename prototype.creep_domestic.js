@@ -39,6 +39,7 @@ Creep.prototype.runMovingDomestic = function () {
 			else
 			{
 				//move to target
+			    //this.moveTo(target, {reusePath: 10, ignoreCreeps: true });
 			    this.moveTo(target, {reusePath: 10});
 			}
 		}
