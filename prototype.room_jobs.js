@@ -232,6 +232,9 @@ Room.prototype.getWorkJob = function(role){
     else if(role == "worker"){
         job[0] = this.controller.id;
     }
+    else if(role == "drone"){
+        job[0] = this.memory.structures[STRUCTURE_SPAWN][0];
+    }
     return job[0];
 }
     
