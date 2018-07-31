@@ -56,15 +56,73 @@ Creep.prototype.runMovingDomestic = function () {
 //gets energy for the creep and switches to proper state upon becoming full
 Creep.prototype.runHarvestingDomestic = function () {
     
+	var target = this.workTarget;
 
+	//if creep is a miner, let it mine forever in this state
+	if(this.role === 'miner')
+	{
+		//check if the container can be repaired
+		//otherwise, mine religiously
+	}
+	else
+	{
+		if(!creep.Full)
+		{
+			//if creep is not full, get energy
+
+		}
+		else
+		{
+			//when creep is full, get a new target and set state to moving
+			this.getTarget();
+			this.state = 'STATE_MOVING';
+		}
+	}
 }
 //--------
 
 
 //works the creep's target and switches to proper state upon using up all energy or finishing the job
 Creep.prototype.runWorkDomestic = function () {
+	
+	//as long as the creep has energy, keep using it
+	if(!this.Empty)
+	{
+		var target = this.workTarget;
 
+		//fail safe if job is complete before creep uses up energy
+		if(target == null)
+		{
+			this.getTarget();
+			target = this.workTarget;
+		}
 
+		//try to do work, catch invalid target (sometimes takes a couple ticks to catch up with a null target)
+		//this keeps script from breaking in the mean time
+		try
+		{
+			//if the target is a valid target for a creep to use energy on
+			if(target.energy < target.energyCapacity || target == this.room.controller 
+			|| target.progress !== undefined || target.hits !== undefined)
+			{
+				//do work on the target
+
+			}
+			else
+			{
+				//if the target is full, gone, undefined, whatever, find new target and go back to moving 
+				//(run role again so the creep doesn't have to wait another tick to go)
+				this.getTarget();
+				this.state = 'STATE_MOVING'
+				//this.runRole();???
+			}
+		}
+		catch(err)
+		{
+			//do nothing lol
+		}
+
+	}
 }
 //---------
 
