@@ -90,7 +90,7 @@ Creep.prototype.runWorkDomestic = function () {
 	//as long as the creep has energy, keep using it
 	if(!this.Empty)
 	{
-		var target = this.workTarget;
+		var target = Game.getObjectById(this.workTarget);
 
 		//fail safe if job is complete before creep uses up energy
 		if(target == null)
