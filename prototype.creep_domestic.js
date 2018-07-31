@@ -7,7 +7,7 @@ Creep.prototype.runSpawningDomestic = function () {
     //check if the creep done spawning, get the next state
     if(!this.spawning){
         this.getTarget();
-        this.getNextStateDomestic();
+        this.state = 'STATE_MOVING';
     }
     
 }
@@ -20,25 +20,35 @@ Creep.prototype.runMovingDomestic = function () {
     //get work target object
     var target = Game.getObjectById(this.workTarget);
 
-    //check if creep is in the correct room
-    if(this.homeRoom != this.room.name)
-    {
-        target = new RoomPosition(25, 25, homeRoom);
-    }
-    else
-    {
-        //creep is in the correct room check if we're at the target
-        if(this.pos.isNearTo(target))
-        {
-            //get next state 
-            this.getNextStateDomestic();
-        }
-        else
-        {
-            //move to target
-            this.moveTo(target, {reusePath: 10});
-        }
-    }
+
+	if(target != null)
+	{
+		//check if creep is in the correct room
+		if(this.homeRoom != this.room.name)
+		{
+			target = new RoomPosition(25, 25, homeRoom);
+		}
+		else
+		{
+			//creep is in the correct room check if we're at the target
+			if(this.pos.isNearTo(target))
+			{
+				//get next state 
+				this.getNextStateDomestic();
+			}
+			else
+			{
+				//move to target
+			    this.moveTo(target, {reusePath: 10});
+			}
+		}
+	}
+	else
+	{
+		//if target is null, find a new one!!
+		this.getTarget();
+	}
+    
 }
 //--------
 
@@ -59,38 +69,28 @@ Creep.prototype.runWorkDomestic = function () {
 //---------
 
 
-//i have no idea what this is supposed to do im hoping brock tells me lol
-Creep.prototype.runGatherDomestic = function () {
-    
-
-}
-//------
-
-
 //switches the creep to the next state
 Creep.prototype.getNextStateDomestic = function () {
-    let target = Game.getObjectById(this.workTarget);
-    
-    switch(this.state){
-        case "STATE_SPAWNING":
-            if(this.workTarget != null){
-                this.state = "STATE_MOVING";
-            }
-        break;
-        
-        case "STATE_MOVING":
-            
-            if(target instanceof Source)
-                this.state = "STATE_HARVESTING";
-            else if(target instanceof Structure && this.Empty)
-                this.state = "STATE_GET_RESOURCES";
-            else
-                this.state = "STATE_USE_RESOURCES";
-            
-            
-        break;
-    }
 
+    var target = Game.getObjectById(this.workTarget);
+    var currentState = this.state;
+	var nextState;
+
+	//if creep is a miner only give access to get resources
+	if(this.role === 'miner')
+	{
+		nextState = 'STATE_GET_RESOURCES';
+	}
+	else if(!this.Empty)
+	{
+		//if creep has resources, use them
+		nextState = 'STATE_USE_RESOURCES';
+	}
+	else
+	{
+		//if creep has no resources, get them some
+		nextState = 'STATE_GET_RESOURCES'; 
+	}
 }
 //---------
 

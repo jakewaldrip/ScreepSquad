@@ -15,7 +15,7 @@ module.exports = {
 
 
 			case 'STATE_MOVING':
-
+				
                 creep.runMovingDomestic();
 
 			break;
@@ -24,6 +24,13 @@ module.exports = {
 			case 'STATE_USE_RESOURCES':
 
                 creep.runWorkDomestic();
+
+			break;
+
+
+			case 'STATE_GET_RESOURCES':
+
+                creep.runHarvestingDomestic();
 
 			break;
 
