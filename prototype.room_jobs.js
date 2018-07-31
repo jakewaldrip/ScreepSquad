@@ -215,8 +215,10 @@ Room.prototype.getWorkJob = function(role){
         this[funct].call(this);
         
     }
+    
     let jobQueue = [];
     jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
+    
     let job = [null, null];
     
     if(jobQueue.length > 0){
