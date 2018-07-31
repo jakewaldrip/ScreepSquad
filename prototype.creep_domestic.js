@@ -69,7 +69,7 @@ Creep.prototype.runHarvestingDomestic = function () {
 		if(!creep.Full)
 		{
 			//if creep is not full, get energy
-
+		    this.harvest(target);
 		}
 		else
 		{
@@ -106,7 +106,7 @@ Creep.prototype.runWorkDomestic = function () {
 			|| target.progress !== undefined || target.hits !== undefined)
 			{
 				//do work on the target
-
+			    this.useEnergy(target);
 			}
 			else
 			{
@@ -114,7 +114,7 @@ Creep.prototype.runWorkDomestic = function () {
 				//(run role again so the creep doesn't have to wait another tick to go)
 				this.getTarget();
 				this.state = 'STATE_MOVING'
-				//this.runRole();???
+				this.run();
 			}
 		}
 		catch(err)
