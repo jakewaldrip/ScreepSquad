@@ -83,12 +83,11 @@ Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
 
-    _.sortBy(constSites, cs => cs.progress / cs.progressTotal).reverse();
-    
+    constSites = _.sortBy(constSites, cs => (cs.progress / cs.progressTotal)).reverse();
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     
-    _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
+    repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
     
     
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
