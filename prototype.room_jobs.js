@@ -233,7 +233,9 @@ Room.prototype.getWorkJob = function(role){
     }
     else if(role == "drone"){
         if(!this.storage)
-            job[0] = this.memory.structures[STRUCTURE_SPAWN][0];
+        //pretend you're a worker for a round
+            job[0] = this.getWorkJob("worker");
+            //job[0] = this.memory.structures[STRUCTURE_SPAWN][0];
         else
             job[0] = this.storage.id;
     }
