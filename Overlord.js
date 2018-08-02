@@ -18,9 +18,28 @@ function Overlord() {
 /*****************************/
 Overlord.prototype.run = function() {
     
-    //call the functions for other overlord responsibilities here
+    //assign dependent room to the main room's overseers
+    _.forEach(Game.flags, function (flag) {
+        
+        let closestRoom = this.assignFlagToRoom();
+        let dependentRoom = this.pos.roomName;
+
+        //assign dependent room to the memory of the closest room
+        assignFlagToRoom(closestRoom, dependentRoom);
+    });
+    //------------
     
-    _.forEach(this.overseers, overseer => overseer.run());
+    
+    //run the overseer for each room
+    _.forEach(this.overseers, overseer => overseer.run()
+	);
+    //--------
+
+
+    //run the creep ai for each creep
+    _.forEach(Game.creeps, creep => creep.run()
+	);
+	//-------
     
 };
 
@@ -28,6 +47,8 @@ Overlord.prototype.run = function() {
 /*********************/
 /* Private functions */
 /*********************/
+
+//links all the overseers together within the overlord (reword if im wrong lol)
 function linkOverseers() {
     
     let overseers = [];
@@ -50,6 +71,22 @@ function linkOverseers() {
     return overseers;
     
 };
+
+
+//saves the remote room within the memory of the assigned Overseer
+Overlord.prototype.assignFlagToRoom = function(closestRoom, depedentRoom) {
+    
+    //get the overseer that will be assigned the dependent room
+    var assignedOverseer = _.find(this.overseers, o => o.name === closestRoom);
+    
+    //save this room into memory as an object with the property sources
+    //sets default to 1 source, subject to change once a creep enters the room and finds the real number
+    assignedOverseer.remoteRooms.push({
+        depedentRoom: sources = 1
+    });
+
+};
+
 
 //Export the constructor for the object
 module.exports = Overlord;

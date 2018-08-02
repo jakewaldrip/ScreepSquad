@@ -32,8 +32,5 @@ module.exports.loop = function () {
     memory_management.garbageCollection();
     
     var overlord = new Overlord();
-    overlord.run();
-    
-    _.forEach(Game.creeps, creep => creep.run());
-    
+    overlord.run(); 
 }
