@@ -1,10 +1,11 @@
 /**********************/
 /* Public constructor */
 /**********************/
-function Overseer(room) {
+function Overseer(room, creeps) {
     
     this.name = room.name;
     this.homeRoom = room;
+    this.creeps = creeps;
     this.remoteRooms = [];
     
 };
@@ -29,34 +30,3 @@ Overseer.prototype.run = function() {
 
 
 module.exports = Overseer;
-
-/*
-{
-    run: function() {
-        
-        if(!Memory.overseers)
-            Memory.overseers = {};
-            
-        _.forEach(Game.rooms, function(room) {
-            this.runHomeRoom(room);
-            room.getData();
-            room.setRoomState();
-            room.spawnNextCreep();
-        }, this);
-    },
-    
-    runHomeRoom: function(room) {
-        if(this.structures && this.structures[STRUCTURE_SPAWN].length > 0){
-            
-            if(!Memory.overseers[room.name]){
-                Memory.overseers[room.name] = {};
-            }
-            
-            
-        }
-        
-        
-    }
-
-}
-*/
