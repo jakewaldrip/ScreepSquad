@@ -3,9 +3,10 @@ const Overseer = require('Overseer');
 // to send reinforcements to another overseer
 
 
-/**********************/
-/* Public constructor */
-/**********************/
+    /**********************/
+    /* Public constructor */
+    /**********************/
+    
 function Overlord() {
     
     this.overseers = linkOverseers();
@@ -13,26 +14,28 @@ function Overlord() {
 };
 
 
-/*****************************/
-/* Public Overlord Functions */
-/*****************************/
+    /*****************************/
+    /* Public Overlord Functions */
+    /*****************************/
+    
 Overlord.prototype.run = function() {
     
+    //** I think I fixed this code, at least the syntax of it. Not sure what it does though **//
 
     //assign dependent room to the main room's overseers
     _.forEach(Game.flags, function (flag) {
         
-        let closestRoom = this.assignFlagToRoom();
-        let dependentRoom = this.pos.roomName;
+        let closestRoom = flag.assignFlagToRoom();
+        let dependentRoom = flag.pos.roomName;
 
 		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
 		if(closestRoom != null)
 		{
 			//assign dependent room to the memory of the closest room
-			assignFlagToRoom(closestRoom, dependentRoom);
+			this.assignOverseerFlag(closestRoom, dependentRoom);
 		}
         
-    });
+    }, this);
     //------------
     
     
@@ -50,11 +53,25 @@ Overlord.prototype.run = function() {
 };
 
 
-/*********************/
-/* Private functions */
-/*********************/
+//saves the remote room within the memory of the assigned Overseer
+Overlord.prototype.assignOverseerFlag = function(closestRoom, depedentRoom) {
+    
+    //get the overseer that will be assigned the dependent room
+    var assignedOverseer = _.find(this.overseers, o => o.name === closestRoom);
+    
+    //save this room into memory as an object with the property sources
+    //sets default to 1 source, subject to change once a creep enters the room and finds the real number
+    assignedOverseer.remoteRooms.push({
+        depedentRoom: sources = 1
+    });
 
-//links all the overseers together within the overlord (reword if im wrong lol)
+};
+
+    /*********************/
+    /* Private functions */
+    /*********************/
+
+//links all the overseers to the overlord
 function linkOverseers() {
     
     let overseers = [];
@@ -76,21 +93,6 @@ function linkOverseers() {
     
     return overseers;
     
-};
-
-
-//saves the remote room within the memory of the assigned Overseer
-Overlord.prototype.assignFlagToRoom = function(closestRoom, depedentRoom) {
-    
-    //get the overseer that will be assigned the dependent room
-    var assignedOverseer = _.find(this.overseers, o => o.name === closestRoom);
-    
-    //save this room into memory as an object with the property sources
-    //sets default to 1 source, subject to change once a creep enters the room and finds the real number
-    assignedOverseer.remoteRooms.push({
-        depedentRoom: sources = 1
-    });
-
 };
 
 
