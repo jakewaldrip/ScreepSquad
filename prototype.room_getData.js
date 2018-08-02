@@ -52,8 +52,11 @@ Room.prototype.getSources = function () {
                 
                 let walkableTiles = _.filter(adjacentTiles, t => t.terrain != "wall");
                 
-                formattedSources[source.id]["accessTiles"] = _.map(walkableTiles, tile => [tile.x, tile.y]);
+                let accessTiles = [];
                 
+                _.forEach(walkableTiles, tile => accessTiles.push({x: tile.x, y: tile.y}) );
+                
+                formattedSources[source.id]["accessTiles"] = accessTiles;
             });
             
             this.memory.sources = formattedSources;

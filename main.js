@@ -1,7 +1,7 @@
 const aux_functions = require('auxilliary_functions');
 const memory_management = require('memory_management');
-const overlord = require('Overlord');
-const overseer = require('Overseer');
+const Overlord = require('Overlord');
+const Overseer = require('Overseer');
 
 /******************/
 /*   Prototypes   */
@@ -28,14 +28,11 @@ require('role.Worker');
 
 
 module.exports.loop = function () {
-    
+
     memory_management.garbageCollection();
-    //Example usage, can be relocated
-    _.forEach(Game.rooms, function(room) {
-        room.getData();
-        room.setRoomState();
-        room.spawnNextCreep();
-    });
+    
+    var overlord = new Overlord();
+    overlord.run();
     
     _.forEach(Game.creeps, creep => creep.run());
     

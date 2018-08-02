@@ -10,8 +10,15 @@ Creep.prototype.run = function() {
         
     };
     
+    try{
     if(role[this.role])
         role[this.role].run(this);
+    }
+    catch(err){
+        
+        console.log(`The creep ${this.name} has encountered an issue.`);
+        
+    }
     
 }
 
