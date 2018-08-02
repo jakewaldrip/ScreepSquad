@@ -47,7 +47,13 @@ Flag.prototype.assignRemoteFlagToRoom = function () {
         //return the closest room to the remote room
         console.log("Remote Room added to room " + closestRoom);
         return closestRoom;
-    } 
+    }
+	else
+	{
+		return null;
+	}
+
+		
 }
 //----------------
 

@@ -18,14 +18,20 @@ function Overlord() {
 /*****************************/
 Overlord.prototype.run = function() {
     
+
     //assign dependent room to the main room's overseers
     _.forEach(Game.flags, function (flag) {
         
         let closestRoom = this.assignFlagToRoom();
         let dependentRoom = this.pos.roomName;
 
-        //assign dependent room to the memory of the closest room
-        assignFlagToRoom(closestRoom, dependentRoom);
+		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
+		if(closestRoom != null)
+		{
+			//assign dependent room to the memory of the closest room
+			assignFlagToRoom(closestRoom, dependentRoom);
+		}
+        
     });
     //------------
     
