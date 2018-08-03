@@ -27,6 +27,8 @@ Room.prototype.getData = function () {
         this.getDroppedEnergy();
         
         this.getRepairTargets();
+	
+	this.getCreepsInRoom();
         
     }
     
@@ -147,4 +149,13 @@ Room.prototype.getRepairTargets = function () {
 	
 	this.memory.repairTargets =  formattedTargets;
 }
+
+Room.prototype.getCreepsInRoom = function () {
     
+    //get all creeps in this room
+    let creepsInRoom = _.filter(Game.creeps, c => c.homeRoom === this.name);
+
+    if (creepsInRoom != undefined){
+        this.memory.creepsInRoom = creepsInRoom;
+    }
+}
