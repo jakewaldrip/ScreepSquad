@@ -23,8 +23,10 @@ Room.prototype.getNextCreepToSpawn = function () {
         counts[role] = this.getCreepSum(role);
         
         if(counts[role] === 0 && counts[role] < this.memory.creepLimits[role])
+        {
             nextCreep = role;
-            
+        }
+
     }, this);
     
     if(nextCreep == null){

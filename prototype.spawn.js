@@ -136,3 +136,34 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 	
 }
 //----
+
+
+//create remote miner
+StructureSpawn.prototype.createRemoteMiner = function(homeRoom, remoteRoom, energyCost)
+{
+
+}
+//-----
+
+
+//create remote drone
+StructureSpawn.prototype.createRemoteDrone = function(homeRoom, remoteRoom, energyCost)
+{
+
+}
+//-----
+
+
+//create reserver
+StructureSpawn.prototype.createReserver= function(homeRoom, remoteRoom, energyCost)
+{
+
+}
+//-----
+
+//create claimer
+StructureSpawn.prototype.createReserver= function(homeRoom, remoteRoom, energyCost)
+{
+    
+}
+//------
