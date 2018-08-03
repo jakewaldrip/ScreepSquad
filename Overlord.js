@@ -47,6 +47,7 @@ Overlord.prototype.assignFlags = function() {
         //assignFlagToRoom splits flags by color and runs their assignment functions
         let assignment = flag.assignFlagToRoom();
         
+        let flagType = assignment[0];
         let homeRoom = assignment[1];
         
         let dependentRoom = flag.pos.roomName;
@@ -55,7 +56,7 @@ Overlord.prototype.assignFlags = function() {
 		if(homeRoom != null)
 		{
 			//assign dependent room to the memory of the closest room
-			this.assignOverseerFlag(homeRoom, dependentRoom);
+			this.assignOverseerFlag(homeRoom, dependentRoom, flagType);
 		}
         
     }, this);
@@ -65,15 +66,15 @@ Overlord.prototype.assignFlags = function() {
 };
 
 //saves the remote room within the memory of the assigned Overseer
-Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom) {
+Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagType) {
     
     //get the overseer that will be assigned the dependent room
     var assignedOverseer = _.find(this.overseers, o => o.name === homeRoom);
     
     //save this room into memory as an object with the property sources
     //sets default to 1 source, subject to change once a creep enters the room and finds the real number
-    
-    assignedOverseer.remoteRooms[dependentRoom] = {sources: 1, reservationTTL: 0};
+    if(flagType == "Remote")
+        assignedOverseer.remoteRooms[dependentRoom] = {sources: 1, reservationTTL: 0};
 
 };
 
