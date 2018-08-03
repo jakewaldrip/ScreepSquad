@@ -20,24 +20,8 @@ function Overlord() {
     
 Overlord.prototype.run = function() {
     
-    //** I think I fixed this code, at least the syntax of it. Not sure what it does though **//
-
-    //assign dependent room to the main room's overseers
-    _.forEach(Game.flags, function (flag) {
-        
-        let closestRoom = flag.assignFlagToRoom();
-        let dependentRoom = flag.pos.roomName;
-
-		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
-		if(closestRoom != null)
-		{
-			//assign dependent room to the memory of the closest room
-			this.assignOverseerFlag(closestRoom, dependentRoom);
-		}
-        
-    }, this);
-    //------------
-    
+    //Assign remote rooms back to the overseers.
+    this.assignFlags();
     
     //run the overseer for each room
     _.forEach(this.overseers, overseer => overseer.run()
@@ -52,18 +36,44 @@ Overlord.prototype.run = function() {
     
 };
 
+Overlord.prototype.assignFlags = function() {
+    
+    
+    //** I think I fixed this code, at least the syntax of it. Not sure what it does though **//
+
+    //assign dependent room to the main room's overseers
+    _.forEach(Game.flags, function (flag) {
+        
+        //assignFlagToRoom splits flags by color and runs their assignment functions
+        let assignment = flag.assignFlagToRoom();
+        
+        let homeRoom = assignment[1];
+        
+        let dependentRoom = flag.pos.roomName;
+
+		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
+		if(homeRoom != null)
+		{
+			//assign dependent room to the memory of the closest room
+			this.assignOverseerFlag(homeRoom, dependentRoom);
+		}
+        
+    }, this);
+    //------------
+    
+    
+};
 
 //saves the remote room within the memory of the assigned Overseer
-Overlord.prototype.assignOverseerFlag = function(closestRoom, depedentRoom) {
+Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom) {
     
     //get the overseer that will be assigned the dependent room
-    var assignedOverseer = _.find(this.overseers, o => o.name === closestRoom);
+    var assignedOverseer = _.find(this.overseers, o => o.name === homeRoom);
     
     //save this room into memory as an object with the property sources
     //sets default to 1 source, subject to change once a creep enters the room and finds the real number
-    assignedOverseer.remoteRooms.push({
-        depedentRoom: sources = 1
-    });
+    
+    assignedOverseer.remoteRooms[dependentRoom] = {sources: 1, reservationTTL: 0};
 
 };
 

@@ -1,22 +1,3 @@
-//Aux Functions for Room object
-//boolean read-only Room.isOwned property
-Object.defineProperty(Room.prototype, 'isOwned', {
-    
-    get: function() {
-        
-        if(this.controller != undefined && this.controller.my)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    	
-    }
-    
-});
-
 //check if the room is owned by you
 Room.prototype.isOwnedRoom = function () {
 	
@@ -29,27 +10,9 @@ Room.prototype.isOwnedRoom = function () {
 	{
 		return false;
 	}
+	
 }
 //-----
-
-//boolean read-only Room.isAlly property.
-Object.defineProperty(Room.prototype, 'isAlly', {
-    
-    get: function() {
-        if(this.controller != undefined)
-    	{
-    		if(this.controller.owner === 'jakesboy2' || this.controller.owner === 'UhmBrock')
-    		{
-    			return true;
-    		}
-    		else
-    		{
-    			return false;
-    		}
-    	}
-    }
-    
-});
 
 //check if the room is owned by an ally
 Room.prototype.isAllyRoom = function () {

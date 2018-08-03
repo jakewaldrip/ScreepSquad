@@ -7,40 +7,43 @@ Flag.prototype.assignRemoteFlagToRoom = function () {
     var flagRoom = this.pos.roomName;
     var ownedRooms = _.filter(Game.rooms, r => r.isOwnedRoom() == true)
     var isExist = false;
+    
     let currentRoom;
     
     for(let room in ownedRooms)
     {   
         currentRoom = ownedRooms[room];
-        var remoteRooms = currentRoom.memory.remoteRooms;
+        var remoteRooms = currentRoom.memory.remoteRooms; //not a functioning memory feature yet
         
         //check if the flag is assigned to this room and trigger the isExist bool and break the loop
-        if(_.some(remoteRooms, r => r == flagRoom))
+        if(_.some(remoteRooms, roomName => roomName == flagRoom))
         {
             isExist = true;
             break;
         }
     }
     
-    let closestRoom = ownedRooms[0].name;
-    let currentDistance;
-    let previousDistance;
 
     //if flag is not assigned to a room, find closest room and assign it
     if(!isExist)
     {
+        
+        let closestRoom = ownedRooms[0].name;
+        let bestDistance = Game.map.getRoomLinearDistance(flagRoom, closestRoom);
+        
+        let currentDistance;
+        
         //loop over all rooms and flag the closest one
         for(let room in ownedRooms)
         {
             //get the distance between the flag room and the room we're checking
-            //additionally, get distance between the current closest room and flag room
             currentDistance = Game.map.getRoomLinearDistance(flagRoom, ownedRooms[room].name);
-            previousDistance = Game.map.getRoomLinearDistance(flagRoom, closestRoom);
 
             //check if this distance is less than the previous distance
-            if(currentDistance < previousDistance)
+            if(currentDistance < bestDistance)
             {
                 closestRoom = ownedRooms[room].name;    
+                bestDistance = currentDistance;
             }
         }
 
@@ -74,19 +77,29 @@ Flag.prototype.assignAttackFlagToRoom = function () {
 
 Flag.prototype.assignFlagToRoom = function () {
 	
-	//if its double yellow, remote flags
+	let flagType = null, assignedRoom = null;
+	
+    	//if its double yellow, remote flags
         if(this.color === COLOR_YELLOW && this.secondaryColor === COLOR_YELLOW) {
-            this.assignRemoteFlagToRoom();
+            flagType = "Remote";
+            assignedRoom = this.assignRemoteFlagToRoom();
         }
-
+    
         //if its double white, claim flag
-        if(this.color === COLOR_WHITE && this.secondaryColor === COLOR_WHITE) {
-            this.assignClaimFlagToRoom();
+        else if(this.color === COLOR_WHITE && this.secondaryColor === COLOR_WHITE) {
+            flagType = "Claim";
+            assignedRoom = this.assignClaimFlagToRoom();
         }
-
-		//if its double red, attack flag
-        if(this.color === COLOR_RED && this.secondaryColor === COLOR_RED) {
-            this.assignAttackFlagToRoom();
+    
+    	//if its double red, attack flag
+        else if(this.color === COLOR_RED && this.secondaryColor === COLOR_RED) {
+            flagType = "Attack";
+            assignedRoom = this.assignAttackFlagToRoom();
         }
+        
+    if(flagType != null && assignedRoom != null){
+        return [flagType, assignedRoom];
+    }
+    
 }
 //-----
