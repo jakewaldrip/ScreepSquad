@@ -188,7 +188,7 @@ Room.prototype.getCreepLimits = function () {
 //passes creep role and returns the number of existing creeps in the room of this role
 Room.prototype.getCreepSum = function (role) {
 
-    var creepsInRoom = _.filter(Game.creeps, c => c.memory.homeRoom == this.name);
+    var creepsInRoom = this.memory.creepsInRoom;
     var numOfRole = _.sum(creepsInRoom, c => c.memory.role === role);
 
     return numOfRole;
