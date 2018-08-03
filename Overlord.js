@@ -47,18 +47,21 @@ Overlord.prototype.assignFlags = function() {
         //assignFlagToRoom splits flags by color and runs their assignment functions
         let assignment = flag.assignFlagToRoom();
         
-        let flagType = assignment[0];
-        let homeRoom = assignment[1];
-        
-        let dependentRoom = flag.pos.roomName;
-
-		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
-		if(homeRoom != null)
-		{
-			//assign dependent room to the memory of the closest room
-			this.assignOverseerFlag(homeRoom, dependentRoom, flagType);
-		}
-        
+        if(assignment != null){
+            
+            let flagType = assignment[0];
+            let homeRoom = assignment[1];
+            
+            let dependentRoom = flag.pos.roomName;
+    
+    		//if closestRoom is null, the flag is already assigned somewhere so don't waste cpu on it
+    		if(homeRoom != null)
+    		{
+    			//assign dependent room to the memory of the closest room
+    			this.assignOverseerFlag(homeRoom, dependentRoom, flagType);
+    		}
+    		
+        }
     }, this);
     //------------
     

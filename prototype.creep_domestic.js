@@ -106,7 +106,7 @@ Creep.prototype.runWorkDomestic = function () {
 		{
 			//if the target is a valid target for a creep to use energy on
 			if(target.energy < target.energyCapacity || target == this.room.controller 
-			|| target.progress !== undefined || target.hits !== undefined)
+			|| target.progress < target.progressTotal || target.hits < target.hitsMax)
 			{
 				//do work on the target
 			    this.useEnergy(target);
@@ -122,7 +122,7 @@ Creep.prototype.runWorkDomestic = function () {
 		}
 		catch(err)
 		{
-			//do nothing lol
+			console.log(this.name + " has encountered an issue in runWorkDomestic");
 		}
 
 	}
