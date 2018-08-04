@@ -58,10 +58,12 @@ Creep.prototype.runMovingDomestic = function () {
 Creep.prototype.runHarvestingDomestic = function () {
     
 	var target = Game.getObjectById(this.workTarget);
+	
 	if(target == null){
 	    this.getTarget();
 	    this.state = 'STATE_MOVING';
 	}
+	
 	//if creep is a miner, let it mine forever in this state
 	if(this.role === 'miner')
 	{

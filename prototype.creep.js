@@ -17,7 +17,7 @@ Creep.prototype.run = function() {
     catch(err){
         
         console.log(`The creep ${this.name} has encountered an issue.`);
-        
+        console.log("       " + err + "<br>");
     }
     
 }
@@ -47,7 +47,7 @@ Creep.prototype.useEnergy = function(targetObj) {
 }
 
 Creep.prototype.getEnergy = function(targetObj){
-    
+        
     if(targetObj instanceof String){
         targetObj = Game.getObjectById(targetObj);
     }
