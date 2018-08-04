@@ -89,13 +89,14 @@ Room.prototype.getWorkerJobQueue = function () {
     
     repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
     
-    
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
     
+    let lowTowers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
+    lowTowers = _.filter(lowTowers, tower => tower.energy < tower.energyCapacity);
     
     let controller = [this.controller];
     
-    let targets = controller.concat(priorityRepairTargets, constSites, repairTargets);
+    let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
     //console.log("Before dupe removal: " + targets);
     targets = removeClaimedJobs(targets);
