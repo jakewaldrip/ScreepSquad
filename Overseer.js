@@ -16,12 +16,21 @@ function Overseer(room, creeps) {
 /*****************************/
 Overseer.prototype.run = function() {
        
+    //Populate room memory
+    this.remoteToMemory();
+    this.creepsToMemory();
+    
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
     
-    //Run Remote Rooms
-    this.remoteToMemory();
+    
+};
+
+
+Overseer.prototype.creepsToMemory = function() {
+    
+    this.homeRoom.memory.creepsInRoom = _.map(this.creeps, c => c.name);
     
 };
 
