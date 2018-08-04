@@ -131,12 +131,19 @@ Room.prototype.getCreepLimits = function () {
         case 'ROOM_STATE_BEGINNER':
             
             let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
-            let accessTiles = _.sum(this.memory.sources, source => source.accessTiles.length);
+            
             //get number of miners needed to saturate the sources
-            numMiners = Math.ceil(5 / workPerCreep) * numOfSources;
-            if(numMiners >= accessTiles)
-                numMiners = accessTiles;
-
+            numMinersPerSource = Math.ceil(5 / workPerCreep);
+            
+            _.forEach(this.memory.sources, function(source) {
+                
+                if(numMinersPerSource > source.accessTiles.length)
+                    numMiners += source.accessTiles.length;
+                else
+                    numMiners += numMinersPerSource;
+                    
+            });
+            
             //change creep limits based on available energy
             if (energyCap < 550)
             {
