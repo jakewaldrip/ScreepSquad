@@ -42,7 +42,7 @@ Creep.prototype.runMovingDomestic = function () {
 			    //check if creep is on an exit tile, if so move off of it in the correct direction
 			    if(this.isOnExitTile())
 			    {
-			        this.moveFromExitTile();
+			        this.moveAwayFromExit();
 			    }
 			    else
 			    {
