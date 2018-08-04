@@ -235,8 +235,10 @@ Room.prototype.getWorkJob = function(role){
     else if(role == "drone"){
         if(!this.storage)
         //pretend you're a worker for a round
-            job[0] = this.getWorkJob("worker");
-            //job[0] = this.memory.structures[STRUCTURE_SPAWN][0];
+            if(creep.getActiveBodyparts(WORK) > 0)
+                job[0] = this.getWorkJob("worker");
+            else
+                job[0] = this.memory.structures[STRUCTURE_SPAWN][0];
         else
             job[0] = this.storage.id;
     }
