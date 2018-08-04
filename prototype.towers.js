@@ -50,7 +50,7 @@ Room.prototype.getTowerTarget = function() {
         if(type != undefined){
             enemies = _.map(this.memory.enemies[type], id => Game.getObjectById(id));
             
-            //finds closest enemy to the center of the room
+            //finds closest enemy to the center of the room (Might change to controller, or spawn)
             target = _.min(enemies, enemy => enemy.pos.getRangeTo(25, 25)); 
         }
         

@@ -75,9 +75,12 @@ Room.prototype.setRoomState = function () {
             this.memory.roomState = "ROOM_STATE_INTERMEDIATE";
         }
     }
-    else
+    else if(this.memory.creepsInRoom.length >= 3)
     {
         this.memory.roomState = "ROOM_STATE_BEGINNER";
+    }
+    else{
+        this.memory.roomState = "ROOM_STATE_INTRO";
     }
 }
 //------

@@ -80,19 +80,26 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
     var energyCapacity = this.energyCapacityAvailable;
     var energyCost;
     
-    //roomState Beginner
+    //roomstate Intro
     var roleMaxCost = {
-        miner: 700,
-        drone: 1200,
+        miner: 150,
+        drone: 150,
         worker: 1700
-    }
+    };
     
-    if(roomState == "STATE_INTERMEDIATE"){
+    if(roomState == "ROOM_STATE_BEGINNER"){
         roleMaxCost = {
             miner: 700,
             drone: 1200,
             worker: 1700
-        }
+        };
+    }
+    if(roomState == "ROOM_STATE_INTERMEDIATE"){
+        roleMaxCost = {
+            miner: 700,
+            drone: 1200,
+            worker: 1700
+        };
     }
     
     if(roleMaxCost[role] && energyCapacity >= roleMaxCost[role]){
@@ -125,6 +132,15 @@ Room.prototype.getCreepLimits = function () {
     
     switch(roomState)
     {
+        case 'ROOM_STATE_INTRO':
+            
+            numMiners = 1;
+            numDrones = 1;
+            numWorkers = 1;
+            
+        break;
+        
+        
         //for beginner room state
         case 'ROOM_STATE_BEGINNER':
             

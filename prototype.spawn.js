@@ -22,7 +22,10 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	var body = [];
 	
     let w = 0, m = 0, c = 0;
-    if(energyCost >= 700){
+    if(energyCost == 150){
+        w = 1; m = 1;
+    }
+    else if(energyCost >= 700){
         w = 5;
         m = 3;
         c = 1;
@@ -59,28 +62,32 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	var body = [];
     
     let w = 0, c = 0, m = 0;
-	//harvester body, 2 works subtract 200 from energy
-	w += 2;
-	energyCost -= 200;
-
-	//get max parts of the remaining energy
-	var maxParts = Math.floor(energyCost/100);
+    if(energyCost == 150){
+        c = 2; m = 1;
+    }
+    else{
+    	//harvester body, 2 works subtract 200 from energy
+    	w += 2;
+    	energyCost -= 200;
     
-    c += maxParts;
-    m += maxParts;
-
-    body = _.times(w, () => WORK);
-	body = body.concat(_.times(m, () => MOVE) );
-    body = body.concat(_.times(c, () => CARRY));
-    
-	//create the creep
-	this.spawnCreep(body, name, { memory: {
-		role: 'drone',
-		homeRoom: homeRoom,
-		state: 'STATE_SPAWNING',
-		workTarget: null
-	}});
-	
+    	//get max parts of the remaining energy
+    	var maxParts = Math.floor(energyCost/100);
+        
+        c += maxParts;
+        m += maxParts;
+        
+    }
+        body = _.times(w, () => WORK);
+    	body = body.concat(_.times(m, () => MOVE) );
+        body = body.concat(_.times(c, () => CARRY));
+        
+    	//create the creep
+    	this.spawnCreep(body, name, { memory: {
+    		role: 'drone',
+    		homeRoom: homeRoom,
+    		state: 'STATE_SPAWNING',
+    		workTarget: null
+    	}});
 }
 //----
 
