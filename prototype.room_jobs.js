@@ -82,8 +82,10 @@ Room.prototype.getDroneJobQueue = function () {
 Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
-
-    constSites = _.sortBy(constSites, cs => (cs.progress / cs.progressTotal)).reverse();
+    //Primary sort by structureType (a-z) and then by progress ( 99.9 -> 0.0 )
+    constSites = _.sortByAll(constSites, cs => [cs.structureType, 
+                            (cs.progress / cs.progressTotal) - 1]);
+    
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     
