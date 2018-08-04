@@ -28,6 +28,8 @@ Room.prototype.getData = function () {
         
         this.getRepairTargets();
 	
+	    this.getEnemyCreeps();
+	    
     }
     
     
@@ -130,21 +132,49 @@ Room.prototype.getDroppedEnergy = function () {
 
 Room.prototype.getRepairTargets = function () {
 	
-	//get all objects that need to be repaired in the Room
-	/*
-	var repairTargets = this.find(FIND_STRUCTURES, {
-            filter: (s) => (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
-            && s.hits < s.hitsMax
-	});
-    */
-    // We already have the structures in memory //
-    var repairTargets = _.filter(this.structures, s => s.structureType != STRUCTURE_WALL 
-                                && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
-    
-	let formattedTargets = {};
-	
-	_.forEach(repairTargets, rd => formattedTargets[rd.id] = (rd.hits / rd.hitsMax));
-	
-	this.memory.repairTargets =  formattedTargets;
-}
+        var repairTargets = _.filter(this.structures, s => s.structureType != STRUCTURE_WALL 
+                                    && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
+        
+        let formattedTargets = {};
+        
+        _.forEach(repairTargets, rd => formattedTargets[rd.id] = (rd.hits / rd.hitsMax));
+        
+        this.memory.repairTargets =  formattedTargets;
+    }
 
+
+Room.prototype.getEnemyCreeps = function () {
+    
+        let enemies = this.find(FIND_HOSTILE_CREEPS);
+        
+        if(enemies.length > 0){
+            //filter out ally creeps
+            enemies = _.filter(enemies, creep => !creep.isAlly);
+            
+            let combatCreeps = [], healCreeps = [], otherCreeps = [];
+            
+            _.forEach(enemies, function(creep) {
+                
+                let creepParts = creep.body;
+                
+                let attackParts = _.remove(creepParts, part => part.type == ATTACK).length;
+                let rangedParts = _.remove(creepParts, part => part.type == RANGED_ATTACK).length;
+                let healParts   = _.remove(creepParts, part => part.type == HEAL).length;
+                let otherParts = creepParts.length;
+                
+                if(attackParts > 0 || rangedParts > 0)
+                    combatCreeps.push(creep);
+                else if(healParts > 0)
+                    healCreeps.push(creep);
+                else
+                    otherCreeps.push(creep);
+                    
+            });
+            
+            this.memory.enemies = {};
+            
+            this.memory.enemies["combatCreeps"] = _.map(combatCreeps, c => c.name);
+            this.memory.enemies["healCreeps"] = _.map(healCreeps, c => c.name);
+            this.memory.enemies["otherCreeps"] = _.map(otherCreeps, c => c.name);
+        }
+    }
