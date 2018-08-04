@@ -17,34 +17,50 @@ function Overseer(room, creeps) {
 Overseer.prototype.run = function() {
        
     //Populate room memory
-    this.remoteToMemory();
-    this.creepsToMemory();
+    this.objectsToMemory();
     
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
-    
+    this.homeRoom.runRoomTowers();
     
 };
+//---------
 
 
+//call various functions to save objects to memory
+Overseer.prototype.objectsToMemory = function () {
+
+    //call creeps to memory
+    this.creepsToMemory();
+
+    //call remote rooms to memory
+    this.remoteToMemory();
+}
+//-------
+
+
+//save creeps to memory
 Overseer.prototype.creepsToMemory = function() {
     
     this.homeRoom.memory.creepsInRoom = _.map(this.creeps, c => c.name);
     
 };
+//--------
 
 
-Overseer.prototype.remoteToMemory = function(){
-    
-    if(!this.homeRoom.memory.remoteRooms){
+//save remote rooms to memory
+Overseer.prototype.remoteToMemory = function () {
+
+    if (!this.homeRoom.memory.remoteRooms) {
         this.homeRoom.memory.remoteRooms = {};
     }
-    
-    _.forEach(Object.keys(this.remoteRooms), function(roomName) {
+
+    _.forEach(Object.keys(this.remoteRooms), function (roomName) {
         this.homeRoom.memory.remoteRooms[roomName] = this.remoteRooms[roomName];
     }, this);
-}
+};
+//------------
 
 
 /*********************/
