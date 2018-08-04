@@ -23,9 +23,6 @@ module.exports = {
 			  {
 				//if not, delete the memory entry
 				 delete Memory.rooms[room];
-				 
-				 if(Memory.overseers[room])
-				    delete Memory.overseers[room];
 
 			  }
 			  else{

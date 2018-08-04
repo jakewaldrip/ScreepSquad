@@ -63,6 +63,10 @@ Creep.prototype.getEnergy = function(targetObj){
     }
 }
 
+Object.defineProperty(Creep.prototype, 'hasWork', {
+    get: function() { return (this.getActiveBodyparts(WORK) > 0); } 
+});
+
 Object.defineProperty(Creep.prototype, 'Full', {
     get: function(){ return (_.sum(this.carry) == this.carryCapacity); }
 });
