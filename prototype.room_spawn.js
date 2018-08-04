@@ -16,30 +16,15 @@ Room.prototype.getNextCreepToSpawn = function () {
     ];
     
     let nextCreep, counts = {};
-    //could check here if creeps count >= rolePriority.count to save CPU in later stages
-    //or just check this if roomState == BEGINNER
+    
     _.forEach(rolePriority, function(role) {
         
-        counts[role] = this.getCreepSum(role);
+       if(counts[role] < this.memory.creepLimits[role]){
+           nextCreep = role;
+       }
         
-        if(counts[role] === 0 && counts[role] < this.memory.creepLimits[role])
-        {
-            nextCreep = role;
-        }
-
     }, this);
     
-    if(nextCreep == null){
-        
-        _.forEach(rolePriority, function(role) {
-            
-           if(counts[role] < this.memory.creepLimits[role]){
-               nextCreep = role;
-           }
-            
-        }, this);
-        
-    }
     
     return nextCreep;
 }

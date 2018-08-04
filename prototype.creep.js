@@ -28,7 +28,8 @@ Creep.prototype.useEnergy = function(targetObj) {
         targetObj = Game.getObjectById(targetObj);
     }
     
-    if(targetObj instanceof StructureSpawn || targetObj instanceof StructureExtension || targetObj instanceof StructureStorage){
+    if(targetObj instanceof StructureSpawn || targetObj instanceof StructureExtension 
+        || targetObj instanceof StructureStorage || targetObj instanceof StructureTower){
         return this.transfer(targetObj, RESOURCE_ENERGY);
     }
     if(targetObj instanceof ConstructionSite){
