@@ -1,3 +1,11 @@
+Room.prototype.runTowers = function() {
+    
+    let towers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
+    
+    _.forEach(towers, tower => tower.run());
+    
+}
+
 //check if the room is owned by you
 Room.prototype.isOwnedRoom = function () {
 	

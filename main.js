@@ -17,6 +17,7 @@ require('prototype.room_getData');
 require('prototype.room_jobs');
 require('prototype.room_spawn');
 require('prototype.spawn');
+require('prototype.structures');
 
 /******************/
 /*      Roles     */

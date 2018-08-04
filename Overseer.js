@@ -23,7 +23,7 @@ Overseer.prototype.run = function() {
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
-    
+    this.homeRoom.runTowers();
     
 };
 

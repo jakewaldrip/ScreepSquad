@@ -93,11 +93,12 @@ function linkOverseers() {
     let Creeps = _.map(Object.keys(Game.creeps), name => Game.creeps[name]);
     
     _.forEach(Game.rooms, function(room){
-        //Need to sort this by creep role - TO DO
-        let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
         room.getData();
         
         if(room.memory.structures[STRUCTURE_SPAWN].length > 0){
+            //Need to sort this by creep role - TO DO
+            let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
+            
             let overseer = new Overseer(room, creepsInRoom);
             overseers.push(overseer);
         }
