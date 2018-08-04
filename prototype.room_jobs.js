@@ -239,7 +239,7 @@ Room.prototype.getWorkJob = function(role){
             if(!this.storage){
                 
                     //pretend you're a worker for a round
-                    if(this.roomState != "ROOM_STATE_INTRO"){
+                    if(this.memory.structures[STRUCTURE_EXTENSION].length > 0){
                         
                         job[0] = this.getWorkJob("worker");
                         
