@@ -16,18 +16,20 @@ String.prototype.capitalizeFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }    
 
-Array.prototype.getObjects = function() {
+String.prototype.getObjects = function(){
     
+    return Game.getObjectById(this);
+    
+}
+
+Array.prototype.getObjects = function() {
     let objectArray = [];
     
     for(i = 0; i < this.length; i++){
         
-        if(this[i] instanceof String){
-            
-            objectArray[i] = Game.getObjectById(this[i]);
-            
-        }
+        objectArray[i] = Game.getObjectById(this[i]);
         
     }
     
+    return objectArray;
 }

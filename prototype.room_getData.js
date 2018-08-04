@@ -147,11 +147,11 @@ Room.prototype.getEnemyCreeps = function () {
     
         let enemies = this.find(FIND_HOSTILE_CREEPS);
         
+        let combatCreeps = [], healCreeps = [], otherCreeps = [];
+        
         if(enemies.length > 0){
             //filter out ally creeps
             enemies = _.filter(enemies, creep => !creep.isAlly);
-            
-            let combatCreeps = [], healCreeps = [], otherCreeps = [];
             
             _.forEach(enemies, function(creep) {
                 
@@ -170,11 +170,12 @@ Room.prototype.getEnemyCreeps = function () {
                     otherCreeps.push(creep);
                     
             });
-            
-            this.memory.enemies = {};
-            
-            this.memory.enemies["combatCreeps"] = _.map(combatCreeps, c => c.name);
-            this.memory.enemies["healCreeps"] = _.map(healCreeps, c => c.name);
-            this.memory.enemies["otherCreeps"] = _.map(otherCreeps, c => c.name);
         }
+     
+        this.memory.enemies = {};
+        
+        this.memory.enemies["combatCreeps"] = _.map(combatCreeps, c => c.id);
+        this.memory.enemies["healCreeps"] = _.map(healCreeps, c => c.id);
+        this.memory.enemies["otherCreeps"] = _.map(otherCreeps, c => c.id);
+        
     }
