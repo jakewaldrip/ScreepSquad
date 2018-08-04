@@ -22,10 +22,8 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	var body = [];
 	
     let w = 0, m = 0, c = 0;
-    if(energyCost == 150){
-        w = 1; m = 1;
-    }
-    else if(energyCost >= 700){
+    
+    if(energyCost >= 700){
         w = 5;
         m = 3;
         c = 1;
@@ -62,8 +60,8 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	var body = [];
     
     let w = 0, c = 0, m = 0;
-    if(energyCost == 150){
-        c = 2; m = 1;
+    if(energyCost == 100){
+        c = 1; m = 1;
     }
     else{
     	//harvester body, 2 works subtract 200 from energy
