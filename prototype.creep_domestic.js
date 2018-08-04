@@ -39,8 +39,16 @@ Creep.prototype.runMovingDomestic = function () {
 			else
 			{
 				//move to target
-			    //this.moveTo(target, {reusePath: 10, ignoreCreeps: true });
-			    this.moveTo(target, {reusePath: 10});
+			    //check if creep is on an exit tile, if so move off of it in the correct direction
+			    if(this.isOnExitTile())
+			    {
+			        this.moveFromExitTile();
+			    }
+			    else
+			    {
+			        this.moveTo(target, { reusePath: 10 });
+			    }
+			    
 			}
 		}
 	}

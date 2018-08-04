@@ -140,8 +140,56 @@ Object.defineProperty(Creep.prototype, 'state', {
 });
 
 Object.defineProperty(Creep.prototype, 'isAlly', {
-    
-    get: function() {
+
+    get: function () {
         return (this.owner == "Jakesboy2" || this.owner == "UhmBrock")
     }
-})
+});
+
+
+//check if creep is on an exit tile, return true if they are, false if not
+Creep.prototype.isOnExitTile = function ()
+{
+    let x = this.pos.x;
+    let y = this.pos.y;
+
+    //if creep is on exit tile return true
+    if(x === 0 || y === 0 || x === 49 || y === 49)
+    {
+        return true;
+    }
+    else
+    {
+        //creep is not on exit tile so return false
+        return false;
+    }
+}
+
+
+//move the creep away from the exit tile
+Creep.prototype.moveAwayFromExit = function () {
+    
+    let x = this.pos.x;
+    let y = this.pos.y;
+
+    if(x === 0)
+    {
+        this.move(RIGHT);
+    }
+    else if(y === 0)
+    {
+        this.move(BOTTOM);
+    }
+    else if(x === 49)
+    {
+        this.move(LEFT);
+    }
+    else if(y === 49)
+    {
+        this.move(TOP);
+    }
+    else
+    {
+        console.log("Creep exit tile fix system failure! Red alert!");
+    }
+}
