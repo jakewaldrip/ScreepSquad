@@ -119,12 +119,15 @@ Room.prototype.getCreepLimits = function () {
     
     var energyCap = this.energyCapacityAvailable;
 
+
+    let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
+    let numOfSources = Object.keys(this.memory.sources).length;
+    
     switch(roomState)
     {
         //for beginner room state
         case 'ROOM_STATE_BEGINNER':
             
-            let numOfSources = Object.keys(this.memory.sources).length;
             let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
             let accessTiles = _.sum(this.memory.sources, source => source.accessTiles.length);
             //get number of miners needed to saturate the sources
@@ -151,7 +154,7 @@ Room.prototype.getCreepLimits = function () {
         case 'ROOM_STATE_INTERMEDIATE':
 
             //1 miner per source at this point will saturate the sources
-            numMiners = this.memory.sources.length;
+            numMiners = numOfSources;
             numDrones = 3;
             numWorkers = 5 + numRemoteRooms;
 
