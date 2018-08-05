@@ -237,10 +237,11 @@ Room.prototype.getWorkJob = function(role){
         job = jobQueue.shift();
         
         let value = parseInt(job[1], 10);
-        if(value != NaN)
+        
+        if(!isNaN(value))
             this.jobQueues[role + "Jobs"][job[0]] -= 500;
         
-        if(value == NaN || (value - 500 <= 0) )
+        if(isNaN(value) || (value - 500 <= 0) )
             delete this.jobQueues[role + "Jobs"][job[0]];
         
     }
@@ -289,10 +290,10 @@ Room.prototype.getEnergyJob = function() {
         job = jobQueue.shift();
         
         let value = parseInt(job[1], 10);
-        if(value != NaN)
+        if(!isNaN(value))
             this.memory.jobQueues["getEnergyJobs"][job[0]] -= 500;
         
-        if(value == NaN || (value - 500 <= 0) )
+        if(isNaN(value) || (value - 500 <= 0) )
             delete this.jobQueues["getEnergyJobs"][job[0]];
         
     }
