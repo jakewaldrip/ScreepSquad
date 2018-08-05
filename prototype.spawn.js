@@ -1,3 +1,8 @@
+
+//just uses the last 4 digits of game time(greater than possible creep lifespan)
+var randNum = Game.time.toString().slice(-4);
+
+
 //Create creep functions for each role
 StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role){
     var roleFunction = {
@@ -18,7 +23,7 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role){
 //PARAMS: homeRoom, energyCost
 StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	//random num for name
-	var name = 'miner - ' + Game.time.toString();
+	var name = 'miner - ' + randNum;
 	var body = [];
 	
     let w = 0, m = 0, c = 0;
@@ -56,7 +61,7 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	
 	//random num for name
-	var name = 'drone - ' + Game.time.toString();
+	var name = 'drone - ' + randNum;
 	var body = [];
     
     let w = 0, c = 0, m = 0;
@@ -95,7 +100,7 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 	
 	//random num for name
-	var name = 'worker - ' + Game.time.toString();
+	var name = 'worker - ' + randNum;
 	var body = [];
     
     let w = 0, m = 0, c = 0;

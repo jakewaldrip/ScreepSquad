@@ -216,8 +216,15 @@ Creep.prototype.canReach = function(target) {
         }
     }
     else if(target instanceof Structure){
-        //can repair 3 tiles away, but not sure how to check if repairing.
-        range = 1;
+        //transfer/withdraw
+        if(target.energy != undefined){
+            range = 1;
+        }
+        //repairing
+        else{
+            range = 3;
+        }
+        
     }
     
     return this.pos.inRangeTo(target, range);

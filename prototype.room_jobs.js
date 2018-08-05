@@ -91,7 +91,9 @@ Room.prototype.getWorkerJobQueue = function () {
     
     repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
     
+    
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
+    
     
     let lowTowers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
     lowTowers = _.filter(lowTowers, tower => tower.energy < tower.energyCapacity);
@@ -105,7 +107,14 @@ Room.prototype.getWorkerJobQueue = function () {
     //console.log("After dupe removal: " + targets);
     
     let formattedTargets = {};
-    _.forEach(targets, t => formattedTargets[t.id] = "STATE_USE_RESOURCES");
+    _.forEach(targets, function(t) {
+       if(t instanceof ConstructionSite){
+           formattedTargets[t.id] = t.progressTotal - t.progress;
+       } 
+       else{
+           formattedTargets[t.id] = "STATE_USE_RESOURCES";
+       }
+    });
     
     //console.log(JSON.stringify(formattedTargets));
     this.memory.jobQueues.workerJobs = formattedTargets;
@@ -172,10 +181,10 @@ Room.prototype.getEnergyJobQueue = function() {
     
     _.forEach(sortedArray, function(obj) {
         if(obj instanceof Energy){
-            formattedEnergy[obj.id] = obj.resourceType;
+            formattedEnergy[obj.id] = obj.amount;
         }
         else{
-            formattedEnergy[obj.id] = obj.structureType;
+            formattedEnergy[obj.id] = _.sum(obj.store(RESOURCE_ENERGY));
         }
     });
     
@@ -220,14 +229,19 @@ Room.prototype.getWorkJob = function(role){
     
     let jobQueue = [];
     jobQueue = _.pairs( this.jobQueues[role + "Jobs"] );
-    
+      
     let job = [null, null];
     
     if(jobQueue.length > 0){
             
         job = jobQueue.shift();
         
-        delete this.jobQueues[role + "Jobs"][job[0]];
+        let value = parseInt(job[1], 10);
+        if(value != NaN)
+            this.jobQueues[role + "Jobs"][job[0]] -= 500;
+        
+        if(value == NaN || (value - 500 <= 0) )
+            delete this.jobQueues[role + "Jobs"][job[0]];
         
     }
     //things to do if there are no jobs available, per role
@@ -256,6 +270,7 @@ Room.prototype.getWorkJob = function(role){
                 
             }
     }
+    
     return job[0];
 }
     
@@ -273,7 +288,12 @@ Room.prototype.getEnergyJob = function() {
         
         job = jobQueue.shift();
         
-        delete this.jobQueues["getEnergyJobs"][job[0]];
+        let value = parseInt(job[1], 10);
+        if(value != NaN)
+            this.memory.jobQueues["getEnergyJobs"][job[0]] -= 500;
+        
+        if(value == NaN || (value - 500 <= 0) )
+            delete this.jobQueues["getEnergyJobs"][job[0]];
         
     }
     

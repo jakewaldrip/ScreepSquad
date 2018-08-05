@@ -148,7 +148,7 @@ Room.prototype.getCreepLimits = function () {
             if (energyCap < 550)
             {
                 numDrones = 4;
-                numWorkers = 4;
+                numWorkers = 6;
             }
             else
             {
