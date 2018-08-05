@@ -99,11 +99,12 @@ Room.prototype.getWorkerJobQueue = function () {
     lowTowers = _.filter(lowTowers, tower => tower.energy < tower.energyCapacity);
     
     let controller = [this.controller];
+    controller = removeClaimedJobs(controller);
     
     let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
     //console.log("Before dupe removal: " + targets);
-    targets = removeClaimedJobs(targets);
+    //targets = removeClaimedJobs(targets);
     //console.log("After dupe removal: " + targets);
     
     let formattedTargets = {};
