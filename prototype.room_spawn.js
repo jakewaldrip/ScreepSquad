@@ -133,7 +133,7 @@ Room.prototype.getCreepLimits = function () {
             let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
             
             //get number of miners needed to saturate the sources
-            numMinersPerSource = Math.ceil(5 / workPerCreep);
+            let numMinersPerSource = Math.ceil(5 / workPerCreep);
             
             _.forEach(this.memory.sources, function(source) {
                 
