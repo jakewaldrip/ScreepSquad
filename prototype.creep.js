@@ -64,7 +64,7 @@ Creep.prototype.getEnergy = function(targetObj){
 }
 
 Object.defineProperty(Creep.prototype, 'hasWork', {
-    get: function() { return (this.getActiveBodyparts(WORK) > 0); } 
+    get: function() { return ( this.getActiveBodyparts(WORK) > 0 ); } 
 });
 
 Object.defineProperty(Creep.prototype, 'Full', {
@@ -196,4 +196,29 @@ Creep.prototype.moveAwayFromExit = function () {
     {
         console.log("Creep exit tile fix system failure! Red alert!");
     }
+}
+
+Creep.prototype.canReach = function(target) {
+    //default for everything else
+    let range = 1;
+    
+    if(target instanceof ConstructionSite){
+        range = 3;
+    }
+    else if(target instanceof StructureController){
+        //upgrading can be done 3 tiles away
+        if(target.my){
+            range = 3;
+        }
+        //reserving/claiming can be done 1 tile away
+        else{
+            range = 1;
+        }
+    }
+    else if(target instanceof Structure){
+        //can repair 3 tiles away, but not sure how to check if repairing.
+        range = 1;
+    }
+    
+    return this.pos.inRangeTo(target, range);
 }

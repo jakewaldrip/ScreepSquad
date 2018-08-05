@@ -31,7 +31,7 @@ Creep.prototype.runMovingDomestic = function () {
 		else
 		{
 			//creep is in the correct room check if we're at the target
-			if(this.pos.isNearTo(target))
+			if(this.canReach(target))
 			{
 				//get next state 
 				this.getNextStateDomestic();
