@@ -18,10 +18,13 @@ Room.prototype.getNextCreepToSpawn = function () {
     let nextCreep, counts = {};
     
     _.forEach(rolePriority, function(role) {
+        
         counts[role] = this.getCreepSum(role);
         
         if(counts[role] < this.memory.creepLimits[role]){
-            nextCreep = role;
+            //Keeps the number of each role even, instead of building one to max before building a second of the other role
+            if(nextCreep == null || counts[nextCreep] >= counts[role])
+                nextCreep = role;
         }
         
     }, this);
@@ -69,7 +72,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
     //roomstate Intro
     var roleMaxCost = {
         miner: 250,
-        drone: 100,
+        drone: 200,
         worker: 300
     };
     

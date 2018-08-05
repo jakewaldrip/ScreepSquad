@@ -28,10 +28,16 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	
     let w = 0, m = 0, c = 0;
     
+    /*
     if(energyCost >= 700){
         w = 5;
         m = 3;
         c = 1;
+    }
+    */
+    if(energyCost >= 650){
+        w = 5;
+        m = 3;
     }
     else{
         let x = Math.floor(energyCost / 250);
@@ -65,21 +71,31 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
 	var body = [];
     
     let w = 0, c = 0, m = 0;
-    if(energyCost == 100){
-        c = 1; m = 1;
+    if(energyCost == 200){
+        c = 1; m = 1, w = 1;
     }
-    else{
+    else if(energyCost < 600){
+        
+        let x = Math.floor(energyCost / 250);
+        
+        w = 1 * x;
+        m = 2 * x;
+        c = 1 * x; 
+        
+    }
+    else{   
     	//harvester body, 2 works subtract 200 from energy
-    	w += 2;
-    	energyCost -= 200;
+    	w = 2; m = 2;
+    	energyCost -= 300;
     
     	//get max parts of the remaining energy
-    	var maxParts = Math.floor(energyCost/100);
+    	let x = Math.floor(energyCost/100);
         
-        c += maxParts;
-        m += maxParts;
+        c += 1 * x;
+        m += 1 * x;
         
     }
+    
         body = _.times(w, () => WORK);
     	body = body.concat(_.times(m, () => MOVE) );
         body = body.concat(_.times(c, () => CARRY));
@@ -105,32 +121,32 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     
     let w = 0, m = 0, c = 0;
 	//create proper amount of work parts and subtract energy based on available energy
-	if(energyCost < 550 && energyCost >= 200)
+	if(energyCost < 600 && energyCost >= 300)
 	{
-		w += 2;
-		energyCost -= 200;
+		w++; m += 2; c++;
+		energyCost -= 250;
 	}
 	else if(energyCost < 800)
 	{
-	    w += 3;
-	    energyCost -= 300;
+	    w += 3; m += 3;
+	    energyCost -= 450;
 	}
     else if(energyCost < 1100)
 	{
-        w += 4;
-        energyCost -= 400;
+        w += 4; m += 4;
+        energyCost -= 600;
     }
     else
 	{
-        w += 7;
-        energyCost -= 700;
+        w += 7; m += 7;
+        energyCost -= 1050;
     }
 
 	//get number of carry and move parts possible
-	var maxParts = Math.floor(energyCost / 100);
+	var x = Math.floor(energyCost / 100);
     
-    c += maxParts;
-    m += maxParts;
+    c += 1 * x;
+    m += 1 * x;
 
     body = _.times(w, () => WORK);
 	body = body.concat(_.times(m, () => MOVE) );
