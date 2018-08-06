@@ -66,7 +66,7 @@ Creep.prototype.runHarvestingDomestic = function () {
     
 	var target = Game.getObjectById(this.workTarget);
 	
-	if(target == null){
+	if(target == null || target == undefined){
 	    this.getTarget();
 	}
 	
@@ -177,6 +177,7 @@ Creep.prototype.getTarget = function (targetType) {
     
     //this makes targetType an optional parameter.
     //if it is not defined in the function call, it will equal null
+    this.workTarget = null;
     targetType = targetType || null;
     
     //check if the creep is empty to decide which target to get
