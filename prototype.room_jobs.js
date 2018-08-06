@@ -152,6 +152,12 @@ Room.prototype.getEnergyJobQueue = function() {
             return obj.store[RESOURCE_ENERGY];
         }
         
+    },
+    function(obj){
+        //secondary sort by distance to spawn
+        let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
+        return obj.pos.getRangeTo(spawn.pos)
+        
     });
     
     //Insert storage into the job queue at MIN_TARGET_AMOUNT of energy.
@@ -185,7 +191,7 @@ Room.prototype.getEnergyJobQueue = function() {
             formattedEnergy[obj.id] = obj.amount;
         }
         else{
-            formattedEnergy[obj.id] = _.sum(obj.store(RESOURCE_ENERGY));
+            formattedEnergy[obj.id] = _.sum(obj.store[RESOURCE_ENERGY]);
         }
     });
     
