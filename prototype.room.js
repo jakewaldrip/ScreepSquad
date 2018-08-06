@@ -61,12 +61,11 @@ Object.defineProperty(Room.prototype, 'roomState', {
 Room.prototype.setRoomState = function () {
 	
     var containers = this.memory.structures[STRUCTURE_CONTAINER];
-    var storage = this.storage;
 
     //check if containers exist
     if(containers != undefined && containers.length > 0)
     {
-        if(storage != undefined && storage.length > 0)
+        if(this.storage)
         {
             this.memory.roomState = "ROOM_STATE_ADVANCED";
         }

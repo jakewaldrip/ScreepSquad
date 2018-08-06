@@ -80,7 +80,10 @@ Creep.prototype.runHarvestingDomestic = function () {
 		if(!this.Full)
 		{
 			//if creep is not full, get energy
-		    this.getEnergy(target);
+			if(target.energyAvailable() > 0)
+		        this.getEnergy(target);
+	        else
+	            this.getTarget(RESOURCE_ENERGY);
 		}
 		else
 		{
@@ -170,15 +173,19 @@ Creep.prototype.getNextStateDomestic = function () {
 
 
 //decides if the creep should get an energy target or a work target
-Creep.prototype.getTarget = function () {
+Creep.prototype.getTarget = function (targetType) {
+    
+    //this makes targetType an optional parameter.
+    //if it is not defined in the function call, it will equal null
+    targetType = targetType || null;
     
     //check if the creep is empty to decide which target to get
-    if(this.Empty && this.role != "miner")
+    if((this.Empty && this.role != "miner") || targetType == RESOURCE_ENERGY)
     {
         //if creep has no energy, get an energy job
         this.workTarget = this.room.getEnergyJob();
     }
-    else
+    else //if targetType == "WORK"
     {
         //if creep has energy, get a work job
         this.workTarget = this.room.getWorkJob(this.role);

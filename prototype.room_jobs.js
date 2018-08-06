@@ -257,7 +257,7 @@ Room.prototype.getWorkJob = function(role){
         job[0] = this.controller.id;
     }
     else if(role == "drone"){
-        
+            
             if(!this.storage){
                 //pretend you're a worker for a tick
                 job[0] = this.getWorkJob("worker");

@@ -17,7 +17,7 @@ Creep.prototype.run = function() {
     catch(err){
         
         console.log(`The creep <font color="efdc0e">${this.name}</font> has encountered an issue.`);
-        console.log('<font color="#e04e4e">       ' + err + "</font>");
+        console.log('<font color="#e04e4e">       ' + err.stack + "</font>");
     }
     
 }
