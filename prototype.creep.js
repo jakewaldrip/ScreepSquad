@@ -56,7 +56,7 @@ Creep.prototype.getEnergy = function(targetObj){
         return this.pickup(targetObj);
     }
     else if(targetObj instanceof Structure){
-        return this.withdraw(targetObj);
+        return this.withdraw(targetObj, RESOURCE_ENERGY);
     }
     else{
         return ERR_INVALID_TARGET;
@@ -216,8 +216,8 @@ Creep.prototype.canReach = function(target) {
         }
     }
     else if(target instanceof Structure){
-        //transfer/withdraw
-        if(target.energy != undefined){
+        //transfer/withdraw (does make them approach containers to repair unfortunately)
+        if(target.energy != undefined || target.store[RESOURCE_ENERGY] != undefined){
             range = 1;
         }
         //repairing
