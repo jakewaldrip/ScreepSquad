@@ -85,13 +85,13 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
     }
     else{   
     	//harvester body, 2 works subtract 200 from energy
-    	w = 2; m = 2;
-    	energyCost -= 300;
+    	w = 2; m = 1;
+    	energyCost -= 250;
     
     	//get max parts of the remaining energy
-    	let x = Math.floor(energyCost/100);
+    	let x = Math.floor(energyCost/150);
         
-        c += 1 * x;
+        c += 2 * x;
         m += 1 * x;
         
     }

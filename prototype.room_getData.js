@@ -131,15 +131,30 @@ Room.prototype.getDroppedEnergy = function () {
 
 
 Room.prototype.getRepairTargets = function () {
-	
-        var repairTargets = _.filter(this.structures, s => s.structureType != STRUCTURE_WALL 
-                                    && s.structureType != STRUCTURE_RAMPART && s.hits < s.hitsMax);
-        
+	    
+	    const wallMaxMultiplier = 50000;
+	    
         let formattedTargets = {};
         
-        _.forEach(repairTargets, rd => formattedTargets[rd.id] = (rd.hits / rd.hitsMax));
+        _.forEach(this.structures, function(s) { 
+            
+            let hpPercent;
+            
+            if(s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART){
+                hpPercent = s.hits / s.hitsMax;
+            }
+            else{
+                hpPercent = s.hits / (this.controller.level * wallMaxMultiplier);
+            }
+            
+            if(hpPercent < 1){
+                formattedTargets[s.id] = hpPercent;
+            }
+            
+        }, this);
         
-        this.memory.repairTargets =  formattedTargets;
+        this.memory.repairTargets = formattedTargets;
+        
     }
 
 
