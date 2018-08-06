@@ -7,7 +7,6 @@ Creep.prototype.runSpawningDomestic = function () {
     //check if the creep done spawning, get the next state
     if(!this.spawning){
         this.getTarget();
-        this.state = 'STATE_MOVING';
     }
     
 }
@@ -69,7 +68,6 @@ Creep.prototype.runHarvestingDomestic = function () {
 	
 	if(target == null){
 	    this.getTarget();
-	    this.state = 'STATE_MOVING';
 	}
 	
 	//if creep is a miner, let it mine forever in this state
@@ -88,7 +86,6 @@ Creep.prototype.runHarvestingDomestic = function () {
 		{
 			//when creep is full, get a new target and set state to moving
 			this.getTarget();
-			this.state = 'STATE_MOVING';
 		}
 	}
 }
@@ -126,7 +123,6 @@ Creep.prototype.runWorkDomestic = function () {
 				//if the target is full, gone, undefined, whatever, find new target and go back to moving 
 				//(run role again so the creep doesn't have to wait another tick to go)
 				this.getTarget();
-				this.state = 'STATE_MOVING'
 				this.run();
 			}
 		}
@@ -139,7 +135,6 @@ Creep.prototype.runWorkDomestic = function () {
 	//If Creep is empty reselect target 
 	else{
 	    this.getTarget();
-	    this.state = 'STATE_MOVING';
 	    this.run();
 	}
 }
@@ -188,4 +183,6 @@ Creep.prototype.getTarget = function () {
         //if creep has energy, get a work job
         this.workTarget = this.room.getWorkJob(this.role);
     }
+    
+    this.state = 'STATE_MOVING';
 }

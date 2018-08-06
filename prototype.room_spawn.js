@@ -48,7 +48,7 @@ Room.prototype.spawnNextCreep = function () {
         if(role != undefined){
             
             let energyCost = this.getCreepSpawnEnergyCost(role);
-            
+
             if(this.energyAvailable >= energyCost){
                 
                 emptySpawner = Game.getObjectById(emptySpawner);
