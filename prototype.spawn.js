@@ -180,16 +180,10 @@ StructureSpawn.prototype.createRemoteDrone = function(homeRoom, remoteRoom, ener
 //-----
 
 
-//create reserver
+//create reserver/claimer creep (claimers will go reserve nearest room once they claim
 StructureSpawn.prototype.createReserver = function(homeRoom, remoteRoom, energyCost)
 {
     
 }
 //-----
 
-//create claimer
-StructureSpawn.prototype.createReserver = function(homeRoom, remoteRoom, energyCost)
-{
-    
-}
-//------
