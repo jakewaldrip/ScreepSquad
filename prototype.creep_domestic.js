@@ -68,6 +68,10 @@ Creep.prototype.runHarvestingDomestic = function () {
 	
 	if(target == null || target == undefined){
 	    this.getTarget();
+	    
+	    //catch if there are no available targets
+	    if(target == null) return;
+	    
 	}
 	
 	//if creep is a miner, let it mine forever in this state

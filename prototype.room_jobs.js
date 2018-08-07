@@ -273,7 +273,8 @@ Room.prototype.getWorkJob = function(role){
     
     return job[0];
 }
-    
+
+//Deprecated - Use Creep.getEnergyJob instead
 Room.prototype.getEnergyJob = function() {
     
     if(!this.memory.jobQueues["getEnergyJobs"]){
@@ -319,8 +320,11 @@ Creep.prototype.getEnergyJob = function() {
             var range = this.pos.getRangeTo(i);
             
             if(range < minRange) {
-                minRange = range;
-                closest = i;
+                //only target it if it has enough to fill your inventory
+                if(i.energyAvailable() >= this.carryCapacity){
+                    minRange = range;
+                    closest = i;
+                }
             }
             
         });
@@ -336,9 +340,11 @@ Creep.prototype.getEnergyJob = function() {
     if(!isNaN(value))
         jobQueue[job.id] -= this.carryCapacity;
         
-    if(isNaN(value) || (value - this.carryCapacity <= 0) )
+    if(isNaN(value) || (value - this.carryCapacity <= 0) ){
+        console.log("Before delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));
         delete jobQueue[job.id];
-        
+        console.log("After delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));   
+    }
     return job.id;
     
 }

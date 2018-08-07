@@ -169,12 +169,6 @@ Room.prototype.getCreepLimits = function () {
             numMiners = numOfSources;
             numDrones = 4;
             numWorkers = 6 + numRemoteRooms;
-            
-            
-            //Increase worker limit when room needs a lot of repairs
-            if(this.memory.repairTargets.length > 20){
-                numWorkers++;
-            }
 
             break;
 
