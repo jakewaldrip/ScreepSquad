@@ -167,9 +167,14 @@ Room.prototype.getCreepLimits = function () {
 
             //1 miner per source at this point will saturate the sources
             numMiners = numOfSources;
-            numDrones = 3;
-            numWorkers = 5 + numRemoteRooms;
-
+            numDrones = 4;
+            numWorkers = 6 + numRemoteRooms;
+            
+            
+            //Increase worker limit when room needs a lot of repairs
+            if(this.memory.repairTargets.length > 20){
+                numWorkers++;
+            }
 
             break;
 

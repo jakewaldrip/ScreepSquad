@@ -88,11 +88,12 @@ Room.prototype.getWorkerJobQueue = function () {
     
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
+    _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] < .75);
     
-    repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this).reverse();
+    repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this);
     
     
-    let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .75);
+    let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .50);
     
     
     let lowTowers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
@@ -299,7 +300,47 @@ Room.prototype.getEnergyJob = function() {
     return job[0];
 }
 
+Creep.prototype.getEnergyJob = function() {
+    
+    if(!this.room.memory.jobQueues["getEnergyJobs"]){
+        this.room.getEnergyJobQueue();
+    }
+    
+    var jobQueue = this.room.memory.jobQueues["getEnergyJobs"];
+    
+    //get the objects of the jobQueue
+    var objects = Object.keys(jobQueue).getObjects();
+    
+    //Loop through each object and get the minimum distance object
+        var closest = null, minRange = Infinity;
+    
+        objects.forEach( (i) => {
+            
+            var range = this.pos.getRangeTo(i);
+            
+            if(range < minRange) {
+                minRange = range;
+                closest = i;
+            }
+            
+        });
+    
 
-
+    var job = closest;
+    
+    //if the job has a numeric value assigned to it
+    //subtract the creeps carryCap from it, if not (or if it goes below 0)
+    //remove it from the jobQueue.
+    var value = parseInt(jobQueue[job.id], 10);
+    
+    if(!isNaN(value))
+        jobQueue[job.id] -= this.carryCapacity;
+        
+    if(isNaN(value) || (value - this.carryCapacity <= 0) )
+        delete jobQueue[job.id];
+        
+    return job.id;
+    
+}
 
 

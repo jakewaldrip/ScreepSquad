@@ -187,7 +187,7 @@ Creep.prototype.getTarget = function (targetType) {
     if((this.Empty && this.role != "miner") || targetType == RESOURCE_ENERGY)
     {
         //if creep has no energy, get an energy job
-        this.workTarget = this.room.getEnergyJob();
+        this.workTarget = this.getEnergyJob();
     }
     else //if targetType == "WORK"
     {
