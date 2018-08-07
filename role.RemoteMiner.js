@@ -23,16 +23,10 @@ module.exports = {
 
 		    case 'STATE_GET_RESOURCES':
 
-                creep.runGetEnergyRemote();
+                creep.runHarvestingRemote();
 
 			break;
 
-
-            case 'STATE_USE_RESOURCES':
-
-                creep.runUseResourcesRemote();
-
-            break;
 
 			default: 
 

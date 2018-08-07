@@ -9,24 +9,30 @@ module.exports = {
 		{
 			case 'STATE_SPAWNING':
 
-                creep.runSpawningDomestic();
+                creep.runSpawningRemote();
 
 			break;
 
 
 			case 'STATE_MOVING':
 
-                creep.runMovingDomestic();
+                creep.runMovingRemote();
 
 			break;
 
 
 		    case 'STATE_GET_RESOURCES':
 
-                creep.runHarvestingDomestic();
+                creep.runGetEnergyRemote();
 
 			break;
 
+
+            case 'STATE_USE_RESOURCES':
+
+                creep.runUseEnergyRemote();
+
+            break;
 
 			default: 
 

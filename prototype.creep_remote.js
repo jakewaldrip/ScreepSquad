@@ -32,7 +32,7 @@ Creep.prototype.runSpawningRemote = function(){
 
 
 //run mining for static remote miners
-Creep.prototype.runMiningRemote = function(){
+Creep.prototype.runHarvestingRemote = function(){
 
 }
 //----------
