@@ -197,7 +197,7 @@ Creep.prototype.getTarget = function (targetType) {
     else //if targetType == "WORK"
     {
 
-        if(this.memory.role == "worker"){
+        if(this.memory.role == "worker" || this.memory.role == "drone"){
             this.workTarget = this.getWorkJob();
         }
         

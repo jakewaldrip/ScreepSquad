@@ -305,6 +305,21 @@ Creep.prototype.getJobQueue = function(role) {
     
 }
 
+//Reduces or deletes the job from jobQueue memory
+Creep.prototype.diminishJob = function(job, jobQueue){
+    
+    //remove carry capacity from the value stored in memory
+        let value = parseInt(jobQueue[job.id], 10);
+            
+        if(!isNaN(value)){
+            value -= this.carryCapacity;
+            jobQueue[job.id] -= value;
+        }
+        //delete if value drops below 0
+        if(isNaN(value) || value <= 0)
+            delete jobQueue[job.id];
+            
+}
 // Requires at least one creep to be upgrading controller at all times.
 // Others choose the closest job in the queue, and controller if no targets.
 Creep.prototype.getWorkerJob = function(jobQueue) {
@@ -319,21 +334,41 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     var job = upgrading ? this.getClosest(objects) : this.room.controller;
     
     if(job != null){
-        //remove carry capacity from the value stored in memory
-        let value = parseInt(jobQueue[job.id], 10);
-            
-        if(!isNaN(value)){
-            value -= this.carryCapacity;
-            jobQueue[job.id] -= value;
-        }
-        //delete if value drops below 0
-        if(isNaN(value) || value <= 0)
-            delete jobQueue[job.id];
+        
+        this.diminishJob(job, jobQueue);
+        
     }
     else
         job = this.room.controller;
         
     
+    return job.id;
+}
+
+//
+//
+Creep.prototype.getDroneJob = function(jobQueue) {
+    
+    var objects = Object.keys(jobQueue).getObjects();
+    
+    var job = this.getClosest(objects);
+    
+    if(job != null){
+        
+        this.diminishJob(job, jobQueue);
+        
+    }
+    else if(!this.room.storage){
+        //pretend you're a worker for a tick
+        job = Game.getObjectById(this.getWorkJob("worker"));
+            
+    }
+    else{
+        //drop off at storage
+        job = this.storage;
+            
+    }
+            
     return job.id;
 }
 
