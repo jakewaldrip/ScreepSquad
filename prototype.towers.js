@@ -57,8 +57,8 @@ Room.prototype.getTowerTarget = function() {
         if(target == undefined){
             
             repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
-            //filter out targets less than 20% hp.
-            repairTargets = _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] <= .20, this);
+            //filter out targets less than 10% hp.
+            repairTargets = _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] <= .10, this);
             
             if(repairTargets.length > 0){
                 target = _.min(repairTargets, rt => this.memory.repairTargets[rt.id], this);

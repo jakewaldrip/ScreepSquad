@@ -217,7 +217,7 @@ Creep.prototype.canReach = function(target) {
     }
     else if(target instanceof Structure){
         //transfer/withdraw (does make them approach containers to repair unfortunately)
-        if(target.energy || target.store){
+        if(target.energy != undefined || target.store != undefined){
             range = 1;
         }
         //repairing

@@ -108,6 +108,9 @@ Creep.prototype.runWorkDomestic = function () {
 		{
 			this.getTarget();
 			target = Game.getObjectById(this.workTarget);
+			
+			if(target == null)
+			    return;
 		}
 
 		//try to do work, catch invalid target (sometimes takes a couple ticks to catch up with a null target)

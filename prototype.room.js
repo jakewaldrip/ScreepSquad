@@ -63,7 +63,7 @@ Room.prototype.setRoomState = function () {
     var containers = this.memory.structures[STRUCTURE_CONTAINER];
 
     //check if containers exist
-    if(containers != undefined && containers.length > 0)
+    if(this.memory.creepsInRoom.length >= 3 && containers.length > 0)
     {
         if(this.storage)
         {
