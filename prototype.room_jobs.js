@@ -192,7 +192,7 @@ Room.prototype.getEnergyJobQueue = function() {
             formattedEnergy[obj.id] = obj.amount;
         }
         else{
-            formattedEnergy[obj.id] = _.sum(obj.store[RESOURCE_ENERGY]);
+            formattedEnergy[obj.id] = obj.store[RESOURCE_ENERGY];
         }
     });
     
@@ -274,33 +274,72 @@ Room.prototype.getWorkJob = function(role){
     return job[0];
 }
 
-//Deprecated - Use Creep.getEnergyJob instead
-Room.prototype.getEnergyJob = function() {
+Creep.prototype.getWorkJob = function(role) {
     
-    if(!this.memory.jobQueues["getEnergyJobs"]){
-        this.getEnergyJobQueue();
-    }
+    //allows you to get a job from another role
+    if(role == undefined)
+        role = this.memory.role;
     
-    let jobQueue = _.pairs( this.jobQueues["getEnergyJobs"] );
+    //get the jobQueue for the role    
+    var jobQueue = this.getJobQueue(role);
     
-    let job = [null, null];
+    //creates/calls the function for the role specific getJob
+    //Ex. this.getDroneJob(jobQueue); ** The "this" tells the new function its scope
+    let funct = "get" + role.capitalizeFirst() + "Job";
+    var jobID = this[funct].call(this, jobQueue);
     
-    if(jobQueue.length > 0){
-        
-        job = jobQueue.shift();
-        
-        let value = parseInt(job[1], 10);
-        if(!isNaN(value))
-            this.memory.jobQueues["getEnergyJobs"][job[0]] -= 500;
-        
-        if(isNaN(value) || (value - 500 <= 0) )
-            delete this.jobQueues["getEnergyJobs"][job[0]];
-        
-    }
-    
-    return job[0];
+    return jobID;
 }
 
+//Gets called from Creep.getWorkJob(role).
+// @params role - should always be defined
+Creep.prototype.getJobQueue = function(role) {
+
+    //inits workQueue for role
+    if(!this.room.memory.jobQueues[role + "Jobs"]){
+        let funct = "get" + role.capitalizeFirst() + "JobQueue";
+        this.room[funct].call(this.room);
+    }
+    
+    return this.room.memory.jobQueues[role + "Jobs"];
+    
+}
+
+// Requires at least one creep to be upgrading controller at all times.
+// Others choose the closest job in the queue, and controller if no targets.
+Creep.prototype.getWorkerJob = function(jobQueue) {
+    
+    var objects = Object.keys(jobQueue).getObjects();
+    
+    //if the first item in the queue is the controller
+    //then we know that there isn't a creep upgrading.
+    var upgrading = (objects[0] == this.room.controller);
+    
+    //if upgrading is true, get closest, else get controller
+    var job = upgrading ? this.getClosest(objects) : this.room.controller;
+    
+    if(job != null){
+        //remove carry capacity from the value stored in memory
+        let value = parseInt(jobQueue[job.id], 10);
+            
+        if(!isNaN(value)){
+            value -= this.carryCapacity;
+            jobQueue[job.id] -= value;
+        }
+        //delete if value drops below 0
+        if(isNaN(value) || value <= 0)
+            delete jobQueue[job.id];
+    }
+    else
+        job = this.room.controller;
+        
+    
+    return job.id;
+}
+
+//Creeps choose the closest energy source(container/storage/drops)
+//removing their carryCapacity from the value stored in memory
+//deleting it from the jobQueue if it is considered empty.
 Creep.prototype.getEnergyJob = function() {
     
     if(!this.room.memory.jobQueues["getEnergyJobs"]){
@@ -312,41 +351,50 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
-    //Loop through each object and get the minimum distance object
-        var closest = null, minRange = Infinity;
+    var job = this.getClosest(objects);
     
-        objects.forEach( (i) => {
-            
-            var range = this.pos.getRangeTo(i);
-            
-            if(range < minRange) {
-                //only target it if it has enough to fill your inventory
-                if(i.energyAvailable() >= this.carryCapacity){
-                    minRange = range;
-                    closest = i;
-                }
-            }
-            
-        });
-    
-
-    var job = closest;
+    if(job == undefined) return;
     
     //if the job has a numeric value assigned to it
     //subtract the creeps carryCap from it, if not (or if it goes below 0)
     //remove it from the jobQueue.
     var value = parseInt(jobQueue[job.id], 10);
     
-    if(!isNaN(value))
-        jobQueue[job.id] -= this.carryCapacity;
-        
-    if(isNaN(value) || (value - this.carryCapacity <= 0) ){
-        console.log("Before delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));
+    if(!isNaN(value)){
+        value -= this.carryCapacity;
+        jobQueue[job.id] -= value;
+    }
+    
+    if(isNaN(value) || value <= 0){
+        //console.log("Before delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));
         delete jobQueue[job.id];
-        console.log("After delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));   
+        //console.log("After delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));   
     }
     return job.id;
     
 }
 
+Creep.prototype.getClosest = function(objects){
+    
+    //Loop through each object and get the minimum distance object
+    var closest = null, minRange = Infinity;
+
+    objects.forEach( (i) => {
+        
+        var range = this.pos.getRangeTo(i);
+        
+        if(range < minRange) {
+            //only target it if it has enough to fill your inventory
+            if(i.energyAvailable() >= this.carryCapacity){
+                
+                minRange = range;
+                closest = i;
+                
+            }
+        }
+        
+    });
+    
+    return closest;
+}
 

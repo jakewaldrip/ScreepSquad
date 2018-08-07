@@ -126,12 +126,12 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 		w++; m += 2; c++;
 		energyCost -= 250;
 	}
-	else if(energyCost < 800)
+	else if(energyCost <= 800)
 	{
 	    w += 3; m += 3;
 	    energyCost -= 450;
 	}
-    else if(energyCost < 1100)
+    else if(energyCost <= 1100)
 	{
         w += 4; m += 4;
         energyCost -= 600;
@@ -181,14 +181,14 @@ StructureSpawn.prototype.createRemoteDrone = function(homeRoom, remoteRoom, ener
 
 
 //create reserver
-StructureSpawn.prototype.createReserver= function(homeRoom, remoteRoom, energyCost)
+StructureSpawn.prototype.createReserver = function(homeRoom, remoteRoom, energyCost)
 {
-
+    
 }
 //-----
 
 //create claimer
-StructureSpawn.prototype.createReserver= function(homeRoom, remoteRoom, energyCost)
+StructureSpawn.prototype.createReserver = function(homeRoom, remoteRoom, energyCost)
 {
     
 }

@@ -139,6 +139,7 @@ Creep.prototype.runWorkDomestic = function () {
 		catch(err)
 		{
 			console.log(this.name + " has encountered an issue in runWorkDomestic");
+			console.log('<font color="#e04e4e">       ' + err.stack + "</font>");
 		}
 
 	}
@@ -195,6 +196,11 @@ Creep.prototype.getTarget = function (targetType) {
     }
     else //if targetType == "WORK"
     {
+
+        if(this.memory.role == "worker"){
+            this.workTarget = this.getWorkJob();
+        }
+        
         //if creep has energy, get a work job
         this.workTarget = this.room.getWorkJob(this.role);
     }
