@@ -345,8 +345,8 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     return job.id;
 }
 
-//
-//
+// If there are no jobs, targets storage
+// If there is no storage, acts as a Worker.
 Creep.prototype.getDroneJob = function(jobQueue) {
     
     var objects = Object.keys(jobQueue).getObjects();
@@ -372,6 +372,20 @@ Creep.prototype.getDroneJob = function(jobQueue) {
     return job.id;
 }
 
+// Will only act as long as there is a job in queue.
+Creep.prototype.getMinerJob = function(jobQueue){
+    
+    var objects = Object.keys(jobQueue).getObjects();
+    
+    var job = objects[0];
+    
+    if( job != null )
+        this.diminishJob(job, jobQueue);
+        
+    return job.id;
+    
+}
+
 //Creeps choose the closest energy source(container/storage/drops)
 //removing their carryCapacity from the value stored in memory
 //deleting it from the jobQueue if it is considered empty.
@@ -388,23 +402,10 @@ Creep.prototype.getEnergyJob = function() {
     
     var job = this.getClosest(objects);
     
-    if(job == undefined) return;
     
-    //if the job has a numeric value assigned to it
-    //subtract the creeps carryCap from it, if not (or if it goes below 0)
-    //remove it from the jobQueue.
-    var value = parseInt(jobQueue[job.id], 10);
+    if(job != undefined) 
+        this.diminishJob(job, jobQueue);
     
-    if(!isNaN(value)){
-        value -= this.carryCapacity;
-        jobQueue[job.id] -= value;
-    }
-    
-    if(isNaN(value) || value <= 0){
-        //console.log("Before delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));
-        delete jobQueue[job.id];
-        //console.log("After delete: " + JSON.stringify(this.room.memory.jobQueues.getEnergyJobs));   
-    }
     return job.id;
     
 }
