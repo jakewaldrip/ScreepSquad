@@ -67,8 +67,8 @@ Creep.prototype.runHarvestingDomestic = function () {
 	var target = Game.getObjectById(this.workTarget);
 	
 	if(target == null || target == undefined){
-	    this.getTarget();
-	    
+	    this.getTarget(RESOURCE_ENERGY);
+	    target = Game.getObjectById(this.workTarget);
 	    //catch if there are no available targets
 	    if(target == null) return;
 	    
@@ -197,12 +197,11 @@ Creep.prototype.getTarget = function (targetType) {
     else //if targetType == "WORK"
     {
 
-        if(this.memory.role == "worker" || this.memory.role == "drone"){
-            this.workTarget = this.getWorkJob();
-        }
+        //supports drone, miner and worker 
+        this.workTarget = this.getWorkJob();
         
-        //if creep has energy, get a work job
-        this.workTarget = this.room.getWorkJob(this.role);
+        //Generic getWorkJob
+        //this.workTarget = this.room.getWorkJob(this.role);
     }
     
     this.state = 'STATE_MOVING';

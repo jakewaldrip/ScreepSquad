@@ -320,6 +320,7 @@ Creep.prototype.diminishJob = function(job, jobQueue){
             delete jobQueue[job.id];
             
 }
+
 // Requires at least one creep to be upgrading controller at all times.
 // Others choose the closest job in the queue, and controller if no targets.
 Creep.prototype.getWorkerJob = function(jobQueue) {
@@ -328,10 +329,31 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     
     //if the first item in the queue is the controller
     //then we know that there isn't a creep upgrading.
-    var upgrading = (objects[0] == this.room.controller);
+    var upgrading = (objects[0] != this.room.controller);
+    console.log(this.name + " : " + upgrading);
+    //check if any of the items in the list are a tower
+    //returns the ID of the tower if there is one.
+    var lowTower = _.find(this.room.memory.structures[STRUCTURE_TOWER], function(towerID) {
+
+        if( _.some(objects, obj => obj.id == towerID) )
+            return true;
+        else{
+            return false;
+        }
+        
+    });
     
-    //if upgrading is true, get closest, else get controller
-    var job = upgrading ? this.getClosest(objects) : this.room.controller;
+    var job;
+    //Targets controller -> lowTowers -> others
+    if( !upgrading )
+        job = this.room.controller;
+    else if( lowTower ){
+        job = Game.getObjectById(lowTower);
+    }
+    else{
+        job = this.getClosest(objects);
+    }
+    
     
     if(job != null){
         
@@ -420,8 +442,8 @@ Creep.prototype.getClosest = function(objects){
         var range = this.pos.getRangeTo(i);
         
         if(range < minRange) {
-            //only target it if it has enough to fill your inventory
-            if(i.energyAvailable() >= this.carryCapacity){
+            //only target it if it has enough to fill your inventory, or is incomplete/not full
+            if(i.energy < i.energyCapacity || i.progress < i.progressTotal || i.energyAvailable() >= this.carryCapacity ){
                 
                 minRange = range;
                 closest = i;

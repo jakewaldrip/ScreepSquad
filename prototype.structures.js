@@ -6,6 +6,12 @@ Structure.prototype.energyAvailable = function() {
     
 };
 
+Source.prototype.energyAvailable = function() {
+    
+    return this.energyCapacity - this.energy;
+    
+};
+
 Resource.prototype.energyAvailable = function() {
     
     if(!this.resourceType == RESOURCE_ENERGY) return 0;
