@@ -20,17 +20,30 @@ Creep.prototype.runMovingRemote = function(){
 
     //get work target object
     var target = Game.getObjectById(this.workTarget);
+    var targetRoom = this.memory.targetRoom;
+    var homeRoom = this.memory.homeRoom;
 
 
+    //if target exists, move to it, otherwise get one
     if(target != null && target != undefined)
     {
-        //check if the target is an instance of another room
-        //if so, move to that room
-        //if not, move to the correct object:w
+        //check if target is an instance of a room or a room object
+        if(target instanceof RoomPosition)
+        {
+            //check if creep is in the proper room
+            //if not move to it
+            //if so, get a new target and run creep
+        }
+        else
+        {
+            //check if creep is in range of target
+            //if not move to it
+            //if so, get next state
+        }
     }
     else
     {
-        //if target is null, find a new one!!
+        //if target is not defined, find a new one!!
         this.getTargetRemote();
     }
 }
