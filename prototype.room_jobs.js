@@ -330,7 +330,7 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     //if the first item in the queue is the controller
     //then we know that there isn't a creep upgrading.
     var upgrading = (objects[0] != this.room.controller);
-    console.log(this.name + " : " + upgrading);
+    
     //check if any of the items in the list are a tower
     //returns the ID of the tower if there is one.
     var lowTower = _.find(this.room.memory.structures[STRUCTURE_TOWER], function(towerID) {
