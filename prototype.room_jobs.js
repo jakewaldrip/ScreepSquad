@@ -161,6 +161,7 @@ Room.prototype.getEnergyJobQueue = function() {
         
     });
     
+    /*
     //Insert storage into the job queue at MIN_TARGET_AMOUNT of energy.
     //This allows us to prioritize containers and drops before we use storage.
     if (this.storage){
@@ -181,7 +182,7 @@ Room.prototype.getEnergyJobQueue = function() {
         sortedArray.splice(index, 0, this.storage);
         
     }
-    
+    */
     //get array into descending order
     sortedArray.reverse();
     
@@ -425,12 +426,21 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
-    //Drones can't access storage
-    if(this.memory.role == "drone")
-        _.remove(objects, obj => obj.id == this.room.storage.id, this);
+    //seperate storage from objects
+    var storage = null;
+    if(this.room.storage)
+        storage = this.room.storage;
         
     var job = this.getClosest(objects);
     
+    //If job is too small, and you aren't a drone, target storage if it exists and has more than creeps carryCapacity
+    if( (job == null || job.energyAvailable() < this.carryCapacity)
+    && this.memory.role != "drone"
+    && storage != null && storage.energyAvailable() > this.carryCapacity){
+        
+        job = storage;
+        
+    }
     
     if(job != undefined) 
         this.diminishJob(job, jobQueue);

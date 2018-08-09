@@ -184,7 +184,7 @@ Room.prototype.getCreepLimits = function () {
             
             //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
             numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
-            numDrones = 4;
+            numDrones = 2;
             numWorkers = 4 + numRemoteRooms;
 
             break;

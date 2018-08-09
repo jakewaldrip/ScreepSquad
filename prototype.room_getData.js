@@ -132,7 +132,7 @@ Room.prototype.getDroppedEnergy = function () {
 
 Room.prototype.getRepairTargets = function () {
 	    //change this to change how high walls and ramparts are repaired
-	    const wallMaxMultiplier = 10000;
+	    const wallMaxMultiplier = 15000;
 	    
         let formattedTargets = {};
         

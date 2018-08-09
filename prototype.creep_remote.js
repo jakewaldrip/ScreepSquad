@@ -19,8 +19,18 @@ Creep.prototype.runUseEnergyRemote = function(){
 Creep.prototype.runMovingRemote = function(){
 
     //get work target object
-    var target = Game.getObjectById(this.workTarget);
+    var target = this.memory.workTarget;
+    //checks if it's an object stored in memory and if it has an "x" property.
+    //Should also check for y and roomName, but this should work for us w/o wasting CPU
+    if(target instanceof Object && target.hasOwnProperty("x")){
+        target = new RoomPosition(target.x, target.y, target.roomName);
+    }
+    else{
+        target = Game.getObjectById(target);
+    }
+    
     var targetRoom = this.memory.targetRoom;
+    
     var homeRoom = this.memory.homeRoom;
 
 
@@ -30,12 +40,21 @@ Creep.prototype.runMovingRemote = function(){
         //check if target is an instance of a room or a room object
         if(target instanceof RoomPosition)
         {
-            //check if creep is in the proper room
-            //if not move to it
-            //if so, get a new target and run creep
+            if(this.room.name == targetRoom){
+                this.getTargetRemote();
+                //Not sure if below line is how you will progress or not
+                //this.run();
+            }
+            else{
+                
+                this.moveTo(target);
+            }
         }
         else
         {
+            if(this.canReach(target) ){
+                
+            }
             //check if creep is in range of target
             //if not move to it
             //if so, get next state

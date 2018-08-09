@@ -121,7 +121,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     
     let w = 0, m = 0, c = 0;
 	//create proper amount of work parts and subtract energy based on available energy
-	if(energyCost < 600 && energyCost >= 300)
+	if(energyCost < 600)
 	{
 		w++; m += 2; c++;
 		energyCost -= 250;
@@ -131,15 +131,15 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 	    w += 3; m += 3;
 	    energyCost -= 450;
 	}
-    else if(energyCost <= 1100)
+    else if(energyCost <= 1300)
 	{
-        w += 4; m += 4;
-        energyCost -= 600;
+        w += 6; m += 3;
+        energyCost -= 750;
     }
     else
 	{
-        w += 7; m += 7;
-        energyCost -= 1050;
+        w += 8; m += 4;
+        energyCost -= 1000;
     }
 
 	//get number of carry and move parts possible

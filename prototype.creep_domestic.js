@@ -35,6 +35,7 @@ Creep.prototype.runMovingDomestic = function () {
 			{
 				//get next state 
 				this.getNextStateDomestic();
+				this.run();
 			}
 			else
 			{
