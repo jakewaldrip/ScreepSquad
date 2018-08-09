@@ -7,6 +7,7 @@ Creep.prototype.runSpawningDomestic = function () {
     //check if the creep done spawning, get the next state
     if(!this.spawning){
         this.getTarget();
+        this.run();
     }
     
 }
@@ -123,7 +124,7 @@ Creep.prototype.runWorkDomestic = function () {
 		{
 			//if the target is a valid target for a creep to use energy on
 			if(target.energy < target.energyCapacity || target == this.room.controller 
-			|| target.progress < target.progressTotal || target.hits < target.hitsMax)
+			|| target.progress < target.progressTotal || target.hits < target.hitsMax || target == this.room.storage)
 			{
 				//do work on the target
 			    this.useEnergy(target);

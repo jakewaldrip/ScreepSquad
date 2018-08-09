@@ -387,10 +387,10 @@ Creep.prototype.getDroneJob = function(jobQueue) {
     }
     else{
         //drop off at storage
-        job = this.storage;
+        job = this.room.storage;
             
     }
-            
+    
     return job.id;
 }
 
@@ -404,7 +404,10 @@ Creep.prototype.getMinerJob = function(jobQueue){
     if( job != null )
         this.diminishJob(job, jobQueue);
         
-    return job.id;
+    if(job != null)
+        return job.id;
+    else
+        return null;
     
 }
 
@@ -422,13 +425,20 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
+    //Drones can't access storage
+    if(this.memory.role == "drone")
+        _.remove(objects, obj => obj.id == this.room.storage.id, this);
+        
     var job = this.getClosest(objects);
     
     
     if(job != undefined) 
         this.diminishJob(job, jobQueue);
     
-    return job.id;
+    if(job != null)
+        return job.id;
+    else
+        return null;
     
 }
 
