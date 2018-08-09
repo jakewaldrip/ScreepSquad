@@ -31,6 +31,13 @@ module.exports = {
 			  }
 		  }
 		  
-      }
-      //------------------
+      },
+      //--------------
+	
+    deadFlagCleaning: function()
+    {
+    	//check for any remote, claim, attack, etc rooms that do not have a live flag
+	//delete this rooms from the main room's memory
+    }
+    //------------------
 };
