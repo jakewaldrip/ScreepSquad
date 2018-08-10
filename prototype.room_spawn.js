@@ -42,6 +42,7 @@ Room.prototype.getNextCreepToSpawn = function () {
 //This function runs getNextCreepToSpawn, getCreepSpawnEnergyCost, and then passes
 //the params to spawner.createRole, assuming there is an available spawn.
 Room.prototype.spawnNextCreep = function () {
+    
     let spawns = this.memory.structures[STRUCTURE_SPAWN].getObjects();
     let emptySpawner = _.find(spawns, spawn => spawn.spawning == null);
     
@@ -150,7 +151,7 @@ Room.prototype.getCreepLimits = function () {
     //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
     let numRemoteSources = 0
-    //let numClaimRooms = Object.keys(this.memory.claimRooms).length;
+    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
     let numOfSources = Object.keys(this.memory.sources).length;
     
     //get number of remote sources for all remote rooms connected to this room
