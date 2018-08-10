@@ -77,7 +77,7 @@ Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagTy
     //save this room into memory as an object with the property sources
     //sets default to 1 source, subject to change once a creep enters the room and finds the real number
     if(flagType == "Remote")
-        assignedOverseer.remoteRooms[dependentRoom] = {sources: 1, reservationTTL: 0};
+        assignedOverseer.remoteRooms[dependentRoom] = {name: dependentRoom, sources: 1, reservationTTL: 0};
 
 };
 
