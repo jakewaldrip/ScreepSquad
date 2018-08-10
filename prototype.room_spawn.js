@@ -12,7 +12,11 @@ Room.prototype.getNextCreepToSpawn = function () {
     const rolePriority = [
         "worker",
         "drone",
-        "miner"
+        "miner",
+        "remoteMiner",
+        "remoteDrone",
+        "remoteReserver",
+        "claimer"
     ];
     
     let nextCreep, counts = {};
@@ -87,14 +91,22 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
         roleMaxCost = {
             miner: 700,
             drone: 1200,
-            worker: 1700
+            worker: 1700,
+            remoteMiner: 900,
+            remoteDrone: 1500,
+            remoteReserver: 1400,
+            claimer: 700
         };
     }
     else if(roomState == "ROOM_STATE_ADVANCED"){
         roleMaxCost = {
             miner: 700,
             drone: 2000,
-            worker: 2500
+            worker: 2500,
+            remoteMiner: 900,
+            remoteDrone: 2000,
+            remoteReserver: 1400,
+            claimer: 700 
         };
     }
     
@@ -236,7 +248,7 @@ Room.prototype.getCreepLimits = function () {
     this.memory.creepLimits["worker"] = numWorkers;
     this.memory.creepLimits["remoteMiner"] = numRemoteMiners;
     this.memory.creepLimits["remoteDrone"] = numRemoteDrones;
-    this.memory.creepLimits["reserver"] = numReservers;
+    this.memory.creepLimits["remoteReserver"] = numReservers;
     this.memory.creepLimits["claimer"] = numClaimers;
 }
 //------
