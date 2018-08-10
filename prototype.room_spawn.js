@@ -48,6 +48,7 @@ Room.prototype.spawnNextCreep = function () {
     if(emptySpawner != null){
         
         let role = this.getNextCreepToSpawn();
+        let dependentRoom = null;
         
         if(role != undefined){
             
@@ -55,7 +56,34 @@ Room.prototype.spawnNextCreep = function () {
 
             if(this.energyAvailable >= energyCost){
                 
-                emptySpawner.createRole(this.name, energyCost, role);
+                //if creep is a remote creep, set dependentRoom to first room thats not fully worked
+                if(role === 'remoteMiner' || role === 'remoteDrone' || role === 'remoteReserver')
+                {
+                   //find first remote room that is not fully worked
+                    let remoteRooms = this.memory.remoteRooms;
+                   
+                    //all creeps in the room of this role
+                    let creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
+                    let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
+                    
+                    //loop over remote rooms and break on first one without 
+                    for(let i = 0; i < remoteRooms.length; ++i)
+                    {
+                        //number of sources in room should be number of creeps working the room
+                        let currentRoom = this.memory.remoteRooms[i];
+                        let numSources = currentRoom["sources"];
+                        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.dependentRoom === currentRoom);
+                        
+                        //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
+                        if(numCreepsAssigned < numSources)
+                        {
+                           dependentRoom = currentRoom["name"];
+                        }
+                    }
+                }
+                
+                //create the creep using the available spawner
+                emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
                     
             }
         }
