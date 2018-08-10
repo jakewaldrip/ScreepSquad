@@ -135,7 +135,7 @@ Creep.prototype.runWorkDomestic = function () {
 				//if the target is full, gone, undefined, whatever, find new target and go back to moving 
 				//(run role again so the creep doesn't have to wait another tick to go)
 				this.getTarget();
-				this.run();
+				// this.run();
 			}
 		}
 		catch(err)

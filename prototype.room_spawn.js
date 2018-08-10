@@ -38,10 +38,10 @@ Room.prototype.getNextCreepToSpawn = function () {
 //This function runs getNextCreepToSpawn, getCreepSpawnEnergyCost, and then passes
 //the params to spawner.createRole, assuming there is an available spawn.
 Room.prototype.spawnNextCreep = function () {
+    let spawns = this.memory.structures[STRUCTURE_SPAWN].getObjects();
+    let emptySpawner = _.find(spawns, spawn => spawn.spawning == null);
     
-    let emptySpawner = _.find(this.memory.structures[STRUCTURE_SPAWN], spawn => spawn.spawning == null);
-    
-    if(emptySpawner){
+    if(emptySpawner != null){
         
         let role = this.getNextCreepToSpawn();
         
@@ -50,8 +50,6 @@ Room.prototype.spawnNextCreep = function () {
             let energyCost = this.getCreepSpawnEnergyCost(role);
 
             if(this.energyAvailable >= energyCost){
-                
-                emptySpawner = Game.getObjectById(emptySpawner);
                 
                 emptySpawner.createRole(this.name, energyCost, role);
                     

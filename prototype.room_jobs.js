@@ -1,3 +1,4 @@
+
 //Requires that room.getData() has been run.
 
 //get job queue for miners
@@ -14,12 +15,6 @@ Room.prototype.getMinerJobQueue = function () {
         let minersTargeting = _.remove(miners, miner => miner.memory.workTarget === source.id);
         
         if(minersTargeting.length > 0){
-            /*
-             *let minMiner = _.min(minersTargeting, creep => creep.ticksToLive);
-             *if (minMiner.ticksToLive <= #Distance to source in ticks#){
-             *  minersTargeting.remove(minMiner);
-             *}
-             */
              
              if(_.sum(minersTargeting, c => 
                 c.getActiveBodyparts(WORK)) < (source.energyCapacity / 600)
@@ -45,9 +40,6 @@ Room.prototype.getMinerJobQueue = function () {
         
     }, this);
     
-    //descending by default, use .reverse() to make ascending
-    targetSources = _.sortBy(targetSources, source => source.pos.getRangeTo(this.memory.structures[STRUCTURE_SPAWN][0])).reverse();
-    
     this.memory.jobQueues.minerJobs = {};
     
     for(i = 0; i < targetSources.length; i++)
@@ -62,10 +54,6 @@ Room.prototype.getDroneJobQueue = function () {
     let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
     fillStructures = removeClaimedJobs(fillStructures);
-    
-    let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
-    
-    fillStructures = _.sortBy(fillStructures, obj => spawn.pos.getRangeTo(obj.pos), this);
     
     let formattedStructures = {};
     
@@ -82,10 +70,12 @@ Room.prototype.getDroneJobQueue = function () {
 Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
+    
+    /* New system doesn't support sorting
     //Primary sort by structureType (a-z) and then by progress ( 99.9 -> 0.0 )
     constSites = _.sortByAll(constSites, cs => [cs.structureType, 
                             (cs.progress / cs.progressTotal) - 1]);
-    
+    */
     
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] < .75);
@@ -107,16 +97,13 @@ Room.prototype.getWorkerJobQueue = function () {
     //console.log("Before dupe removal: " + targets);
     //targets = removeClaimedJobs(targets);
     //console.log("After dupe removal: " + targets);
+    let formattedTargets = {"controller": {}, "towers": {}, "priorityRepairs": {}, "constSites": {}, "repairs": {} };
     
-    let formattedTargets = {};
-    _.forEach(targets, function(t) {
-       if(t instanceof ConstructionSite){
-           formattedTargets[t.id] = t.progressTotal - t.progress;
-       } 
-       else{
-           formattedTargets[t.id] = "STATE_USE_RESOURCES";
-       }
-    });
+    _.forEach(controller, t => formattedTargets.controller[t.id] = "Controller");
+    _.forEach(lowTowers, t => formattedTargets.towers[t.id] = ( t.energyCapacity - t.energy ) );
+    _.forEach(priorityRepairTargets, t => formattedTargets.priorityRepairs[t.id] = "PriorityRepair" );
+    _.forEach(constSites, t => formattedTargets.constSites[t.id] = ( t.progressTotal - t.progress ) );
+    _.forEach(repairTargets, t => formattedTargets.repairs[t.id] = "Repair" );
     
     //console.log(JSON.stringify(formattedTargets));
     this.memory.jobQueues.workerJobs = formattedTargets;
@@ -152,12 +139,6 @@ Room.prototype.getEnergyJobQueue = function() {
         else {
             return obj.store[RESOURCE_ENERGY];
         }
-        
-    },
-    function(obj){
-        //secondary sort by distance to spawn
-        let spawn = Game.getObjectById(this.memory.structures[STRUCTURE_SPAWN][0]);
-        return obj.pos.getRangeTo(spawn.pos)
         
     });
     
@@ -322,6 +303,47 @@ Creep.prototype.diminishJob = function(job, jobQueue){
             
 }
 
+
+Creep.prototype.getWorkerJob = function(jobQueue) {
+    
+    var job = null;
+    
+    var controller = Object.keys(jobQueue.controller).getObjects();
+    job = this.getClosest(controller);
+    
+    if(job == null){
+        var lowTowers = Object.keys( jobQueue.towers ).getObjects();
+        job = this.getClosest(lowTowers);
+    }
+    
+    if(job == null)    {
+        var priorityRepairs = Object.keys( jobQueue.priorityRepairs ).getObjects();
+        job = this.getClosest(priorityRepairs);   
+    }
+    
+    if(job == null) {
+        var constSites = Object.keys( jobQueue.constSites ).getObjects();
+        job = this.getClosest(constSites);
+    }
+    
+    if(job == null) {
+        var repairs = Object.keys( jobQueue.repairs ).getObjects();
+        job = this.getClosest(repairs);
+    }
+    
+    //Remove the job from the queueif appropriate
+    if(job != null){
+        this.diminishJob(job, jobQueue)
+    }
+    
+    if(job == null)
+        job = this.room.controller;
+    
+    return job.id;
+}
+
+/*
+
 // Requires at least one creep to be upgrading controller at all times.
 // Others choose the closest job in the queue, and controller if no targets.
 Creep.prototype.getWorkerJob = function(jobQueue) {
@@ -368,6 +390,8 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     return job.id;
 }
 
+*/
+
 // If there are no jobs, targets storage
 // If there is no storage, acts as a Worker.
 Creep.prototype.getDroneJob = function(jobQueue) {
@@ -400,7 +424,7 @@ Creep.prototype.getMinerJob = function(jobQueue){
     
     var objects = Object.keys(jobQueue).getObjects();
     
-    var job = objects[0];
+    var job = this.getClosest(objects);
     
     if( job != null )
         this.diminishJob(job, jobQueue);
@@ -417,6 +441,8 @@ Creep.prototype.getMinerJob = function(jobQueue){
 //deleting it from the jobQueue if it is considered empty.
 Creep.prototype.getEnergyJob = function() {
     
+    const STORAGE_THRESHOLD = 1000;
+    
     if(!this.room.memory.jobQueues["getEnergyJobs"]){
         this.room.getEnergyJobQueue();
     }
@@ -426,6 +452,10 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
+    //filter objects smaller than STORAGE_THRESHOLD if not a drone
+    if(this.memory.role != "drone")
+        _.filter(objects, o => o.energyAvailable() < STORAGE_THRESHOLD);
+        
     //seperate storage from objects
     var storage = null;
     if(this.room.storage)
@@ -434,7 +464,7 @@ Creep.prototype.getEnergyJob = function() {
     var job = this.getClosest(objects);
     
     //If job is too small, and you aren't a drone, target storage if it exists and has more than creeps carryCapacity
-    if( (job == null || job.energyAvailable() < this.carryCapacity)
+    if( (job == null || job.energyAvailable() < STORAGE_THRESHOLD)
     && this.memory.role != "drone"
     && storage != null && storage.energyAvailable() > this.carryCapacity){
         
@@ -457,21 +487,24 @@ Creep.prototype.getClosest = function(objects){
     //Loop through each object and get the minimum distance object
     var closest = null, minRange = Infinity;
 
-    objects.forEach( (i) => {
-        
-        var range = this.pos.getRangeTo(i);
+    for(i = 0; i < objects.length; i++){
+        obj = objects[i];
+        var range = this.pos.getRangeTo(obj);
         
         if(range < minRange) {
             //only target it if it has enough to fill your inventory, or is incomplete/not full
-            if(i.energy < i.energyCapacity || i.progress < i.progressTotal || i.energyAvailable() >= this.carryCapacity ){
+            //if(i.energy < i.energyCapacity || i.progress < i.progressTotal || i.energyAvailable() >= this.carryCapacity ){
                 
                 minRange = range;
-                closest = i;
+                closest = obj;
                 
-            }
+            //}
         }
         
-    });
+        //stop on the first object within 3 tiles for efficiency
+        if(minRange <= 3){ break; } 
+        
+    }
     
     return closest;
 }

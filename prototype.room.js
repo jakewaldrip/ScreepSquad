@@ -65,7 +65,7 @@ Room.prototype.setRoomState = function () {
     //check if containers exist
     if(this.memory.creepsInRoom.length >= 3 && containers.length > 0)
     {
-        if(this.storage)
+        if(this.storage && this.memory.creepsInRoom.length >= 6)
         {
             this.memory.roomState = "ROOM_STATE_ADVANCED";
         }
@@ -104,18 +104,6 @@ Object.defineProperty(Room.prototype, 'structures', {
         return returnArray;
     }
 
-});
-//object-array read-only property Room.jobQueues
-Object.defineProperty(Room.prototype, 'jobQueues', {
-    
-    get: function() {
-        if(!this.memory.jobQueues){
-            this.getJobQueues();
-        }
-        
-        return this.memory.jobQueues;
-    }
-    
 });
 
 //gets all the structures in the room as objects
