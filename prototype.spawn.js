@@ -10,7 +10,15 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role){
         
         drone: this.createDrone,
         
-        worker: this.createWorker
+        worker: this.createWorker,
+	
+	remoteMiner: this.createRemoteMiner,
+	    
+	remoteDrone: this.createRemoteDrone,
+	    
+	remoteReserver: this.createRemoteReserver,
+	    
+	claimer: this.createClaimer
     };
     
     if(roleFunction.hasOwnProperty(role)){
@@ -165,6 +173,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 
 
 //create remote miner
+//900 energy cap at inter + adv room state
 StructureSpawn.prototype.createRemoteMiner = function(homeRoom, remoteRoom, energyCost)
 {
 
@@ -173,6 +182,8 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, remoteRoom, ener
 
 
 //create remote drone
+//1500 cap at inter room state
+//2000 cap at adv room state
 StructureSpawn.prototype.createRemoteDrone = function(homeRoom, remoteRoom, energyCost)
 {
 
