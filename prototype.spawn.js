@@ -4,26 +4,40 @@ function randNum() { return Game.time.toString().slice(-4); }
 
 
 //Create creep functions for each role
-StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role){
+StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, dependentRoom){
     var roleFunction = {
+	    
         miner: this.createMiner,
         
         drone: this.createDrone,
         
         worker: this.createWorker,
 	
-	remoteMiner: this.createRemoteMiner,
-	    
-	remoteDrone: this.createRemoteDrone,
-	    
-	remoteReserver: this.createRemoteReserver,
-	    
-	claimer: this.createClaimer
     };
+	
+	var remoteRoleFunction = {
+		
+	    remoteMiner: this.createRemoteMiner,
+	    
+	    remoteDrone: this.createRemoteDrone,
+	    
+	    remoteReserver: this.createRemoteReserver,
+	    
+	    claimer: this.createClaimer
+		
+	};
     
+    //spawn domestic creeps
     if(roleFunction.hasOwnProperty(role)){
         console.log(`${this.name} is hatching a ${role}!`);
         roleFunction[role].call(this, homeRoom, energyCost);
+    }
+	
+    //spawn remote creeps
+    if(remoteRoleFunction.hasOwnProperty(role))
+    {
+    	console.log(`${this.name} is hatching a ${role}!`);
+	remoteRoleFunction[role].call(this, homeRoom, dependentRoom, energyCost);
     }
         
 }
@@ -36,13 +50,6 @@ StructureSpawn.prototype.createMiner = function (homeRoom, energyCost) {
 	
     let w = 0, m = 0, c = 0;
     
-    /*
-    if(energyCost >= 700){
-        w = 5;
-        m = 3;
-        c = 1;
-    }
-    */
     if(energyCost >= 650){
         w = 5;
         m = 3;
@@ -157,7 +164,7 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     m += 1 * x;
 
     body = _.times(w, () => WORK);
-	body = body.concat(_.times(m, () => MOVE) );
+    body = body.concat(_.times(m, () => MOVE) );
     body = body.concat(_.times(c, () => CARRY));
     
 	//create the creep
@@ -174,9 +181,31 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 
 //create remote miner
 //900 energy cap at inter + adv room state
-StructureSpawn.prototype.createRemoteMiner = function(homeRoom, remoteRoom, energyCost)
+StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, dependentRoom)
 {
-
+	
+    //random num for name
+    var name = 'remoteDrone - ' + randNum();
+    var body = [];
+	
+    let w = 0, c = 0, m = 0;
+	
+    //remote miners are static 6 work 6 move
+    w = 6;
+    m = 6;
+	
+    //create the body array with the numbers of each part
+    body = _.times(w, () => WORK);
+    body = body.concat(_.times(m, () => MOVE) );
+	
+    //create the creep
+    this.spawnCreep(body, name, { memory: {
+    	role: 'remoteMiner',
+    	homeRoom: homeRoom,
+	remoteRoom: dependentRoom,
+    	state: 'STATE_SPAWNING',
+    	workTarget: null
+    }});
 }
 //-----
 
@@ -184,17 +213,94 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, remoteRoom, ener
 //create remote drone
 //1500 cap at inter room state
 //2000 cap at adv room state
-StructureSpawn.prototype.createRemoteDrone = function(homeRoom, remoteRoom, energyCost)
+StructureSpawn.prototype.createRemoteDrone = function(homeRoom, energyCost, dependentRoom)
 {
+    //random num for name
+    var name = 'remoteDrone - ' + randNum();
+    var body = [];
 
+    //default 2 work parts, subtract energy from total
+    let w = 2, c = 0, m = 0;
+    energyCost -= 200;
+
+        
+    let x = Math.floor(energyCost / 100);
+        
+    m += x
+    c += x; 
+ 
+    //create body array for creep given the parts
+    body = _.times(w, () => WORK);
+    body = body.concat(_.times(m, () => MOVE) );
+    body = body.concat(_.times(c, () => CARRY));
+        
+    //create the creep
+    this.spawnCreep(body, name, { memory: {
+    	role: 'remoteDrone',
+    	homeRoom: homeRoom,
+	remoteRoom: dependentRoom,
+    	state: 'STATE_SPAWNING',
+    	workTarget: null
+    }});
+}
+//----
+
+
+//create reserver creep
+//reserver  creep capped at 1400 energy
+StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, dependentRoom)
+{
+	
+    //random num for name
+    var name = 'reserver - ' + randNum();
+    var body = [];
+	
+    let m = 0, c = 0;
+	
+    c = 2;
+    m = 4;
+	
+    //create body array for creep given the parts
+    body = _.times(c, () => CLAIM);
+    body = body.concat(_.times(m, () => MOVE) );
+	
+    //create the creep
+    this.spawnCreep(body, name, { memory: {
+    	role: 'remoteDrone',
+    	homeRoom: homeRoom,
+	remoteRoom: dependentRoom,
+    	state: 'STATE_SPAWNING',
+    	workTarget: null
+    }});
 }
 //-----
 
 
-//create reserver/claimer creep (claimers will go reserve nearest room once they claim
-StructureSpawn.prototype.createReserver = function(homeRoom, remoteRoom, energyCost)
+//create claimer creep
+//claimer creep capped at 700 energy
+StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependentRoom)
 {
+	
+    //random num for name
+    var name = 'claimer - ' + randNum();
+    var body = [];
+	
+    let c = 0, m = 0;
+	
+    m = 2;
+    c = 1;
     
+    //create body array for creep given the parts
+    body = _.times(c, () => CLAIM);
+    body = body.concat(_.times(m, () => MOVE) );
+	
+    //create the creep
+    this.spawnCreep(body, name, { memory: {
+    	role: 'remoteDrone',
+    	homeRoom: homeRoom,
+	claimRoom: dependentRoom,
+    	state: 'STATE_SPAWNING',
+    	workTarget: null
+    }});
 }
 //-----
-
