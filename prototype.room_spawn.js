@@ -116,16 +116,32 @@ Room.prototype.getCreepLimits = function () {
 
     var roomState = this.memory.roomState;
 
+    //all creep roles we are calculating limit for
     var numMiners = 0;
     var numDrones = 0;
     var numWorkers = 0;
+    var numRemoteMiners = 0;
+    var numRemoteDrones = 0;
+    var numReservers = 0;
+    var numClaimers = 0;
     
     var energyCap = this.energyCapacityAvailable;
 
 
+    //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
+    let numRemoteSources = 0
+    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
     let numOfSources = Object.keys(this.memory.sources).length;
     
+    //get number of remote sources for all remote rooms connected to this room
+    for (var i = 0; i < numRemoteRooms; ++i) 
+    {
+        numRemoteSources += this.memory.remoteRooms[i]["numSources"];
+    }
+    
+    
+    //get creep limits for each room state
     switch(roomState)
     {
         case 'ROOM_STATE_INTRO':
@@ -175,7 +191,15 @@ Room.prototype.getCreepLimits = function () {
             //1 miner per source at this point will saturate the sources
             numMiners = numOfSources;
             numDrones = 4;
-            numWorkers = 6 + numRemoteRooms;
+            numWorkers = 6 + numRemoteSources;
+            
+            //1 remote squad per remote source
+            numRemoteMiners = numRemoteSources;
+            numRemoteDrones = numRemoteSources;
+            
+            //1 reserver or claimer per room they need to cover
+            numReservers = numRemoteRooms;
+            numClaimers = numClaimRooms;
 
             break;
 
@@ -186,6 +210,14 @@ Room.prototype.getCreepLimits = function () {
             numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
             numDrones = 2;
             numWorkers = 4 + numRemoteRooms;
+            
+            //1 remote squad per remote source
+            numRemoteMiners = numRemoteRooms;
+            numRemoteDrones = numRemoteRooms;
+            
+            //1 reserver or claimer per room they need to cover
+            numReservers = numRemoteRooms;
+            numClaimers = numClaimRooms;
 
             break;
 
@@ -202,6 +234,10 @@ Room.prototype.getCreepLimits = function () {
     this.memory.creepLimits["miner"] = numMiners;
     this.memory.creepLimits["drone"] = numDrones;
     this.memory.creepLimits["worker"] = numWorkers;
+    this.memory.creepLimits["remoteMiner"] = numRemoteMiners;
+    this.memory.creepLimits["remoteDrone"] = numRemoteDrones;
+    this.memory.creepLimits["reserver"] = numReservers;
+    this.memory.creepLimits["claimer"] = numClaimers;
 }
 //------
 
