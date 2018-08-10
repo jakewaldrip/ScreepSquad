@@ -141,7 +141,7 @@ Room.prototype.getCreepLimits = function () {
     //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
     let numRemoteSources = 0
-    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
+    //let numClaimRooms = Object.keys(this.memory.claimRooms).length;
     let numOfSources = Object.keys(this.memory.sources).length;
     
     //get number of remote sources for all remote rooms connected to this room
@@ -227,7 +227,7 @@ Room.prototype.getCreepLimits = function () {
             
             //1 reserver or claimer per room they need to cover
             numReservers = numRemoteRooms;
-            numClaimers = numClaimRooms;
+            //numClaimers = numClaimRooms;
 
             break;
 
