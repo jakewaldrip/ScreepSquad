@@ -7,6 +7,7 @@ function Overseer(room, creeps) {
     this.homeRoom = room;
     this.creeps = creeps;
     this.remoteRooms = {};
+    this.claimRooms = {};
     
 };
 
