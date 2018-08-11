@@ -1,27 +1,19 @@
-	//converts ID's into objects
-	//PARAMS: ID's
-	//RETURNS: objects associated with ID's
-var getObjectsFromIDArray = function (idArray) {
-
-		let formattedObjects = {};
-        
-        //still don't get why this does "o => o.amount"
-		_.forEach(idArray, o => formattedObjects[o.id] = o.amount) ;
-
-		return formattedObjects;
-}
-//-------
-
+//Capitalizes the first letter of a string
+//Used in call functions
 String.prototype.capitalizeFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }    
 
+//Gets the object from an ID
+//"override" of Array.getObjects in case array is only a single string
 String.prototype.getObjects = function(){
     
     return Game.getObjectById(this);
     
 }
 
+//Gets the objects from an array of IDs
+//returns an array
 Array.prototype.getObjects = function() {
     let objectArray = [];
     

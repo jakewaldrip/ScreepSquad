@@ -8,7 +8,7 @@ function Overseer(room, creeps) {
     this.creeps = creeps;
     this.remoteRooms = {};
     this.claimRooms = {};
-    
+    this.attackRooms = {};
 };
 
 
@@ -36,6 +36,7 @@ Overseer.prototype.objectsToMemory = function () {
 
     //call remote rooms to memory
     this.remoteToMemory();
+    this.claimToMemory();
 }
 //-------
 
@@ -53,6 +54,14 @@ Overseer.prototype.remoteToMemory = function () {
 };
 //------------
 
+//save claim rooms to memory
+Overseer.prototype.claimToMemory = function () {
+    
+    if (!this.homeRoom.memory.claimRooms) {
+        this.homeRoom.memory.claimRooms = {};
+    }
+    
+}
 
 /*********************/
 /* Private functions */

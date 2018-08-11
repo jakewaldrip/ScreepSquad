@@ -37,19 +37,19 @@ Overlord.prototype.run = function() {
 };
 
 Overlord.prototype.assignFlags = function() {
-    
-    
-    //** I think I fixed this code, at least the syntax of it. Not sure what it does though **//
 
     //assign dependent room to the main room's overseers
     _.forEach(Game.flags, function (flag) {
         
         //assignFlagToRoom splits flags by color and runs their assignment functions
+        //which returns null if already assigned, or [flagType, roomName] if now assigned.
         let assignment = flag.assignFlagToRoom();
         
         if(assignment != null){
             
+            //"Remote" "Claim" "Attack"
             let flagType = assignment[0];
+            //Room name
             let homeRoom = assignment[1];
             
             let dependentRoom = flag.pos.roomName;
@@ -86,6 +86,8 @@ Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagTy
     }
     else if(flagType == "Attack")
     {
+        //thinking we might have to handle attack flags specially
+        //like might have to assign it to multiple rooms to bombard an enemy
         //place holder to make sure we keep scalability in mind
     }
         

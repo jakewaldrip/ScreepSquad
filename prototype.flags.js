@@ -8,11 +8,8 @@ Flag.prototype.assignRemoteFlagToRoom = function () {
     var ownedRooms = _.filter(Game.rooms, r => r.isOwnedRoom() == true)
     var isExist = false;
     
-    let currentRoom;
-    
-    for(let room in ownedRooms)
+    for(let currentRoom of ownedRooms)
     {   
-        currentRoom = ownedRooms[room];
         var remoteRooms = Object.keys(currentRoom.memory.remoteRooms); 
         
         //check if the flag is assigned to this room and trigger the isExist bool and break the loop

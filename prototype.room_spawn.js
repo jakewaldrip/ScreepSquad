@@ -155,10 +155,9 @@ Room.prototype.getCreepLimits = function () {
     let numOfSources = Object.keys(this.memory.sources).length;
     
     //get number of remote sources for all remote rooms connected to this room
-    for (var i = 0; i < numRemoteRooms; ++i) 
-    {
-        numRemoteSources += this.memory.remoteRooms[i]["sources"];
-    }
+    _.forEach(this.memory.remoteRooms, room => numRemoteSources += room.sources);
+    
+
     
     
     //get creep limits for each room state
@@ -273,7 +272,7 @@ Room.prototype.getCreepSum = function (role) {
 
 
 //returns first remote room thats not fully worked
-Room.prototype.getOpenDepedentRoom = function (role) {
+Room.prototype.getOpenDependentRoom = function (role) {
    
     let depedentRoom = null;
     //find first remote room that is not fully worked
@@ -287,7 +286,7 @@ Room.prototype.getOpenDepedentRoom = function (role) {
     for(let i = 0; i < remoteRooms.length; ++i)
     {
         //number of sources in room should be number of creeps working the room
-        let currentRoom = this.memory.remoteRooms[i];
+        let currentRoom = Game.rooms[this.memory.remoteRooms[i]];
         let numSources = currentRoom["sources"];
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.dependentRoom === currentRoom);
 
