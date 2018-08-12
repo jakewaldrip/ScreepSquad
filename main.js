@@ -38,7 +38,7 @@ module.exports.loop = function () {
 profiler.wrap(function() {
 
     memory_management.garbageCollection();
-    
+    memory_management.deadFlagCleaning();
     var overlord = new Overlord();
     overlord.run(); 
     

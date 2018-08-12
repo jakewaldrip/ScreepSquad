@@ -6,7 +6,7 @@ Creep.prototype.runGetEnergyRemote = function(){
     var target = Game.getObjectById(this.workTarget);
 	
 	if(target == null || target == undefined){
-	    this.getTargetRemote(RESOURCE_ENERGY);
+	    this.getRemoteTarget(RESOURCE_ENERGY);
 	    target = Game.getObjectById(this.workTarget);
 	    //catch if there are no available targets
 	    if(target == null) return;
@@ -41,6 +41,9 @@ Creep.prototype.runUseEnergyRemote = function(){
     var target = Game.getObjectById(this.workTarget);
     //Assumes that their only target is storage/links
     this.transfer(target, RESOURCE_ENERGY);
+    
+    this.getRemoteTarget();
+    this.run();
 }
 
 //---------
@@ -72,9 +75,10 @@ Creep.prototype.runMovingRemote = function(){
         //check if target is an instance of a room or a room object
         if(target instanceof RoomPosition)
         {
+            //avoids getting stuck on exit tile if there is no target from getRemoteTarget()
             this.moveTo(target);
             if(this.room.name == targetRoom){
-                this.getTargetRemote();
+                this.getRemoteTarget();
                 //Not sure if below line will cause a loop or not
                 this.run();
             }
@@ -104,7 +108,7 @@ Creep.prototype.runMovingRemote = function(){
     else
     {
         //if target is not defined, find a new one!!
-        this.getTargetRemote();
+        this.getRemoteTarget();
     }
 }
 
@@ -117,7 +121,7 @@ Creep.prototype.runSpawningRemote = function(){
     //if creep is not spawning, get it a target and change state
     if(!this.spawning)
     {
-        this.getTargetRemote();
+        this.getRemoteTarget();
     }
 }
 
@@ -170,7 +174,7 @@ Creep.prototype.runReservingRemote = function(){
 
 
 //run get target for creep
-Creep.prototype.getTargetRemote = function (targetType){
+Creep.prototype.getRemoteTarget = function (targetType){
     
     
     //this makes targetType an optional parameter.

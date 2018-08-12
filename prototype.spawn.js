@@ -158,11 +158,23 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     }
 
 	//get number of carry and move parts possible
-	var x = Math.floor(energyCost / 100);
+	if(this.room.memory.roomState == "ROOM_STATE_BEGINNER"){
+	    
+    	var x = Math.floor(energyCost / 100);
+        
+        c += 1 * x;
+        m += 1 * x;
+        
+    }
+    else{
+        
+        var x = Math.floor(energyCost / 150);
+        
+        c += 2 * x;
+        m += 1 * x;
+        
+    }
     
-    c += 1 * x;
-    m += 1 * x;
-
     body = _.times(w, () => WORK);
     body = body.concat(_.times(m, () => MOVE) );
     body = body.concat(_.times(c, () => CARRY));
@@ -219,9 +231,9 @@ StructureSpawn.prototype.createRemoteDrone = function(homeRoom, energyCost, depe
     var name = 'remoteDrone - ' + randNum();
     var body = [];
 
-    //default 2 work parts, subtract energy from total
-    let w = 2, c = 0, m = 0;
-    energyCost -= 200;
+    //default 2 work&move parts, subtract energy from total
+    let w = 2, c = 0, m = 2;
+    energyCost -= 300;
 
         
     let x = Math.floor(energyCost / 100);

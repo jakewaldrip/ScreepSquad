@@ -50,20 +50,19 @@ module.exports = {
 		var attackFlags = _.filter(Game.flags, f => f.color === COLOR_RED && f.secondaryColor === COLOR_RED);
 
 		//loop over remote rooms for each room and remove any that does not have a live remote flag
-		for(let currentRoom of ownedRooms)
-		{
+		_.forEach(ownedRooms, function(currentRoom) {
 			
 			//loop over remote rooms for this specific room
-			for(let remoteRoom of currentRoom.memory.remoteRooms)
-			{
+			_.forEach(currentRoom.memory.remoteRooms, function(remoteRoom) {
 				
 				//check if this assigned remote room has a live flag, if not, delete it
 				if(!_.some(remoteFlags, rf => rf.pos.roomName === remoteRoom["name"]))
 				{
-					delete currentRemoteRoom;
+					delete currentRoom.memory.remoteRooms[remoteRoom.name];
+					console.log("Remote room deleted from room " + currentRoom.name);
 				}
-			}
-		}
+			});
+		});
 		
 	}
 	//------------

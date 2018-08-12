@@ -72,7 +72,7 @@ Overseer.prototype.claimToMemory = function () {
 //Update Reservation Timers
 Overseer.prototype.updateReservationTimers = function () {
     
-    _.forEach(Object.keys(this.remoteRooms), function (roomName) {
+    _.forEach(Object.keys(this.homeRoom.memory.remoteRooms), function (roomName) {
         //memory object
         let remoteInMemory = this.homeRoom.memory.remoteRooms[roomName];
         let room = Game.rooms[roomName];
