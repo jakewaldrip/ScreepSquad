@@ -287,7 +287,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         let numSources = currentRoom["sources"];
-        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.dependentRoom === currentRoom);
+        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name);
 
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
         if(numCreepsAssigned < numSources)

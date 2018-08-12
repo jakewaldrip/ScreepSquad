@@ -8,7 +8,9 @@ Room.prototype.getMinerJobQueue = function () {
     
     let sources = _.map(Object.keys(this.memory.sources), id => Game.getObjectById(id));
     
-    let miners = _.filter(Game.creeps, creep => (creep.memory.role === "miner" && creep.memory.homeRoom === this.name), this);
+    let miners = _.filter(Game.creeps, creep => 
+    ( (creep.memory.role === "miner" || creep.memory.role === "remoteMiner" )
+    && (creep.memory.homeRoom === this.name || creep.memory.remoteRoom == this.name ) ), this);
     
     let targetSources = _.filter(sources, function(source) {
         
