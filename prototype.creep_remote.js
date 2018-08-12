@@ -13,26 +13,21 @@ Creep.prototype.runGetEnergyRemote = function(){
 	    
 	}
 	
-	//if creep is a miner, let it mine forever in this state
-	if(this.role === 'remoteMiner')
-	{
-	    this.harvest(target);
+
+	if(!this.Full) {
+        
+		//if creep is not full, get energy
+		if(target.energyAvailable() > 0)
+            this.getEnergy(target);
+        else
+            this.getRemoteTarget(RESOURCE_ENERGY);
+        
 	}
-	else
-	{
-		if(!this.Full)
-		{
-			//if creep is not full, get energy
-			if(target.energyAvailable() > 0)
-		        this.getEnergy(target);
-	        else
-	            this.getRemoteTarget(RESOURCE_ENERGY);
-		}
-		else
-		{
-			//when creep is full, get a new target and set state to moving
-			this.getRemoteTarget();
-		}
+	else {
+	    
+		//when creep is full, get a new target and set state to moving
+		this.getRemoteTarget();
+		
 	}
 
 }
@@ -41,7 +36,11 @@ Creep.prototype.runGetEnergyRemote = function(){
 
 //run use energy for remote drones
 Creep.prototype.runUseEnergyRemote = function(){
-
+    
+    //works ONLY for drones
+    var target = Game.getObjectById(this.workTarget);
+    //Assumes that their only target is storage/links
+    this.transfer(target, RESOURCE_ENERGY);
 }
 
 //---------
@@ -51,7 +50,7 @@ Creep.prototype.runUseEnergyRemote = function(){
 Creep.prototype.runMovingRemote = function(){
 
     //get work target id/object
-    var target = this.memory.workTarget;
+    var target = this.workTarget;
     //checks if it's an object stored in memory and if it has an "x" property.
     //Should also check for y and roomName, but this should work for us w/o wasting CPU
     if(target instanceof Object && target.hasOwnProperty("x")){
@@ -119,7 +118,9 @@ Creep.prototype.runSpawningRemote = function(){
 
 //run mining for static remote miners
 Creep.prototype.runHarvestingRemote = function(){
-
+    var target = Game.getObjectById(this.workTarget);
+    
+    this.harvest(target);
 }
 //----------
 
@@ -127,6 +128,23 @@ Creep.prototype.runHarvestingRemote = function(){
 //run get next state for remote creep
 Creep.prototype.getNextStateRemote = function(){
 
+    var target = Game.getObjectById(this.workTarget);
+    var currentState = this.state;
+	var nextState;
+
+	if(!this.Empty || this.memory.role == "remoteMiner")
+	{
+		//if creep has resources, use them
+		nextState = 'STATE_USE_RESOURCES';
+	}
+	else
+	{
+		//if creep has no resources, get them some
+		nextState = 'STATE_GET_RESOURCES'; 
+	}
+	
+	this.state = nextState;
+	
 }
 //----------
 
@@ -134,7 +152,7 @@ Creep.prototype.getNextStateRemote = function(){
 //run reserving state
 Creep.prototype.runReserving = function(){
     
-    var target = Game.getObjectById(this.memory.workTarget);
+    var target = Game.getObjectById(this.workTarget);
     
     //Can optionally sign the controller here
     //this.signController(target, "");
@@ -177,7 +195,7 @@ Creep.prototype.getTargetRemote = function (targetType){
 //run clamining state
 Creep.prototype.runClaiming = function(){
     
-    var target = Game.getObjectById(this.memory.workTarget);
+    var target = Game.getObjectById(this.workTarget);
     
     //Can optionally sign the controller here
     //this.signController(target, "");
