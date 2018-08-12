@@ -185,7 +185,7 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, depe
 {
 	
     //random num for name
-    var name = 'remoteDrone - ' + randNum();
+    var name = 'remoteMiner - ' + randNum();
     var body = [];
 	
     let w = 0, c = 0, m = 0;

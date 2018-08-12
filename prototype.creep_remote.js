@@ -72,15 +72,13 @@ Creep.prototype.runMovingRemote = function(){
         //check if target is an instance of a room or a room object
         if(target instanceof RoomPosition)
         {
+            this.moveTo(target);
             if(this.room.name == targetRoom){
                 this.getTargetRemote();
                 //Not sure if below line will cause a loop or not
-                //this.run();
+                this.run();
             }
-            else{
-                
-                this.moveTo(target);
-            }
+            
         }
         else
         {
@@ -90,8 +88,17 @@ Creep.prototype.runMovingRemote = function(){
                 //this.run();
             }
             else{
-                this.moveTo(target);
+                
+                if(this.isOnExitTile())
+			    {
+			        this.moveAwayFromExit();
+			    }
+			    else
+			    {
+			        this.moveTo(target, { reusePath: 10 });
+			    }
             }
+            
         }
     }
     else
@@ -178,7 +185,7 @@ Creep.prototype.getTargetRemote = function (targetType){
     }
     
     //check if the creep is empty or if we request an energy target
-    else if( (this.Empty || targetType == RESOURCE_ENERGY) && this.memory.role != "remoteReserver")
+    else if( (this.Empty || targetType == RESOURCE_ENERGY) && this.memory.role != "remoteReserver" && this.memory.role != "remoteMiner")
     {
         this.workTarget = this.getEnergyJob();
     }

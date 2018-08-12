@@ -21,7 +21,7 @@ module.exports = {
 			break;
 
 
-		    case 'STATE_GET_RESOURCES':
+		    case 'STATE_USE_RESOURCES':
 
                 creep.runHarvestingRemote();
 

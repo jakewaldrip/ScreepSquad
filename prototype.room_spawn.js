@@ -10,8 +10,8 @@ Room.prototype.getNextCreepToSpawn = function () {
     //Ascending Priority - Miner -> Drone -> Worker
     //Important for the proper queueing of creeps.
     const rolePriority = [
-        "remoteMiner",
         "remoteDrone",
+        "remoteMiner",
         "remoteReserver",
         "claimer",
         "worker",
@@ -274,7 +274,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
    
     let dependentRoom = null;
     //find first remote room that is not fully worked
-    let remoteRooms = this.memory.remoteRooms;
+    let remoteRooms = Object.keys(this.memory.remoteRooms);
 
     //all creeps in the room of this role
     let creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
@@ -284,7 +284,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
     for(let i = 0; i < remoteRooms.length; ++i)
     {
         //number of sources in room should be number of creeps working the room
-        let currentRoom = Game.rooms[this.memory.remoteRooms[i]];
+        let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         let numSources = currentRoom["sources"];
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.dependentRoom === currentRoom);
 
