@@ -148,7 +148,8 @@ Room.prototype.getCreepLimits = function () {
 
     //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
-    let numRemoteSources = 0
+    let numRemoteSources = 0;
+    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
     let numClaimRooms = Object.keys(this.memory.claimRooms).length;
     let numOfSources = Object.keys(this.memory.sources).length;
     
@@ -215,7 +216,7 @@ Room.prototype.getCreepLimits = function () {
             numRemoteDrones = numRemoteSources;
             
             //1 reserver or claimer per room they need to cover
-            numReservers = numRemoteRooms;
+            numReservers = numReserveRooms;
             numClaimers = numClaimRooms;
 
             break;
@@ -233,8 +234,8 @@ Room.prototype.getCreepLimits = function () {
             numRemoteDrones = numRemoteRooms;
             
             //1 reserver or claimer per room they need to cover
-            numReservers = numRemoteRooms;
-            //numClaimers = numClaimRooms;
+            numReservers = numReserveRooms;
+            numClaimers = numClaimRooms;
 
             break;
 

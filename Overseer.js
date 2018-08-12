@@ -87,8 +87,12 @@ Overseer.prototype.updateReservationTimers = function () {
         //If we have vision, update with the real TTL
         else{
             
-            if(room.controller){
-                remoteInMemory.reservationTTL = room.controller.reservation.ticksToEnd;
+            if(room.controller != undefined){
+                //If reservation is undefined, the controller isn't reserved
+                if(room.controller.reservation == undefined)
+                    remoteInMemory.reservationTTL = 0;
+                else
+                    remoteInMemory.reservationTTL = room.controller.reservation.ticksToEnd;
             }
         }
         
