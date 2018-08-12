@@ -338,55 +338,6 @@ Creep.prototype.getWorkerJob = function(jobQueue) {
     return job.id;
 }
 
-/*
-
-// Requires at least one creep to be upgrading controller at all times.
-// Others choose the closest job in the queue, and controller if no targets.
-Creep.prototype.getWorkerJob = function(jobQueue) {
-    
-    var objects = Object.keys(jobQueue).getObjects();
-    
-    //if the first item in the queue is the controller
-    //then we know that there isn't a creep upgrading.
-    var upgrading = (objects[0] != this.room.controller);
-    
-    //check if any of the items in the list are a tower
-    //returns the ID of the tower if there is one.
-    var lowTower = _.find(this.room.memory.structures[STRUCTURE_TOWER], function(towerID) {
-
-        if( _.some(objects, obj => obj.id == towerID) )
-            return true;
-        else{
-            return false;
-        }
-        
-    });
-    
-    var job;
-    //Targets controller -> lowTowers -> others
-    if( !upgrading )
-        job = this.room.controller;
-    else if( lowTower ){
-        job = Game.getObjectById(lowTower);
-    }
-    else{
-        job = this.getClosest(objects);
-    }
-    
-    
-    if(job != null){
-        
-        this.diminishJob(job, jobQueue);
-        
-    }
-    else
-        job = this.room.controller;
-        
-    
-    return job.id;
-}
-
-*/
 
 // If there are no jobs, targets storage
 // If there is no storage, acts as a Worker.
@@ -444,13 +395,16 @@ Creep.prototype.getEnergyJob = function() {
     }
     
     var jobQueue = this.room.memory.jobQueues["getEnergyJobs"];
+    console.log(JSON.stringify(jobQueue));
     
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
-    //filter objects smaller than STORAGE_THRESHOLD if not a drone
+    //filter objects greater than STORAGE_THRESHOLD if not a drone
     if(this.memory.role != "drone")
-        _.filter(objects, o => o.energyAvailable() < STORAGE_THRESHOLD);
+        objects = _.filter(objects, o => o.energyAvailable() > STORAGE_THRESHOLD);
+    else
+        objects = _.filter(objects, o => o.energyAvailable() > 0);
         
     //seperate storage from objects
     var storage = null;

@@ -86,10 +86,13 @@ Creep.prototype.runHarvestingDomestic = function () {
 		if(!this.Full)
 		{
 			//if creep is not full, get energy
-			if(target.energyAvailable() > 0)
+			if(target.energyAvailable() > 0){
 		        this.getEnergy(target);
-	        else
+			}
+	        else{
 	            this.getTarget(RESOURCE_ENERGY);
+	        }
+            
 		}
 		else
 		{
@@ -110,7 +113,8 @@ Creep.prototype.runWorkDomestic = function () {
 		var target = Game.getObjectById(this.workTarget);
 
 		//fail safe if job is complete before creep uses up energy
-		if(target == null)
+		//also allows drones to fill every tick instead of every other
+		if(target == null || (this.memory.role == "drone" && target.energy >= target.energyCapacity) )
 		{
 			this.getTarget();
 			target = Game.getObjectById(this.workTarget);

@@ -27,6 +27,7 @@ Overseer.prototype.run = function() {
     
     //simulate remoteRooms TTL
     this.updateReservationTimers();
+    //this.updateSourceCount();
 };
 //---------
 
