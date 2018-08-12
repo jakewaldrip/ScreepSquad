@@ -71,32 +71,26 @@ Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
     
-    /* New system doesn't support sorting
-    //Primary sort by structureType (a-z) and then by progress ( 99.9 -> 0.0 )
-    constSites = _.sortByAll(constSites, cs => [cs.structureType, 
-                            (cs.progress / cs.progressTotal) - 1]);
-    */
-    
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] < .75);
     
     repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this);
-    
+    repairTargets = removeClaimedJobs(repairTargets);
     
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .50);
     
     
     let lowTowers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
     lowTowers = _.filter(lowTowers, tower => tower.energy < tower.energyCapacity);
+    lowTowers = removeClaimedJobs(lowTowers);
     
     let controller = [this.controller];
     controller = removeClaimedJobs(controller);
     
+    
     let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
-    //console.log("Before dupe removal: " + targets);
-    //targets = removeClaimedJobs(targets);
-    //console.log("After dupe removal: " + targets);
+    
     let formattedTargets = {"controller": {}, "towers": {}, "priorityRepairs": {}, "constSites": {}, "repairs": {} };
     
     _.forEach(controller, t => formattedTargets.controller[t.id] = "Controller");
