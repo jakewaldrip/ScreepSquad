@@ -27,7 +27,7 @@ Room.prototype.getTowerTarget = function() {
     let target;
     
     lowCreep = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
-    lowCreep = _.min(lowCreep, c => c.hits < c.hitsMax);
+    lowCreep = _.max(lowCreep, c => c.hitsMax - c.hits);
     if(lowCreep.hits < lowCreep.hitsMax)
         target = lowCreep;
     
