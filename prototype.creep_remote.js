@@ -51,6 +51,7 @@ Creep.prototype.runMovingRemote = function(){
 
     //get work target id/object
     var target = this.workTarget;
+    
     //checks if it's an object stored in memory and if it has an "x" property.
     //Should also check for y and roomName, but this should work for us w/o wasting CPU
     if(target instanceof Object && target.hasOwnProperty("x")){
@@ -60,7 +61,7 @@ Creep.prototype.runMovingRemote = function(){
         target = Game.getObjectById(target);
     }
     
-    var targetRoom = this.memory.targetRoom;
+    var targetRoom = this.memory.remoteRoom;
     
     var homeRoom = this.memory.homeRoom;
 
@@ -132,7 +133,7 @@ Creep.prototype.getNextStateRemote = function(){
     var currentState = this.state;
 	var nextState;
 
-	if(!this.Empty || this.memory.role == "remoteMiner")
+	if(!this.Empty || this.memory.role == "remoteMiner" || this.memory.role == "remoteReserver")
 	{
 		//if creep has resources, use them
 		nextState = 'STATE_USE_RESOURCES';
@@ -150,12 +151,12 @@ Creep.prototype.getNextStateRemote = function(){
 
 
 //run reserving state
-Creep.prototype.runReserving = function(){
+Creep.prototype.runReservingRemote = function(){
     
     var target = Game.getObjectById(this.workTarget);
     
     //Can optionally sign the controller here
-    //this.signController(target, "");
+    this.signController(target, "");
     this.reserveController(target);
 }
 //----------------
@@ -175,14 +176,16 @@ Creep.prototype.getTargetRemote = function (targetType){
         //Places the properties of a RoomPosition target in memory instead
         this.workTarget = {x: 25, y: 25, roomName: this.memory.remoteRoom};
     }
+    
     //check if the creep is empty or if we request an energy target
-    else if(this.Empty || targetType == RESOURCE_ENERGY)
+    else if( (this.Empty || targetType == RESOURCE_ENERGY) && this.memory.role != "remoteReserver")
     {
         this.workTarget = this.getEnergyJob();
     }
+    
     else //if targetType == "WORK" / this.Full
     {
-
+        
         //Very basic function (Only has default targets in it)
         this.workTarget = this.getRemoteWorkJob();
         

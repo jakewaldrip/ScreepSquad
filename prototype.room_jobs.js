@@ -520,7 +520,7 @@ Creep.prototype.getRemoteWorkJob = function() {
         
         case 'remoteMiner':
             //Should work exactly like regular miner
-            this.getWorkJob("miner");
+            return this.getWorkJob("miner");
         
         break;
         
@@ -531,7 +531,7 @@ Creep.prototype.getRemoteWorkJob = function() {
             //the link closest to the remoteRoom exit
             let homeRoom = Game.rooms[this.memory.homeRoom];
             if(homeRoom.storage != undefined)
-                this.workTarget = homeRoom.storage.id;
+                return homeRoom.storage.id;
             else
                 console.log(this.name + ": No storage found!");
                 
@@ -541,7 +541,7 @@ Creep.prototype.getRemoteWorkJob = function() {
         case 'remoteReserver':
             
             if(this.room.controller != undefined)
-                this.workTarget = this.room.controller.id;
+                return this.room.controller.id;
             else
                 console.log(this.name + ": No controller found!");
                 

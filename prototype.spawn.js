@@ -37,7 +37,7 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
     if(remoteRoleFunction.hasOwnProperty(role))
     {
     	console.log(`${this.name} is hatching a ${role}!`);
-	remoteRoleFunction[role].call(this, homeRoom, dependentRoom, energyCost);
+	remoteRoleFunction[role].call(this, homeRoom, energyCost, dependentRoom);
     }
         
 }
@@ -266,7 +266,7 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
 	
     //create the creep
     this.spawnCreep(body, name, { memory: {
-    	role: 'remoteDrone',
+    	role: 'remoteReserver',
     	homeRoom: homeRoom,
 	remoteRoom: dependentRoom,
     	state: 'STATE_SPAWNING',
