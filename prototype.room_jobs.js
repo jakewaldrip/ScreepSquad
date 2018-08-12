@@ -395,7 +395,6 @@ Creep.prototype.getEnergyJob = function() {
     }
     
     var jobQueue = this.room.memory.jobQueues["getEnergyJobs"];
-    console.log(JSON.stringify(jobQueue));
     
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
@@ -477,14 +476,23 @@ Creep.prototype.getRemoteWorkJob = function() {
         
         case 'remoteDrone':
             
-            //Will eventually change this into a function to find 
-            //the link closest to the remoteRoom exit
-            let homeRoom = Game.rooms[this.memory.homeRoom];
-            if(homeRoom.storage != undefined)
-                return homeRoom.storage.id;
-            else
-                console.log(this.name + ": No storage found!");
-                
+            if(this.room.name != this.memory.homeRoom){
+                //Target center of homeRoom
+                return {x: 25, y: 25, roomName: this.memory.homeRoom};
+            }
+            else{
+                //act like a drone would
+                this.getWorkJob("drone");
+                /*
+                //Will eventually change this into a function to find 
+                //the link closest to the remoteRoom exit
+                let homeRoom = Game.rooms[this.memory.homeRoom];
+                if(homeRoom.storage != undefined)
+                    return homeRoom.storage.id;
+                else
+                    console.log(this.name + ": No storage found!");
+                */
+            }
         break;
         
         
