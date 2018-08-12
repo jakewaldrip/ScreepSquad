@@ -24,6 +24,9 @@ Overseer.prototype.run = function() {
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
     this.homeRoom.runTowers();
+    
+    //simulate remoteRooms TTL
+    this.updateReservationTimers();
 };
 //---------
 
@@ -61,8 +64,38 @@ Overseer.prototype.claimToMemory = function () {
         this.homeRoom.memory.claimRooms = {};
     }
     
+    _.forEach(Object.keys(this.claimRooms), function(roomName) {
+        this.homeRoom.memory.claimRooms[roomName] = this.claimRooms[roomName];
+    });
 }
 
+//Update Reservation Timers
+Overseer.prototype.updateReservationTimers = function () {
+    
+    _.forEach(Object.keys(this.remoteRooms), function (roomName) {
+        //memory object
+        let remoteInMemory = this.homeRoom.memory.remoteRooms[roomName];
+        let room = Game.rooms[roomName];
+        //If we don't have vision of the room, simulate the TTL (inaccurate if we were to be attacked)
+        if(room == undefined){
+            
+            if(remoteInMemory.reservationTTL > 0){
+                remoteInMemory.reservationTTL -= 1;
+            }
+            
+        }
+        //If we have vision, update with the real TTL
+        else{
+            
+            if(room.controller){
+                remoteInMemory.reservationTTL = room.controller.reservation.ticksToEnd;
+            }
+        }
+        
+    }, this);
+    
+    
+}
 /*********************/
 /* Private functions */
 /*********************/
