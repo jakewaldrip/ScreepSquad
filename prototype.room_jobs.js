@@ -509,3 +509,51 @@ Creep.prototype.getClosest = function(objects){
     return closest;
 }
 
+
+
+//---------------------------------------------------------------------------------------
+//Remote Job Functions
+
+Creep.prototype.getRemoteWorkJob = function() {
+    
+    switch(this.memory.role) {
+        
+        case 'remoteMiner':
+            //Should work exactly like regular miner
+            this.getWorkJob("miner");
+        
+        break;
+        
+        
+        case 'remoteDrone':
+            
+            //Will eventually change this into a function to find 
+            //the link closest to the remoteRoom exit
+            let homeRoom = Game.rooms[this.memory.homeRoom];
+            if(homeRoom.storage != undefined)
+                this.workTarget = homeRoom.storage.id;
+            else
+                console.log(this.name + ": No storage found!");
+                
+        break;
+        
+        
+        case 'remoteReserver':
+            
+            if(this.room.controller != undefined)
+                this.workTarget = this.room.controller.id;
+            else
+                console.log(this.name + ": No controller found!");
+                
+        break;
+        
+        
+        default:
+        
+            console.log(this.name + " is an invalid creep for Creep.prototype.getRemoteWorkJob");
+            
+        break;
+        
+    }
+    
+}

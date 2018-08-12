@@ -139,9 +139,35 @@ Creep.prototype.runReserving = function(){
 
 
 //run get target for creep
-Creep.prototype.getTargetRemote = function (){
+Creep.prototype.getTargetRemote = function (targetType){
     
+    
+    //this makes targetType an optional parameter.
+    //if it is not defined in the function call, it will equal null
+    this.workTarget = null;
+    targetType = targetType || null;
+    
+    //If not in remoteRoom, target center of it
+    if(this.room.name != this.memory.remoteRoom){
+        //Places the properties of a RoomPosition target in memory instead
+        this.workTarget = {x: 25, y: 25, roomName: this.memory.remoteRoom};
+    }
+    //check if the creep is empty or if we request an energy target
+    else if(this.Empty || targetType == RESOURCE_ENERGY)
+    {
+        this.workTarget = this.getEnergyJob();
+    }
+    else //if targetType == "WORK" / this.Full
+    {
+
+        //Very basic function (Only has default targets in it)
+        this.workTarget = this.getRemoteWorkJob();
+        
+    }
+    
+    this.state = 'STATE_MOVING';
 }
+
 
 //run clamining state
 Creep.prototype.runClaiming = function(){
