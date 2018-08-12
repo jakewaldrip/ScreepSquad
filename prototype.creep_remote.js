@@ -134,6 +134,11 @@ Creep.prototype.getNextStateRemote = function(){
 //run reserving state
 Creep.prototype.runReserving = function(){
     
+    var target = Game.getObjectById(this.memory.workTarget);
+    
+    //Can optionally sign the controller here
+    //this.signController(target, "");
+    this.reserveController(target);
 }
 //----------------
 
@@ -171,6 +176,11 @@ Creep.prototype.getTargetRemote = function (targetType){
 
 //run clamining state
 Creep.prototype.runClaiming = function(){
-
+    
+    var target = Game.getObjectById(this.memory.workTarget);
+    
+    //Can optionally sign the controller here
+    //this.signController(target, "");
+    this.claimController(target);
 }
 //-----------
