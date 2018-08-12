@@ -3,6 +3,38 @@
 //run get energy for the remote drones
 Creep.prototype.runGetEnergyRemote = function(){
 
+    var target = Game.getObjectById(this.workTarget);
+	
+	if(target == null || target == undefined){
+	    this.getTargetRemote(RESOURCE_ENERGY);
+	    target = Game.getObjectById(this.workTarget);
+	    //catch if there are no available targets
+	    if(target == null) return;
+	    
+	}
+	
+	//if creep is a miner, let it mine forever in this state
+	if(this.role === 'remoteMiner')
+	{
+	    this.harvest(target);
+	}
+	else
+	{
+		if(!this.Full)
+		{
+			//if creep is not full, get energy
+			if(target.energyAvailable() > 0)
+		        this.getEnergy(target);
+	        else
+	            this.getRemoteTarget(RESOURCE_ENERGY);
+		}
+		else
+		{
+			//when creep is full, get a new target and set state to moving
+			this.getRemoteTarget();
+		}
+	}
+
 }
 //----------
 

@@ -130,8 +130,6 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
 
 
 //get limit of the creeps for the room
-//NEEDS UPDATED TO BE DYNAMIC
-//^^ elaborate?
 Room.prototype.getCreepLimits = function () {
 
     var roomState = this.memory.roomState;
@@ -274,7 +272,7 @@ Room.prototype.getCreepSum = function (role) {
 //returns first remote room thats not fully worked
 Room.prototype.getOpenDependentRoom = function (role) {
    
-    let depedentRoom = null;
+    let dependentRoom = null;
     //find first remote room that is not fully worked
     let remoteRooms = this.memory.remoteRooms;
 
@@ -297,7 +295,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
         }
     }
     
-    return depedentRoom;
+    return dependentRoom;
 }
 //--------
 
