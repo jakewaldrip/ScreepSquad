@@ -72,7 +72,7 @@ Overseer.prototype.claimToMemory = function () {
 //Update Reservation Timers
 Overseer.prototype.updateReservationTimers = function () {
     
-    _.forEach(Object.keys(this.remoteRooms), function (roomName) {
+    _.forEach(Object.keys(this.homeRoom.memory.remoteRooms), function (roomName) {
         //memory object
         let remoteInMemory = this.homeRoom.memory.remoteRooms[roomName];
         let room = Game.rooms[roomName];
@@ -87,8 +87,12 @@ Overseer.prototype.updateReservationTimers = function () {
         //If we have vision, update with the real TTL
         else{
             
-            if(room.controller){
-                remoteInMemory.reservationTTL = room.controller.reservation.ticksToEnd;
+            if(room.controller != undefined){
+                //If reservation is undefined, the controller isn't reserved
+                if(room.controller.reservation == undefined)
+                    remoteInMemory.reservationTTL = 0;
+                else
+                    remoteInMemory.reservationTTL = room.controller.reservation.ticksToEnd;
             }
         }
         

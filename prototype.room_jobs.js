@@ -8,7 +8,9 @@ Room.prototype.getMinerJobQueue = function () {
     
     let sources = _.map(Object.keys(this.memory.sources), id => Game.getObjectById(id));
     
-    let miners = _.filter(Game.creeps, creep => (creep.memory.role === "miner" && creep.memory.homeRoom === this.name), this);
+    let miners = _.filter(Game.creeps, creep => 
+    ( (creep.memory.role === "miner" || creep.memory.role === "remoteMiner" )
+    && (creep.memory.homeRoom === this.name || creep.memory.remoteRoom == this.name ) ), this);
     
     let targetSources = _.filter(sources, function(source) {
         
@@ -71,32 +73,26 @@ Room.prototype.getWorkerJobQueue = function () {
     
     let constSites = _.map(this.memory.constructionSites, id => Game.getObjectById(id));
     
-    /* New system doesn't support sorting
-    //Primary sort by structureType (a-z) and then by progress ( 99.9 -> 0.0 )
-    constSites = _.sortByAll(constSites, cs => [cs.structureType, 
-                            (cs.progress / cs.progressTotal) - 1]);
-    */
-    
     let repairTargets = _.map(Object.keys(this.memory.repairTargets), id => Game.getObjectById(id));
     _.filter(repairTargets, rt => this.memory.repairTargets[rt.id] < .75);
     
     repairTargets = _.sortBy(repairTargets, s => this.memory.repairTargets[s.id], this);
-    
+    repairTargets = removeClaimedJobs(repairTargets);
     
     let priorityRepairTargets = _.takeWhile(repairTargets, s => this.memory.repairTargets[s.id] < .50);
     
     
     let lowTowers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
     lowTowers = _.filter(lowTowers, tower => tower.energy < tower.energyCapacity);
+    lowTowers = removeClaimedJobs(lowTowers);
     
     let controller = [this.controller];
     controller = removeClaimedJobs(controller);
     
+    
     let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
-    //console.log("Before dupe removal: " + targets);
-    //targets = removeClaimedJobs(targets);
-    //console.log("After dupe removal: " + targets);
+    
     let formattedTargets = {"controller": {}, "towers": {}, "priorityRepairs": {}, "constSites": {}, "repairs": {} };
     
     _.forEach(controller, t => formattedTargets.controller[t.id] = "Controller");
@@ -509,3 +505,51 @@ Creep.prototype.getClosest = function(objects){
     return closest;
 }
 
+
+
+//---------------------------------------------------------------------------------------
+//Remote Job Functions
+
+Creep.prototype.getRemoteWorkJob = function() {
+    
+    switch(this.memory.role) {
+        
+        case 'remoteMiner':
+            //Should work exactly like regular miner
+            return this.getWorkJob("miner");
+        
+        break;
+        
+        
+        case 'remoteDrone':
+            
+            //Will eventually change this into a function to find 
+            //the link closest to the remoteRoom exit
+            let homeRoom = Game.rooms[this.memory.homeRoom];
+            if(homeRoom.storage != undefined)
+                return homeRoom.storage.id;
+            else
+                console.log(this.name + ": No storage found!");
+                
+        break;
+        
+        
+        case 'remoteReserver':
+            
+            if(this.room.controller != undefined)
+                return this.room.controller.id;
+            else
+                console.log(this.name + ": No controller found!");
+                
+        break;
+        
+        
+        default:
+        
+            console.log(this.name + " is an invalid creep for Creep.prototype.getRemoteWorkJob");
+            
+        break;
+        
+    }
+    
+}

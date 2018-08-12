@@ -37,7 +37,7 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
     if(remoteRoleFunction.hasOwnProperty(role))
     {
     	console.log(`${this.name} is hatching a ${role}!`);
-	remoteRoleFunction[role].call(this, homeRoom, dependentRoom, energyCost);
+	remoteRoleFunction[role].call(this, homeRoom, energyCost, dependentRoom);
     }
         
 }
@@ -158,11 +158,23 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
     }
 
 	//get number of carry and move parts possible
-	var x = Math.floor(energyCost / 100);
+	if(this.room.memory.roomState == "ROOM_STATE_BEGINNER"){
+	    
+    	var x = Math.floor(energyCost / 100);
+        
+        c += 1 * x;
+        m += 1 * x;
+        
+    }
+    else{
+        
+        var x = Math.floor(energyCost / 150);
+        
+        c += 2 * x;
+        m += 1 * x;
+        
+    }
     
-    c += 1 * x;
-    m += 1 * x;
-
     body = _.times(w, () => WORK);
     body = body.concat(_.times(m, () => MOVE) );
     body = body.concat(_.times(c, () => CARRY));
@@ -185,7 +197,7 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, depe
 {
 	
     //random num for name
-    var name = 'remoteDrone - ' + randNum();
+    var name = 'remoteMiner - ' + randNum();
     var body = [];
 	
     let w = 0, c = 0, m = 0;
@@ -219,9 +231,9 @@ StructureSpawn.prototype.createRemoteDrone = function(homeRoom, energyCost, depe
     var name = 'remoteDrone - ' + randNum();
     var body = [];
 
-    //default 2 work parts, subtract energy from total
-    let w = 2, c = 0, m = 0;
-    energyCost -= 200;
+    //default 2 work&move parts, subtract energy from total
+    let w = 2, c = 0, m = 2;
+    energyCost -= 300;
 
         
     let x = Math.floor(energyCost / 100);
@@ -255,18 +267,18 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
     var name = 'reserver - ' + randNum();
     var body = [];
 	
-    let m = 0, c = 0;
+    let m = 0, cl = 0;
 	
-    c = 2;
-    m = 4;
+    cl = 2;
+    m = 4; 
 	
     //create body array for creep given the parts
-    body = _.times(c, () => CLAIM);
+    body = _.times(cl, () => CLAIM);
     body = body.concat(_.times(m, () => MOVE) );
 	
     //create the creep
     this.spawnCreep(body, name, { memory: {
-    	role: 'remoteDrone',
+    	role: 'remoteReserver',
     	homeRoom: homeRoom,
 	remoteRoom: dependentRoom,
     	state: 'STATE_SPAWNING',
@@ -285,13 +297,13 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
     var name = 'claimer - ' + randNum();
     var body = [];
 	
-    let c = 0, m = 0;
+    let cl = 0, m = 0;
 	
     m = 2;
-    c = 1;
+    cl = 1;
     
     //create body array for creep given the parts
-    body = _.times(c, () => CLAIM);
+    body = _.times(cl, () => CLAIM);
     body = body.concat(_.times(m, () => MOVE) );
 	
     //create the creep
