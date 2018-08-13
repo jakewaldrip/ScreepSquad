@@ -55,6 +55,7 @@ Creep.prototype.runMovingDomestic = function () {
 	}
 	else
 	{
+	    
 		//if target is null, find a new one!!
 		this.getTarget();
 	}
@@ -197,6 +198,7 @@ Creep.prototype.getTarget = function (targetType) {
     //check if the creep is empty to decide which target to get
     if((this.Empty && this.role != "miner") || targetType == RESOURCE_ENERGY)
     {
+        
         //if creep has no energy, get an energy job
         this.workTarget = this.getEnergyJob();
     }
