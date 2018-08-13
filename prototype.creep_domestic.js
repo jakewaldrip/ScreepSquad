@@ -86,8 +86,8 @@ Creep.prototype.runHarvestingDomestic = function () {
 	{
 		if(!this.Full)
 		{
-			//if creep is not full, get energy
-			if(target.energyAvailable() > 0){
+			//avoid waiting at a container that is filling 10energy/tick
+			if(target.energyAvailable() > 15){
 		        this.getEnergy(target);
 			}
 	        else{
