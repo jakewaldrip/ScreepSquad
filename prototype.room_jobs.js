@@ -5,19 +5,22 @@
 //returns [ [id, state], [], ... ]
 Room.prototype.getMinerJobQueue = function () {
     
-    
-    let sources = _.map(Object.keys(this.memory.sources), id => Game.getObjectById(id));
-    
+	//get sources from memory
+    let sources = _.map(this.memory.sources, id => Game.getObjectById(id));
+
+	//get miners in room
     let miners = _.filter(Game.creeps, creep => 
     ( (creep.memory.role === "miner" || creep.memory.role === "remoteMiner" )
     && (creep.memory.homeRoom === this.name || creep.memory.remoteRoom == this.name ) ), this);
     
+	//get the sources we're targeting
     let targetSources = _.filter(sources, function(source) {
         
         let minersTargeting = _.remove(miners, miner => miner.memory.workTarget === source.id);
         
         if(minersTargeting.length > 0){
              
+			 //check if the source is saturated
              if(_.sum(minersTargeting, c => 
                 c.getActiveBodyparts(WORK)) < (source.energyCapacity / 600)
                 && minersTargeting.length < this.memory.sources[source.id].accessTiles.length ){ //600 = 300 ticks * 2 energy/part/tick
@@ -44,6 +47,7 @@ Room.prototype.getMinerJobQueue = function () {
     
     this.memory.jobQueues.minerJobs = {};
     
+	//save each non saturated source in the job queue
     for(i = 0; i < targetSources.length; i++)
         this.memory.jobQueues.minerJobs[targetSources[i].id] = "STATE_HARVESTING";
         
