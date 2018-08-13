@@ -19,3 +19,28 @@ Resource.prototype.energyAvailable = function() {
     return this.amount;
     
 };
+
+Object.defineProperty(Source.prototype, "container", {
+   
+    get: function() {
+       
+        if(this.room.memory.sources && this.room.memory.sources[this.id]){
+           
+            return this.room.memory.sources[this.id].container;
+           
+        }
+       
+    },
+   
+    set: function(value) {
+       
+        if(this.room.memory.sources && this.room.memory.sources[this.id]){
+           
+            if(value instanceof Object)
+                value = value.id;
+           
+            this.room.memory.sources[this.id].container = value;
+           
+        }
+    }
+});

@@ -131,9 +131,72 @@ Creep.prototype.runSpawningRemote = function(){
 
 //run mining for static remote miners
 Creep.prototype.runHarvestingRemote = function(){
+    
     var target = Game.getObjectById(this.workTarget);
     
-    this.harvest(target);
+    //If we have expended the source work on container
+    if(this.harvest(target) == ERR_NOT_ENOUGH_RESOURCES) {
+        
+        //If we have no energy in carry, pick up from our drops
+        if(this.carry[RESOURCE_ENERGY] == 0){
+            
+            var droppedEnergy = this.pos.lookFor(LOOK_ENERGY)[0];
+            if(droppedEnergy != null)
+                this.pickup(droppedEnergy);
+            
+        }
+        
+        //Check if source has a container assigned,
+        //if it doesn't, construct one or reassign it
+        if(target.container == undefined){
+            
+            //place a construction site and store it in memory, or check for an existing container
+            this.pos.createConstructionSite(STRUCTURE_CONTAINER)
+            
+            console.log("here");    
+            //Check for construction site that exists
+            let construction = this.pos.lookFor(LOOK_CONSTRUCTION_SITES)[0];
+            
+            if(construction != null && construction.structureType == STRUCTURE_CONTAINER){
+                //assign it to target memory(room.memory.sources[source.id].container)
+                target.container = construction.id;
+                
+            }
+            //Check for a container structure
+            else{
+             
+                let container = this.pos.lookFor(LOOK_STRUCTURES)[0];
+                //assign it to target memory
+                if(container != null && container.structureType == STRUCTURE_CONTAINER)
+                    target.container = container.id;
+
+            }
+                    
+        }
+        //If one does exist, check if it needs built or repaired
+        else{
+            
+            let container = Game.getObjectById(target.container);
+            
+            if(container instanceof ConstructionSite)
+                this.build(container);
+            else if(container.hits < container.hitsMax)
+                this.repair(container);
+            else //Container has been built, so the constSite ID is null, so we reset and catch next tick
+                target.container = undefined;
+        }
+
+        
+    }
+    //Drop what we have for drones to use
+    else{
+        
+        //Not dropping energy to avoid looking for it the first building tick.
+        // And also because it incurs a .2 CPU cost every tick in addition to the .2 for harvesting
+        // Better to just let it drop once creep is full
+        //this.drop(RESOURCE_ENERGY);
+        
+    }
 }
 //----------
 

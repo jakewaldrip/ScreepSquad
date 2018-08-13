@@ -99,7 +99,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 1200,
             worker: 1700,
-            remoteMiner: 900,
+            remoteMiner: 1000,
             remoteDrone: 1500,
             remoteReserver: 1400,
             claimer: 700
@@ -110,7 +110,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 2000,
             worker: 2500,
-            remoteMiner: 900,
+            remoteMiner: 1000,
             remoteDrone: 2000,
             remoteReserver: 1400,
             claimer: 700 
@@ -148,13 +148,17 @@ Room.prototype.getCreepLimits = function () {
 
     //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
-    let numRemoteSources = 0;
-    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
-    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
-    let numOfSources = Object.keys(this.memory.sources).length;
     
     //get number of remote sources for all remote rooms connected to this room
+    let numRemoteSources = 0;
     _.forEach(this.memory.remoteRooms, room => numRemoteSources += room.sources);
+    
+    //remote rooms with a reservation timer of 4500 or less
+    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
+    let numClaimRooms = Object.keys(this.memory.claimRooms).length
+    //Number of sources in homeRoom
+    let numOfSources = Object.keys(this.memory.sources).length;
+    
     
 
     
@@ -209,7 +213,7 @@ Room.prototype.getCreepLimits = function () {
             //1 miner per source at this point will saturate the sources
             numMiners = numOfSources;
             numDrones = 4;
-            numWorkers = 6 + numRemoteSources;
+            numWorkers = 6 + numRemoteRooms;
             
             //1 remote squad per remote source
             numRemoteMiners = numRemoteSources;
@@ -225,13 +229,13 @@ Room.prototype.getCreepLimits = function () {
         case 'ROOM_STATE_ADVANCED':
             
             //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
-            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
+            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
             numDrones = 2;
             numWorkers = 4 + numRemoteRooms;
             
             //1 remote squad per remote source
-            numRemoteMiners = numRemoteRooms;
-            numRemoteDrones = numRemoteRooms;
+            numRemoteMiners = numRemoteSources;
+            numRemoteDrones = numRemoteSources;
             
             //1 reserver or claimer per room they need to cover
             numReservers = numReserveRooms;
@@ -282,17 +286,19 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
 
     //loop over remote rooms and break on first one without 
-    for(let i = 0; i < remoteRooms.length; ++i)
+    for(let i = 0; i < remoteRooms.length; i++)
     {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
+        
         let numSources = currentRoom["sources"];
-        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name);
+        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
 
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
         if(numCreepsAssigned < numSources)
         {
            dependentRoom = currentRoom["name"];
+           break;
         }
     }
     
