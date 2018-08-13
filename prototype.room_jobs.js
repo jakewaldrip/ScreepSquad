@@ -403,12 +403,17 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
-    //filter objects greater than STORAGE_THRESHOLD if not a drone
-    if(this.memory.role != "drone")
+    //filter objects greater than STORAGE_THRESHOLD if not a drone or not in advanced room state
+    if(this.memory.role != "drone" && this.room.memory.roomState === 'ROOM_STATE_ADVANCED')
+    {
         objects = _.filter(objects, o => o.energyAvailable() > STORAGE_THRESHOLD);
+    }
     else
+    {
         objects = _.filter(objects, o => o.energyAvailable() > 0);
+    }
         
+    
     //seperate storage from objects
     var storage = null;
     if(this.room.storage)

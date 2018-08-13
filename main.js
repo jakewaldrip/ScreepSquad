@@ -39,8 +39,11 @@ const profiler = require('screeps-profiler');
 module.exports.loop = function () {
 profiler.wrap(function() {
 
+    //clean up memory from no longer existing objects and flags
     memory_management.garbageCollection();
     memory_management.deadFlagCleaning();
+    
+    //create the overlord object and run the empire
     var overlord = new Overlord();
     overlord.run(); 
     
