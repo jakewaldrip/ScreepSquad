@@ -148,13 +148,17 @@ Room.prototype.getCreepLimits = function () {
 
     //depedent rooms and sources
     let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
-    let numRemoteSources = 0;
-    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
-    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
-    let numOfSources = Object.keys(this.memory.sources).length;
     
     //get number of remote sources for all remote rooms connected to this room
+    let numRemoteSources = 0;
     _.forEach(this.memory.remoteRooms, room => numRemoteSources += room.sources);
+    
+    //remote rooms with a reservation timer of 4500 or less
+    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
+    let numClaimRooms = Object.keys(this.memory.claimRooms).length
+    //Number of sources in homeRoom
+    let numOfSources = Object.keys(this.memory.sources).length;
+    
     
 
     
@@ -209,7 +213,7 @@ Room.prototype.getCreepLimits = function () {
             //1 miner per source at this point will saturate the sources
             numMiners = numOfSources;
             numDrones = 4;
-            numWorkers = 6 + numRemoteSources;
+            numWorkers = 6 + numRemoteRooms;
             
             //1 remote squad per remote source
             numRemoteMiners = numRemoteSources;
@@ -225,13 +229,13 @@ Room.prototype.getCreepLimits = function () {
         case 'ROOM_STATE_ADVANCED':
             
             //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
-            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
+            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
             numDrones = 2;
             numWorkers = 4 + numRemoteRooms;
             
             //1 remote squad per remote source
-            numRemoteMiners = numRemoteRooms;
-            numRemoteDrones = numRemoteRooms;
+            numRemoteMiners = numRemoteSources;
+            numRemoteDrones = numRemoteSources;
             
             //1 reserver or claimer per room they need to cover
             numReservers = numReserveRooms;
