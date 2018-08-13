@@ -1,4 +1,4 @@
-//handles spawning for each room
+2//handles spawning for each room
 
 //get the next creep to spawn
 //Will spawn one of each creep type with a limit > 0
@@ -217,7 +217,7 @@ Room.prototype.getCreepLimits = function () {
             
             //1 remote squad per remote source
             numRemoteMiners = numRemoteSources;
-            numRemoteDrones = numRemoteSources;
+            numRemoteDrones = numRemoteSources * 2;
             
             //1 reserver or claimer per room they need to cover
             numReservers = numReserveRooms;
@@ -235,7 +235,10 @@ Room.prototype.getCreepLimits = function () {
             
             //1 remote squad per remote source
             numRemoteMiners = numRemoteSources;
-            numRemoteDrones = numRemoteSources;
+            if(this.energyCapacityAvailable < 2500)
+                numRemoteDrones = numRemoteSources * 2;
+            else
+                numRemoteDrones = numRemoteSources;
             
             //1 reserver or claimer per room they need to cover
             numReservers = numReserveRooms;
@@ -285,6 +288,11 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
 
+    let creepsPerSource = 1;
+    if(role == "remoteDrone" && this.energyCapacityAvailable < 2500){
+        creepsPerSource = 2;
+    }
+    
     //loop over remote rooms and break on first one without 
     for(let i = 0; i < remoteRooms.length; i++)
     {
@@ -295,7 +303,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
 
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
-        if(numCreepsAssigned < numSources)
+        if(numCreepsAssigned < (numSources * creepsPerSource) )
         {
            dependentRoom = currentRoom["name"];
            break;
