@@ -202,13 +202,15 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, depe
 	
     let w = 0, c = 0, m = 0;
 	
-    //remote miners are static 6 work 6 move
+    //remote miners are static 6 work 6 move 1 carry
     w = 6;
     m = 6;
+	c = 1;
 	
     //create the body array with the numbers of each part
     body = _.times(w, () => WORK);
     body = body.concat(_.times(m, () => MOVE) );
+	body = body.concat(_.times(c, () => CARRY) );
 	
     //create the creep
     this.spawnCreep(body, name, { memory: {

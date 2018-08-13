@@ -388,7 +388,7 @@ Creep.prototype.getMinerJob = function(jobQueue){
 //deleting it from the jobQueue if it is considered empty.
 Creep.prototype.getEnergyJob = function() {
     
-    const STORAGE_THRESHOLD = 1000;
+    const STORAGE_THRESHOLD = 1300;
     
     if(!this.room.memory.jobQueues["getEnergyJobs"]){
         this.room.getEnergyJobQueue();
@@ -483,6 +483,7 @@ Creep.prototype.getRemoteWorkJob = function() {
             else{
                 //act like a drone would
                 return this.getWorkJob("drone");
+                
                 /*
                 //Will eventually change this into a function to find 
                 //the link closest to the remoteRoom exit
