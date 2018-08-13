@@ -27,7 +27,7 @@ Overseer.prototype.run = function() {
     
     //simulate remoteRooms TTL
     this.updateReservationTimers();
-    //this.updateSourceCounts();
+    this.updateSourceCounts();
 };
 //---------
 
@@ -109,7 +109,7 @@ Overseer.prototype.updateSourceCounts = function () {
         if(Memory.rooms[roomName] != undefined)
             this.homeRoom.memory.remoteRooms[roomName].sources = _.size(Memory.rooms[roomName].sources);
         
-    });
+    }, this);
 }
 /*********************/
 /* Private functions */
