@@ -6,7 +6,7 @@
 Room.prototype.getMinerJobQueue = function () {
     
 	//get sources from memory
-    let sources = _.map(this.memory.sources, id => Game.getObjectById(id));
+    let sources = _.map(Object.keys(this.memory.sources), id => Game.getObjectById(id));
 
 	//get miners in room
     let miners = _.filter(Game.creeps, creep => 
