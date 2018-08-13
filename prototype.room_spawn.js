@@ -99,7 +99,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 1200,
             worker: 1700,
-            remoteMiner: 950,
+            remoteMiner: 1000,
             remoteDrone: 1500,
             remoteReserver: 1400,
             claimer: 700
@@ -110,7 +110,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 2000,
             worker: 2500,
-            remoteMiner: 950,
+            remoteMiner: 1000,
             remoteDrone: 2000,
             remoteReserver: 1400,
             claimer: 700 
@@ -286,17 +286,19 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
 
     //loop over remote rooms and break on first one without 
-    for(let i = 0; i < remoteRooms.length; ++i)
+    for(let i = 0; i < remoteRooms.length; i++)
     {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
+        
         let numSources = currentRoom["sources"];
-        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name);
+        let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
 
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
         if(numCreepsAssigned < numSources)
         {
            dependentRoom = currentRoom["name"];
+           break;
         }
     }
     

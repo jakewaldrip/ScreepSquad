@@ -204,7 +204,7 @@ StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, depe
 	
     //remote miners are static 6 work 6 move 1 carry
     w = 6;
-    m = 6;
+    m = 7;
 	c = 1;
 	
     //create the body array with the numbers of each part
