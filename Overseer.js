@@ -27,7 +27,7 @@ Overseer.prototype.run = function() {
     
     //simulate remoteRooms TTL
     this.updateReservationTimers();
-    //this.updateSourceCount();
+    //this.updateSourceCounts();
 };
 //---------
 
@@ -67,7 +67,7 @@ Overseer.prototype.claimToMemory = function () {
     
     _.forEach(Object.keys(this.claimRooms), function(roomName) {
         this.homeRoom.memory.claimRooms[roomName] = this.claimRooms[roomName];
-    });
+    }, this);
 }
 
 //Update Reservation Timers
@@ -98,8 +98,18 @@ Overseer.prototype.updateReservationTimers = function () {
         }
         
     }, this);
+}
+
+//Update source count in remoteRooms
+//Only uses already generated objects, so should be minimal CPU each tick even though it doesn't need run more than once.
+Overseer.prototype.updateSourceCounts = function () {
     
-    
+    _.forEach(Object.keys(this.homeRoom.memory.remoteRooms), function(roomName) {
+        //If getData has been performed for the remoteRoom, pull the number of sources from it's memory
+        if(Memory.rooms[roomName] != undefined)
+            this.homeRoom.memory.remoteRooms[roomName].sources = _.size(Memory.rooms[roomName].sources);
+        
+    });
 }
 /*********************/
 /* Private functions */

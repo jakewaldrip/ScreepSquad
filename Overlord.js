@@ -108,7 +108,9 @@ function linkOverseers() {
     _.forEach(Game.rooms, function(room){
         room.getData();
         
-        if(room.memory.structures[STRUCTURE_SPAWN].length > 0){
+        let spawnIDs = room.memory.structures[STRUCTURE_SPAWN];
+        
+        if(spawnIDs.length > 0 && Game.getObjectById(spawnIDs[0]).my){
             //Need to sort this by creep role - TO DO
             let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
             

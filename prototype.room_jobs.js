@@ -482,7 +482,7 @@ Creep.prototype.getRemoteWorkJob = function() {
             }
             else{
                 //act like a drone would
-                this.getWorkJob("drone");
+                return this.getWorkJob("drone");
                 /*
                 //Will eventually change this into a function to find 
                 //the link closest to the remoteRoom exit

@@ -62,6 +62,17 @@ module.exports = {
 					console.log("Remote room deleted from room " + currentRoom.name);
 				}
 			});
+			
+			//loop over claim rooms for this specific room
+			_.forEach(currentRoom.memory.claimRooms, function(claimRoom) {
+			    
+			    if(!_.some(claimFlags, cf => cf.pos.roomName === claimRoom["name"]))
+			    {
+			        delete currentRoom.memory.claimRooms[claimRoom.name];
+			        console.log("Claim room deleted from room " + currentRoom.name);
+			    }
+			});
+			
 		});
 		
 	}

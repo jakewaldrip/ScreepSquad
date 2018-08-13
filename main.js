@@ -1,3 +1,5 @@
+'use strict';
+
 const aux_functions = require('auxilliary_functions');
 const memory_management = require('memory_management');
 const Overlord = require('Overlord');
@@ -42,5 +44,27 @@ profiler.wrap(function() {
     var overlord = new Overlord();
     overlord.run(); 
     
+    /* Leaving it just in case for now, will remove later 
+    
+    //Temporary code to attack neighbor
+    let attackCreep = Game.creeps["AttackBoy"];
+    if(attackCreep != undefined){
+        attackCreep.say("I love you");
+        if(attackCreep.room.name != "W11S47"){
+            attackCreep.moveTo(new RoomPosition(25, 25, "W11S47"));
+        }
+        else{
+            let target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
+            if(attackCreep.attack(target) == ERR_NOT_IN_RANGE){
+                attackCreep.moveTo(target);
+                attackCreep.heal(attackCreep);
+            }
+        }
+    }
+    else{
+        Game.spawns.Spawn1.spawnCreep( [TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, HEAL], "AttackBoy");
+    }
+    
+    */
 });
 }

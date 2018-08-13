@@ -68,13 +68,13 @@ Flag.prototype.assignClaimFlagToRoom = function () {
     
     let currentRoom;
     
-    for(let room in ownedRooms)
+    for(let currentRoom of ownedRooms)
     {   
-        currentRoom = ownedRooms[room];
-        var remoteRooms = Object.keys(currentRoom.memory.remoteRooms); 
+        
+        var claimRooms = Object.keys(currentRoom.memory.claimRooms); 
         
         //check if the flag is assigned to this room and trigger the isExist bool and break the loop
-        if(_.some(remoteRooms, roomName => roomName == flagRoom))
+        if(_.some(claimRooms, roomName => roomName == flagRoom))
         {
             isExist = true;
             break;

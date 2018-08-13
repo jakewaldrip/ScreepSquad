@@ -55,16 +55,17 @@ Creep.prototype.runMovingRemote = function(){
     //get work target id/object
     var target = this.workTarget;
     
+    var targetRoom = this.memory.remoteRoom;
+    
     //checks if it's an object stored in memory and if it has an "x" property.
     //Should also check for y and roomName, but this should work for us w/o wasting CPU
     if(target instanceof Object && target.hasOwnProperty("x")){
         target = new RoomPosition(target.x, target.y, target.roomName);
+        targetRoom = target.roomName;
     }
     else{
         target = Game.getObjectById(target);
     }
-    
-    var targetRoom = this.memory.remoteRoom;
     
     var homeRoom = this.memory.homeRoom;
 
@@ -79,8 +80,8 @@ Creep.prototype.runMovingRemote = function(){
             this.moveTo(target);
             if(this.room.name == targetRoom){
                 this.getRemoteTarget();
-                //Not sure if below line will cause a loop or not
-                this.run();
+                //Definitely causes a loop
+                //this.run();
             }
             
         }
@@ -89,7 +90,7 @@ Creep.prototype.runMovingRemote = function(){
             if(this.canReach(target) ){
                 this.getNextStateRemote();
                 //Not sure if below line will cause a loop or not
-                //this.run();
+                this.run();
             }
             else{
                 
@@ -182,8 +183,8 @@ Creep.prototype.getRemoteTarget = function (targetType){
     this.workTarget = null;
     targetType = targetType || null;
     
-    //If not in remoteRoom, target center of it
-    if(this.room.name != this.memory.remoteRoom){
+    //If not in remote room and not a remoteDrone OR if not in remote room and you are a drone, but you aren't full
+    if(this.room.name != this.memory.remoteRoom && this.Empty ){
         //Places the properties of a RoomPosition target in memory instead
         this.workTarget = {x: 25, y: 25, roomName: this.memory.remoteRoom};
     }
