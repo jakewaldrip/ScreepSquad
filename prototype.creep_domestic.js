@@ -238,15 +238,32 @@ Creep.prototype.getTarget = function (targetType) {
 //move the miner to the container next to its source, get next state and run the creep once it arrives
 Creep.prototype.moveCreepToContainer = function ()
 {
+    let target = Game.getObjectById(this.memory.workTarget);
+    let closestContainer;
     
-    //get the closest container to the creep
-    let containers = _.map(this.room.memory.structures[STRUCTURE_CONTAINER], id => Game.getObjectById(id));
-    let closestContainer = this.pos.findClosestByRange(containers);
+    if(target instanceof Source && target.container != undefined){
+        
+        closestContainer = Game.getObjectById(target.container);
+        
+        //if source's container is invalid, reset source memory
+        if(closestContainer == null)
+            target.container = undefined;
+            
+    }
+    else if(target instanceof Source){
+        //look for structures in a 3x3 around the source
+        let structs = this.room.lookForAtArea(LOOK_STRUCTURES, target.pos.y - 1, target.pos.x -1, target.pos.y + 1, target.pos.x + 1, true);
+        
+        //finds the first container in the array "structs" that is touching the source
+        let container = _.filter(structs, lookObj => lookObj.structure.structureType == STRUCTURE_CONTAINER)[0];
+        
+        //set source container memory for next time
+        target.container = container.id;
+    }
     
-    
-    if(this.pos.isEqualTo(closestContainer.pos))
+    if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))
     {
-        //if we're at the specific container, get next state and run again
+        //if we're at the specific container, or no container exists, get next state and run again
         this.getNextStateDomestic();
         this.run();
     }

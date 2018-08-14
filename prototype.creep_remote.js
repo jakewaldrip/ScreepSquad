@@ -153,7 +153,6 @@ Creep.prototype.runHarvestingRemote = function(){
             //place a construction site and store it in memory, or check for an existing container
             this.pos.createConstructionSite(STRUCTURE_CONTAINER)
             
-            console.log("here");    
             //Check for construction site that exists
             let construction = this.pos.lookFor(LOOK_CONSTRUCTION_SITES)[0];
             
