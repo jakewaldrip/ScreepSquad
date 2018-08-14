@@ -101,8 +101,8 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 1700,
             remoteMiner: 1000,
             remoteDrone: 1500,
-            remoteReserver: 1400,
-            claimer: 700
+            remoteReserver: 1600,
+            claimer: 850
         };
     }
     else if(roomState == "ROOM_STATE_ADVANCED"){
@@ -112,8 +112,8 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 2500,
             remoteMiner: 1000,
             remoteDrone: 2000,
-            remoteReserver: 1400,
-            claimer: 700 
+            remoteReserver: 1600,
+            claimer: 850
         };
     }
     

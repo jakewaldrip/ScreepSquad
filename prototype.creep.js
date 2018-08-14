@@ -235,3 +235,41 @@ Creep.prototype.canReach = function(target) {
     
     return this.pos.inRangeTo(target, range);
 }
+
+//returns the object containing the creep's move options
+Creep.prototype.moveOpts = function () {
+    //Amount of ticks to reuse path
+    var reuseAmount = 10;
+    //Maximum CPU to use on pathing where .001 CPU = 1 op. (Screeps default is 2000).
+    var maxOpts = 2000;
+    
+    switch(this.memory.role){
+        
+        case 'miner':
+            return { reusePath: 15, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+        
+        case 'drone':
+            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+        
+        case 'worker':
+            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
+        
+        case 'remoteDrone':
+            return { reusePath: 30, maxOps: maxOpts, ignoreCreeps: true, ignoreRoads: true, range: 1 }; break;
+        
+        case 'remoteMiner':
+            return { reusePath: 30, maxOps: maxOpts, ignoreCreeps: true, ignoreRoads: true, range: 1 }; break;
+        
+        case 'remoteReserver':
+            return { reusePath: 30, maxOps: maxOpts, ignoreCreeps: true, range: 1, ignoreRoads: true, swampCost: 2}; break; 
+        
+        case 'claimer':
+            return { reusePath: 30, maxOps: maxOpts, ignoreCreeps: true, range: 1, ignoreRoads: true, swampCost: 1}; break;
+            
+        default:
+            console.log(`<font color="efdc0e">${this.name}</font> does not have a valid moveOpts object defined.`);
+        
+    }
+    
+    
+}

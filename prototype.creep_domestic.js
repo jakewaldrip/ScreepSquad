@@ -57,7 +57,7 @@ Creep.prototype.runMovingDomestic = function () {
 			    }
 			    else
 			    {
-			        this.moveTo(target, { reusePath: 10 });
+			        this.moveTo(target, this.moveOpts() );
 			    }
 			    
 			}
@@ -270,6 +270,6 @@ Creep.prototype.moveCreepToContainer = function ()
     else
     {
         //move to the specified container
-        this.moveTo(closestContainer);
+        this.moveTo(closestContainer, this.moveOpts() );
     }
 }
