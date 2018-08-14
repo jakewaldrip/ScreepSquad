@@ -193,4 +193,4 @@ Room.prototype.getEnemyCreeps = function () {
         this.memory.enemies["healCreeps"] = _.map(healCreeps, c => c.id);
         this.memory.enemies["otherCreeps"] = _.map(otherCreeps, c => c.id);
         
-    }
+}

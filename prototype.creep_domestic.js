@@ -152,7 +152,7 @@ Creep.prototype.runWorkDomestic = function () {
 	}
 	//If Creep is empty reselect target 
 	else{
-	    this.getTarget();
+	    this.getTarget(RESOURCE_ENERGY);
 	    this.run();
 	}
 }

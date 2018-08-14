@@ -89,8 +89,8 @@ Creep.prototype.runMovingRemote = function(){
         {
             if(this.canReach(target) ){
                 this.getNextStateRemote();
-                //Not sure if below line will cause a loop or not
-                this.run();
+                //Periodically causes a loop
+                //this.run();
             }
             else{
                 
