@@ -20,6 +20,9 @@ Overseer.prototype.run = function() {
     //Populate room memory
     this.objectsToMemory();
     
+    //Get stats for grafana
+    global.StatTracker.getStats(this.homeRoom);
+    
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();

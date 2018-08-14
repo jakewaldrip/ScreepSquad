@@ -106,6 +106,7 @@ function linkOverseers() {
     let Creeps = _.map(Object.keys(Game.creeps), name => Game.creeps[name]);
     
     _.forEach(Game.rooms, function(room){
+        
         room.getData();
         
         let spawnIDs = room.memory.structures[STRUCTURE_SPAWN];

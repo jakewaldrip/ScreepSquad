@@ -32,6 +32,7 @@ require('role.Drone');
 require('role.Miner');
 require('role.Worker');
 
+global.StatTracker = require('screeps-stats');
 const profiler = require('screeps-profiler');
 
 //uncomment the next line to enable profiler
