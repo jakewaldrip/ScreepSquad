@@ -86,13 +86,22 @@ Creep.prototype.runHarvestingDomestic = function () {
 	{
 		if(!this.Full)
 		{
-			//avoid waiting at a container that is filling 10energy/tick
-			if(target.energyAvailable() > 15){
-		        this.getEnergy(target);
-			}
-	        else{
-	            this.getTarget(RESOURCE_ENERGY);
-	        }
+		    //try to check the energy available from it
+            try
+            {
+                //avoid waiting at a container that is filling 10energy/tick
+			    if(target.energyAvailable() > 15){
+		            this.getEnergy(target);
+			    }
+	            else{
+	                this.getTarget(RESOURCE_ENERGY);
+	            }
+            }catch(err)
+            {
+                console.log(err + ", sorry you're fak'd");
+                this.getTarget(RESOURCE_ENERGY);
+            }
+			
             
 		}
 		else
