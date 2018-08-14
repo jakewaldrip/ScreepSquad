@@ -71,7 +71,7 @@ Room.prototype.getDroneJobQueue = function () {
 
 
 //get job queue for workers
-//Priority: Repairs under 75% hp, construction sites, repairs over 75% hp, controller upgrading
+//Priority: Repairs under 50% hp, construction sites, repairs under 75% hp, controller upgrading
 // Returns [ [id, action], [], ... ] 
 Room.prototype.getWorkerJobQueue = function () {
     
@@ -459,8 +459,8 @@ Creep.prototype.getClosest = function(objects){
             //}
         }
         
-        //stop on the first object within 3 tiles for efficiency
-        if(minRange <= 3){ break; } 
+        //stop on the first object within 1 tile for efficiency
+        if(minRange <= 1){ break; } 
         
     }
     
