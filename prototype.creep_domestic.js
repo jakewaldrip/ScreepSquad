@@ -33,9 +33,19 @@ Creep.prototype.runMovingDomestic = function () {
 			//creep is in the correct room check if we're at the target
 			if(this.canReach(target))
 			{
-				//get next state 
-				this.getNextStateDomestic();
-				this.run();
+			    
+			    //if the creep isn't a miner perform next state and run again normally
+			    if(this.memory.role != 'miner')
+			    {
+			        //get next state 
+				    this.getNextStateDomestic();
+				    this.run();
+			    }
+			    else
+			    {
+			        this.moveCreepToContainer();
+			    }//-------------
+			    
 			}
 			else
 			{
@@ -222,4 +232,27 @@ Creep.prototype.getTarget = function (targetType) {
     }
     
     this.state = 'STATE_MOVING';
+}
+
+
+//move the miner to the container next to its source, get next state and run the creep once it arrives
+Creep.prototype.moveCreepToContainer = function ()
+{
+    
+    //get the closest container to the creep
+    let containers = _.map(this.room.memory.structures[STRUCTURE_CONTAINER], id => Game.getObjectById(id));
+    let closestContainer = this.pos.findClosestByRange(containers);
+    
+    
+    if(this.pos.isEqualTo(closestContainer.pos))
+    {
+        //if we're at the specific container, get next state and run again
+        this.getNextStateDomestic();
+        this.run();
+    }
+    else
+    {
+        //move to the specified container
+        this.moveTo(closestContainer);
+    }
 }

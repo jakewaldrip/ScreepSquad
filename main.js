@@ -1,7 +1,7 @@
 'use strict';
 
 const aux_functions = require('auxilliary_functions');
-const memory_management = require('memory_management');
+const MemoryManager = require('memory_management');
 const Overlord = require('Overlord');
 const Overseer = require('Overseer');
 
@@ -21,6 +21,8 @@ require('prototype.room_spawn');
 require('prototype.spawn');
 require('prototype.structures');
 require('prototype.towers');
+require('Defcon');
+require('prototype.empire_comms');
 
 /******************/
 /*      Roles     */
@@ -40,8 +42,8 @@ module.exports.loop = function () {
 profiler.wrap(function() {
 
     //clean up memory from no longer existing objects and flags
-    memory_management.garbageCollection();
-    memory_management.deadFlagCleaning();
+    MemoryManager.garbageCollection();
+    MemoryManager.deadFlagCleaning();
     
     //create the overlord object and run the empire
     var overlord = new Overlord();
