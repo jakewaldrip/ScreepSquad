@@ -272,7 +272,8 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
     let m = 0, cl = 0;
 	
     cl = 2;
-    m = 6; 
+	energyCost =- 1200;
+	m = Math.floor(energyCost / 50);
 	
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
@@ -301,8 +302,9 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 	
     let cl = 0, m = 0;
 	
-    m = 5;
     cl = 1;
+	energyCost -= 600;
+	m = Math.floor(energyCost / 50);
     
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
