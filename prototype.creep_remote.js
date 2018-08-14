@@ -178,12 +178,12 @@ Creep.prototype.runHarvestingRemote = function(){
             
             let container = Game.getObjectById(target.container);
             
-            if(container instanceof ConstructionSite)
+            if(container == null)
+                target.container = undefined;
+            else if(container instanceof ConstructionSite)
                 this.build(container);
             else if(container.hits < container.hitsMax)
                 this.repair(container);
-            else //Container has been built, so the constSite ID is null, so we reset and catch next tick
-                target.container = undefined;
         }
 
         
