@@ -217,7 +217,11 @@ Creep.prototype.getNextStateRemote = function(){
 
     
 
-
+    //need to somehow check if they are either x% full before assigning use resources
+     //Possible issue of going back for mroe energy before empty
+    
+    //could check if target is a type of energy/StructContainer and always infer that it is for getEnergy
+        //Possible issue of not repairing containers(thought it might not matter if we leave miners handling that)
 
 
 

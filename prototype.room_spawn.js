@@ -155,6 +155,7 @@ Room.prototype.getCreepLimits = function () {
     
     //remote rooms with a reservation timer of 4500 or less
     let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
+    
     let numClaimRooms = Object.keys(this.memory.claimRooms).length
     //Number of sources in homeRoom
     let numOfSources = Object.keys(this.memory.sources).length;
@@ -235,6 +236,7 @@ Room.prototype.getCreepLimits = function () {
             
             //1 remote squad per remote source
             numRemoteMiners = numRemoteSources;
+            
             if(this.energyCapacityAvailable < 2500)
                 numRemoteDrones = numRemoteSources * 2;
             else
@@ -289,6 +291,11 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
 
     let creepsPerSource = 1;
+    
+    //Hacky, but sets it so that 1&2 source rooms only get one reserver.
+    //This fix assumes that we'll use a different detection system for SK rooms(4 sources!)
+    if(role == "remoteReserver")
+        creepsPerSource = .5;
     if(role == "remoteDrone" && this.energyCapacityAvailable < 2500){
         creepsPerSource = 2;
     }
@@ -307,7 +314,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
 
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
-        if(numCreepsAssigned < (numSources * creepsPerSource) )
+        if(numCreepsAssigned < Math.ceil(numSources * creepsPerSource) )
         {
            dependentRoom = currentRoom["name"];
            break;
