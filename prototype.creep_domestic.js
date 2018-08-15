@@ -269,7 +269,29 @@ Creep.prototype.moveCreepToContainer = function ()
     }
     else
     {
-        //move to the specified container
-        this.moveTo(closestContainer, this.moveOpts() );
+        let attemptedMove = false;
+        let creepOnContainer = false;
+        
+        //if creep has a path in memory and its destination is the container
+        if(this.memory._move && this.memory._move.dest)
+            if(this.memory._move.dest.x == closestContainer.pos.x && this.memory._move.dest.y && closestContainer.pos.y)
+                attemptedMove = true;
+        
+        //If we have tried to move before, look for creeps on containerPos.
+        if(attemptedMove){
+            creepOnContainer = _.size(closestContainer.pos.lookFor(LOOK_CREEPS)) > 0;
+        }
+        
+        //If this is our first try, or if there is no creep on container, attempt to move to it.
+        if(!creepOnContainer || !attemptedMove){
+            //move to the specified container
+            this.moveTo(closestContainer, this.moveOpts() );
+        }
+        //If container is occupied get next state and run again
+        else{
+            
+            this.getNextStateDomestic();
+            this.run();
+        }
     }
 }

@@ -141,9 +141,17 @@ Creep.prototype.runHarvestingRemote = function(){
         if(this.carry[RESOURCE_ENERGY] == 0){
             
             var droppedEnergy = this.pos.lookFor(LOOK_ENERGY)[0];
-            if(droppedEnergy != null)
+            if(droppedEnergy != null){
                 this.pickup(droppedEnergy);
-            
+            }
+            //If there are no drops, use energy from container
+            else if(target.container != undefined){
+                
+                let container = Game.getObjectById(target.container);
+                //check if container is a structure or constSite
+                if(container instanceof StructureContainer)
+                    this.withdraw(container, RESOURCE_ENERGY);
+            }
         }
         
         //Check if source has a container assigned,
