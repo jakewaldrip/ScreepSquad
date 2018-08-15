@@ -272,7 +272,7 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
     let m = 0, cl = 0;
 	
     cl = 2;
-	energyCost =- 1200;
+	energyCost -= 1200;
 	m = Math.floor(energyCost / 50);
 	
     //create body array for creep given the parts
