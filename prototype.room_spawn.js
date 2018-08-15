@@ -10,9 +10,9 @@ Room.prototype.getNextCreepToSpawn = function () {
     //Ascending Priority - Miner -> Drone -> Worker
     //Important for the proper queueing of creeps.
     const rolePriority = [
+        "remoteReserver",
         "remoteDrone",
         "remoteMiner",
-        "remoteReserver",
         "claimer",
         "worker",
         "drone",
