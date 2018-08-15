@@ -419,7 +419,13 @@ Creep.prototype.getEnergyJob = function() {
     if(this.room.storage)
         storage = this.room.storage;
         
-    var job = this.getClosest(objects);
+    var job;
+    
+    //remoteDrones get biggest energy, all else get closest
+    if(this.memory.role == "remoteDrone")
+        job = _.max(objects, o => o.energyAvailable() );    
+    else
+        job = this.getClosest(objects);
     
     //If job is too small, and you aren't a drone, target storage if it exists and has more than creeps carryCapacity
     if( (job == null || job.energyAvailable() < STORAGE_THRESHOLD)

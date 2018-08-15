@@ -10,6 +10,8 @@ module.exports = {
         
         this.roomEnergy(roomObject);
         
+        //this.remoteRoomEnergy(roomObject);
+        
         this.rclStats(roomObject);
     },
     

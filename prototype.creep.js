@@ -246,25 +246,25 @@ Creep.prototype.moveOpts = function () {
     switch(this.memory.role){
         
         case 'miner':
-            return { reusePath: reuseAmount * 1.5, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+            return { reusePath: reuseAmount * 1.5, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'drone':
             return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
         
         case 'worker':
-            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'remoteDrone':
             return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, ignoreRoads: true, range: 1 }; break;
         
         case 'remoteMiner':
-            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: true, ignoreRoads: true, range: 1 }; break;
+            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, ignoreRoads: true, range: 1 }; break;
         
         case 'remoteReserver':
-            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: true, range: 1, ignoreRoads: true, swampCost: 2}; break; 
+            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: true, swampCost: 2}; break; 
         
         case 'claimer':
-            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: true, range: 1, ignoreRoads: true, swampCost: 1}; break;
+            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: true, swampCost: 1}; break;
             
         default:
             console.log(`<font color="efdc0e">${this.name}</font> does not have a valid moveOpts object defined.`);

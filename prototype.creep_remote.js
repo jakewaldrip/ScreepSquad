@@ -207,6 +207,13 @@ Creep.prototype.getNextStateRemote = function(){
     var currentState = this.state;
 	var nextState;
 
+    
+
+
+
+
+
+
 	if(!this.Empty || this.memory.role == "remoteMiner" || this.memory.role == "remoteReserver")
 	{
 		//if creep has resources, use them

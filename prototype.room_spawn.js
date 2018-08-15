@@ -299,6 +299,10 @@ Room.prototype.getOpenDependentRoom = function (role) {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         
+        //Don't send a reserver to a nearly fully reserved room.
+        if(currentRoom.reservationTTL >= 4500 && role == "remoteReserver")
+            creepsPerSource = 0;
+            
         let numSources = currentRoom["sources"];
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
 
