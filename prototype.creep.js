@@ -255,7 +255,7 @@ Creep.prototype.moveOpts = function () {
             return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
         
         case 'remoteDrone':
-            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: true, ignoreRoads: true, range: 1 }; break;
+            return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, ignoreRoads: true, range: 1 }; break;
         
         case 'remoteMiner':
             return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: true, ignoreRoads: true, range: 1 }; break;

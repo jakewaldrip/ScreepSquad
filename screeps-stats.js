@@ -65,7 +65,7 @@ module.exports = {
         
         let droppedEnergy = 0;
         if(_.size(room.memory.droppedEnergy) > 0 )
-            droppedEnergy = _.sum(room.memory.droppedEnergy, id => Game.getObjectById(id).amount);
+            droppedEnergy = _.sum(Object.keys(room.memory.droppedEnergy), id => Game.getObjectById(id).amount);
             
         Memory.stats["room." + room.name + ".dropped"] = droppedEnergy;
     }
