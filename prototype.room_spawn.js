@@ -129,8 +129,44 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
 //-----
 
 
-//get limit of the creeps for the room
-Room.prototype.getCreepLimits = function () {
+//get limit of the creeps for the room (calls all dependent functions)
+Room.prototype.getCreepLimits = function ()
+{
+
+    //number of remote rooms
+    let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
+
+    //number of sources in the remote room
+    let numRemoteSources = 0;
+    _.forEach(this.memory.remoteRooms, room => numRemoteSources += room.sources);
+    
+    //number of rooms that need a reserver sent to it
+    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
+
+    //number of claim rooms attached to the room
+    let numClaimRooms = Object.keys(this.memory.claimRooms).length;
+    
+    //number of sources in the home room
+    let numOfSources = Object.keys(this.memory.sources).length;
+
+    //set empty creep limit object
+    this.memory.creepLimits = {};
+
+    //get domestic creep limits
+    this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
+
+    //get remote creep limits
+    this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
+
+    //get combat creep limits
+    this.getCombatCreepLimits();
+}
+//------------
+
+
+//get limit of domestic creeps in the room
+Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
+{
 
     var roomState = this.memory.roomState;
 
@@ -138,32 +174,8 @@ Room.prototype.getCreepLimits = function () {
     var numMiners = 0;
     var numDrones = 0;
     var numWorkers = 0;
-    var numRemoteMiners = 0;
-    var numRemoteDrones = 0;
-    var numReservers = 0;
-    var numClaimers = 0;
-    
-    var energyCap = this.energyCapacityAvailable;
-
-
-    //depedent rooms and sources
-    let numRemoteRooms = Object.keys(this.memory.remoteRooms).length;
-    
-    //get number of remote sources for all remote rooms connected to this room
-    let numRemoteSources = 0;
-    _.forEach(this.memory.remoteRooms, room => numRemoteSources += room.sources);
-    
-    //remote rooms with a reservation timer of 4500 or less
-    let numReserveRooms = _.filter(this.memory.remoteRooms, room => room.reservationTTL < 4500).length;
-    
-    let numClaimRooms = Object.keys(this.memory.claimRooms).length
-    //Number of sources in homeRoom
-    let numOfSources = Object.keys(this.memory.sources).length;
-    
     
 
-    
-    
     //get creep limits for each room state
     switch(roomState)
     {
@@ -216,14 +228,6 @@ Room.prototype.getCreepLimits = function () {
             numDrones = 4;
             numWorkers = 6 + numRemoteRooms;
             
-            //1 remote squad per remote source
-            numRemoteMiners = numRemoteSources;
-            numRemoteDrones = numRemoteSources * 2;
-            
-            //1 reserver or claimer per room they need to cover
-            numReservers = numReserveRooms;
-            numClaimers = numClaimRooms;
-
             break;
 
         //for advanced room state
@@ -234,18 +238,6 @@ Room.prototype.getCreepLimits = function () {
             numDrones = 2;
             numWorkers = 4 + numRemoteRooms;
             
-            //1 remote squad per remote source
-            numRemoteMiners = numRemoteSources;
-            
-            if(this.energyCapacityAvailable < 2500)
-                numRemoteDrones = numRemoteSources * 2;
-            else
-                numRemoteDrones = numRemoteSources;
-            
-            //1 reserver or claimer per room they need to cover
-            numReservers = numReserveRooms;
-            numClaimers = numClaimRooms;
-
             break;
 
 
@@ -256,17 +248,74 @@ Room.prototype.getCreepLimits = function () {
             break;
     }
 
-    this.memory.creepLimits = {};
     //commit values to memory from here
     this.memory.creepLimits["miner"] = numMiners;
     this.memory.creepLimits["drone"] = numDrones;
     this.memory.creepLimits["worker"] = numWorkers;
+}
+//-----------
+
+
+//get limit of remote creeps in the room
+Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms)
+{
+
+    var numRemoteMiners = 0;
+    var numRemoteDrones = 0;
+    var numReservers = 0;
+    var numClaimers = numClaimRooms;
+
+    var roomState = this.memory.roomState;
+
+    switch(roomState)
+    {
+        case 'ROOM_STATE_INTERMEDIATE':
+
+            numRemoteMiners = numRemoteSources;
+            numRemoteDrones = numRemoteSources * 2;
+            numReservers = numReserveRooms;
+
+            break;
+
+
+         case 'ROOM_STATE_ADVANCED':
+
+            numRemoteMiners = numRemoteSources;
+            
+            if(this.energyCapacityAvailable < 2500)
+            {
+                numRemoteDrones = numRemoteSources * 2;
+            }
+            else
+            {
+                numRemoteDrones = numRemoteSources;
+            }
+
+            numReservers = numReserveRooms;
+
+            break;
+
+          
+         default:
+            //if not at least room state intermediate then won't spawn any remote creeps
+            break;
+    }
+
+    //commit values to memory from here
     this.memory.creepLimits["remoteMiner"] = numRemoteMiners;
     this.memory.creepLimits["remoteDrone"] = numRemoteDrones;
     this.memory.creepLimits["remoteReserver"] = numReservers;
     this.memory.creepLimits["claimer"] = numClaimers;
 }
-//------
+//-----------
+
+
+//get limit of combat creeps in the room
+Room.prototype.getCombatCreepLimits = function ()
+{
+    
+}
+//------------
 
 
 //passes creep role and returns the number of existing creeps in the room of this role
