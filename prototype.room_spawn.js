@@ -1,4 +1,5 @@
-2//handles spawning for each room
+/** @namespace Room_Spawn */
+//handles spawning for each room
 
 //get the next creep to spawn
 //Will spawn one of each creep type with a limit > 0

@@ -1,4 +1,4 @@
-
+/** @namespace Spawn */
 //just uses the last 4 digits of game time(greater than possible creep lifespan)
 function randNum() { return Game.time.toString().slice(-4); }
 
@@ -98,11 +98,13 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
         c = 1 * x; 
         
     }
-    else{   
-    	//harvester body, 2 works subtract 200 from energy
-    	w = 2; m = 1;
-    	energyCost -= 250;
-    
+    else{  
+        //Drone only needs work parts when it subs as Worker for default action.
+        if(this.room.storage != undefined){
+        	//harvester body, 2 works subtract 200 from energy
+        	w = 2; m = 1;
+        	energyCost -= 250;
+        }
     	//get max parts of the remaining energy
     	let x = Math.floor(energyCost/150);
         

@@ -1,3 +1,4 @@
+/** @namespace Creep */
 Creep.prototype.run = function() {
     
     let role = {
@@ -152,7 +153,7 @@ Object.defineProperty(Creep.prototype, 'state', {
 Object.defineProperty(Creep.prototype, 'isAlly', {
 
     get: function () {
-        return (this.owner == "Jakesboy2" || this.owner == "UhmBrock")
+        return (this.owner == "jakesboy2" || this.owner == "UhmBrock")
     }
 });
 

@@ -1,4 +1,4 @@
-
+/** @namespace Towers */
 //set defcon level for the room (danger!!!)
 Room.prototype.setDefconLevel = function () {
 

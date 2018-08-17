@@ -1,3 +1,4 @@
+/** @namespace Creep_Remote */
 'use strict';
 
 //run get energy for the remote drones

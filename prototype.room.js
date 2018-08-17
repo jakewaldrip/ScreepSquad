@@ -1,3 +1,4 @@
+/** @namespace Room */
 Room.prototype.runTowers = function() {
     
     let towers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));

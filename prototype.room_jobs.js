@@ -1,4 +1,4 @@
-    
+/** @namespace Room_Jobs */
 //Requires that room.getData() has been run.
 
 //get job queue for miners
@@ -404,17 +404,6 @@ Creep.prototype.getEnergyJob = function() {
     //get the objects of the jobQueue
     var objects = Object.keys(jobQueue).getObjects();
     
-    //filter objects greater than STORAGE_THRESHOLD if not a drone or not in advanced room state
-    if(this.memory.role != "drone" && this.room.memory.roomState === 'ROOM_STATE_ADVANCED')
-    {
-        objects = _.filter(objects, o => o.energyAvailable() > STORAGE_THRESHOLD);
-    }
-    else
-    {
-        objects = _.filter(objects, o => o.energyAvailable() > 0);
-    }
-        
-    
     //seperate storage from objects
     var storage = null;
     if(this.room.storage)
@@ -433,7 +422,7 @@ Creep.prototype.getEnergyJob = function() {
     if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
-    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity/2 )){
+    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity*.75 )){
         canAccessStorage = true;
     }
     //possible consequences

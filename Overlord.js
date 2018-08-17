@@ -1,8 +1,14 @@
+/** 
+ * @namespace Overlord
+ * @requires Overseer
+ */
+
 const Overseer = require('Overseer');
 
 /**
  * Creates an Overlord
  * <p> The Overlord runs the empire at the top level. </p>
+ * @class
  * @constructor
  */
 function Overlord() {
@@ -33,7 +39,7 @@ Overlord.prototype.run = function() {
 /** 
  * Assigns all flags to Overseers
  * <p>Assignment depends on flag type and distance to an Overseer room.
- * See Flag.prototype.assignFlagToRoom for how this is done.
+ * See {@link Flag#assignFlagToRoom} for how this is done.
  */
 Overlord.prototype.assignFlags = function() {
 

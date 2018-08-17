@@ -1,8 +1,10 @@
+/** @namespace Defcon */
 'use strict';
 
-
-//get defcon level for the room
-//Called from Room.get_data, so that remoteRooms have a defcon too
+/**
+ * Gets the Defcon level for the room
+ * <p> Is called in {@link room_getData} </p>
+ */
 Room.prototype.getDefconLevel = function ()
 {
     var defcon = 0;

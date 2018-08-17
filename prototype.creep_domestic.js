@@ -1,3 +1,4 @@
+/** @namespace Creep_Domestic */
 'use strict';
 
 

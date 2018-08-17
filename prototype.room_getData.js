@@ -1,9 +1,5 @@
+/** @namespace Room_GetData */
 
-/*
-Room.prototype.getData = {
-    
-    room: this,
-  */  
 Room.prototype.getData = function () {
         
         if(!this.memory){

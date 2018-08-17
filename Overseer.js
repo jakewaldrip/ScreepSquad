@@ -1,3 +1,5 @@
+/** @namespace Overseer */
+
 /**
  * @constructor
  * @property {Overlord} Overlord Contains the parent Overlord reference
@@ -30,13 +32,16 @@ function Overseer(room, creeps, overlord) {
 /*****************************/
 /* Public Overseer Functions */
 /*****************************/
-Overseer.prototype.run = function() {
+Overseer.prototype.run = /** @lends Overseer# */ function() {
        
     //Populate room memory
     this.objectsToMemory();
     
     //Get stats for grafana
     global.StatTracker.getStats(this.homeRoom);
+    
+    //check RemoteRooms defCon
+    this.checkDefenses();
     
     //Run Home Room
     this.homeRoom.setRoomState();
@@ -86,6 +91,10 @@ Overseer.prototype.claimToMemory = function () {
     _.forEach(Object.keys(this.claimRooms), function(roomName) {
         this.homeRoom.memory.claimRooms[roomName] = this.claimRooms[roomName];
     }, this);
+}
+
+Overseer.prototype.checkDefenses = function () {
+    
 }
 
 //Update Reservation Timers
