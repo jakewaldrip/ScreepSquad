@@ -7,8 +7,22 @@ Room.prototype.getNextCreepToSpawn = function () {
 
     this.getCreepLimits();
     
-    //Ascending Priority - Miner -> Drone -> Worker
-    //Important for the proper queueing of creeps.
+    //Ascending priority. Will spawn from bottom to top keeping equal counts
+    const remotePriority = [
+        "remoteReserver",
+        "remoteDrone",
+        "remoteMiner",
+        "claimer"
+    ];
+    const domesticPriority = [
+        "worker",
+        "drone",
+        "miner"
+    ];
+    const combatPriority = [
+        
+    ];
+    const priorityList = combatPriority.concat(domesticPriority, remotePriority);
     const rolePriority = [
         "remoteReserver",
         "remoteDrone",
@@ -21,18 +35,17 @@ Room.prototype.getNextCreepToSpawn = function () {
     
     let nextCreep, counts = {};
     
-    _.forEach(rolePriority, function(role) {
-        
-        counts[role] = this.getCreepSum(role);
-        
-        if(counts[role] < this.memory.creepLimits[role]){
-            //Keeps the number of each role even, instead of building one to max before building a second of the other role
-            if(nextCreep == null || counts[nextCreep] >= counts[role])
-                nextCreep = role;
-        }
-        
+    _.forEach(priorityList, function(role) {
+            
+            counts[role] = this.getCreepSum(role);
+            
+            if(counts[role] < this.memory.creepLimits[role]){
+                //Keeps the number of each role even, instead of building one to max before building a second of the other role
+                if(nextCreep == null || counts[nextCreep] >= counts[role])
+                    nextCreep = role;
+            }
+            
     }, this);
-    
     
     return nextCreep;
 }

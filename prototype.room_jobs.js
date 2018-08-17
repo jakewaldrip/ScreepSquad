@@ -411,7 +411,7 @@ Creep.prototype.getEnergyJob = function() {
     }
     else
     {
-        objects = _.filter(objects, o => o.energyAvailable() > this.carryCapacity);
+        objects = _.filter(objects, o => o.energyAvailable() > 0);
     }
         
     
@@ -423,18 +423,17 @@ Creep.prototype.getEnergyJob = function() {
     var job;
     
     //remoteDrones get biggest energy, all else get closest
-    if(this.memory.role == "remoteDrone")
+    if(this.memory.role == "remoteDrone" || this.memory.role == "drone")
         job = _.max(objects, o => o.energyAvailable() );    
     else
         job = this.getClosest(objects);
     
     var canAccessStorage = false;
     
-    console.log(job + " : " + job.energyAvailable() + " : " + canAccessStorage + " : " + this.name);
     if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
-    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity)){
+    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity/2 )){
         canAccessStorage = true;
     }
     //possible consequences
@@ -449,7 +448,7 @@ Creep.prototype.getEnergyJob = function() {
     if(job != undefined) 
         this.diminishJob(job, jobQueue);
     
-    console.log(job + " : " + canAccessStorage + " : " + this.name);
+    
     if(job != null)
         return job.id;
     else
@@ -515,9 +514,9 @@ Creep.prototype.getRemoteWorkJob = function() {
             }
             else{
                 //act like a drone would
-                return this.getWorkJob("drone");
+                //return this.getWorkJob("drone");
                 
-                /*
+                
                 //Will eventually change this into a function to find 
                 //the link closest to the remoteRoom exit
                 let homeRoom = Game.rooms[this.memory.homeRoom];
@@ -525,7 +524,7 @@ Creep.prototype.getRemoteWorkJob = function() {
                     return homeRoom.storage.id;
                 else
                     console.log(this.name + ": No storage found!");
-                */
+                
             }
         break;
         

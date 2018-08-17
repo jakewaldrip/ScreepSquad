@@ -7,7 +7,7 @@ const Overseer = require('Overseer');
  */
 function Overlord() {
     
-    this.overseers = linkOverseers();
+    this.overseers = this.linkOverseers();
     
 };
 
@@ -103,7 +103,7 @@ Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagTy
  * Creates and links all Overseer objects to Overlord's Memory.
  * @return {Overseer[]}
  */
-function linkOverseers() {
+Overlord.prototype.linkOverseers = function() {
     
     let overseers = [];
     
@@ -119,7 +119,7 @@ function linkOverseers() {
             //Need to sort this by creep role - TO DO
             let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
             
-            let overseer = new Overseer(room, creepsInRoom);
+            let overseer = new Overseer(room, creepsInRoom, this);
             overseers.push(overseer);
         }
         

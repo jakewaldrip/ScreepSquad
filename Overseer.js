@@ -1,16 +1,18 @@
 /**
  * @constructor
+ * @property {Overlord} Overlord Contains the parent Overlord reference
  * @property {string} name Shorthand for Overseer.homeRoom.name
  * @property {Room} homeRoom The object for the Overseer's homeRoom
  * @property {Creep[]} creeps The Creeps that are assigned to homeRoom
- * @property {Object} remoteRooms Contains name, sources, reservationTTL
- * @property {Object} claimRooms
- * @property {Object} attackRooms
+ * @property {Object} remoteRooms Contains string name, int sources, int reservationTTL
+ * @property {Object} claimRooms Contains string name, boolean isOwned
+ * @property {Object} attackRooms Contains string name, ???
  * @param {Room} room The homeRoom of the Overseer
  * @param {Creep[]} creeps An array of the creeps assigned to the room
  */
-function Overseer(room, creeps) {
+function Overseer(room, creeps, overlord) {
     
+    this.Overlord = overlord;
     this.name = room.name;
     this.homeRoom = room;
     this.creeps = creeps;

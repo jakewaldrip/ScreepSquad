@@ -29,7 +29,8 @@ Room.prototype.getData = function () {
         this.getRepairTargets();
 	
 	    this.getEnemyCreeps();
-	    
+	    //Important that this is called after getEnemyCreeps();
+	    this.getDefconLevel();    
     }
     
     
