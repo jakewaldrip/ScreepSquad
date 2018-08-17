@@ -249,7 +249,7 @@ Creep.prototype.moveOpts = function () {
             return { reusePath: reuseAmount * 1.5, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'drone':
-            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'worker':
             return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;

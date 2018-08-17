@@ -1,4 +1,4 @@
-
+    
 //Requires that room.getData() has been run.
 
 //get job queue for miners
@@ -392,6 +392,7 @@ Creep.prototype.getMinerJob = function(jobQueue){
 //deleting it from the jobQueue if it is considered empty.
 Creep.prototype.getEnergyJob = function() {
     
+    /** The level at which non-drones will pull from storage instead of gather from containers */
     const STORAGE_THRESHOLD = 1300;
     
     if(!this.room.memory.jobQueues["getEnergyJobs"]){
@@ -410,7 +411,7 @@ Creep.prototype.getEnergyJob = function() {
     }
     else
     {
-        objects = _.filter(objects, o => o.energyAvailable() > 0);
+        objects = _.filter(objects, o => o.energyAvailable() > this.carryCapacity);
     }
         
     
@@ -427,10 +428,19 @@ Creep.prototype.getEnergyJob = function() {
     else
         job = this.getClosest(objects);
     
-    //If job is too small, and you aren't a drone, target storage if it exists and has more than creeps carryCapacity
-    if( (job == null || job.energyAvailable() < STORAGE_THRESHOLD)
-    && this.memory.role != "drone"
-    && storage != null && storage.energyAvailable() > this.carryCapacity){
+    var canAccessStorage = false;
+    
+    console.log(job + " : " + job.energyAvailable() + " : " + canAccessStorage + " : " + this.name);
+    if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
+        canAccessStorage = true;
+    }
+    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity)){
+        canAccessStorage = true;
+    }
+    //possible consequences
+    //Drone grabs from storage to fill storage
+    
+    if( storage != null && canAccessStorage){
         
         job = storage;
         
@@ -439,6 +449,7 @@ Creep.prototype.getEnergyJob = function() {
     if(job != undefined) 
         this.diminishJob(job, jobQueue);
     
+    console.log(job + " : " + canAccessStorage + " : " + this.name);
     if(job != null)
         return job.id;
     else
@@ -446,13 +457,20 @@ Creep.prototype.getEnergyJob = function() {
     
 }
 
+/** 
+ * Finds the minimum distance object from Creep
+ * 
+ * @param Object[] objects array of 'pos' objects or objects with a 'pos' property. 
+ * @return Object or null
+ */
 Creep.prototype.getClosest = function(objects){
     
-    //Loop through each object and get the minimum distance object
     var closest = null, minRange = Infinity;
 
     for(i = 0; i < objects.length; i++){
+        
         obj = objects[i];
+        
         var range = this.pos.getRangeTo(obj);
         
         if(range < minRange) {

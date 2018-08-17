@@ -1,3 +1,7 @@
+/**
+ * @alias Flag
+ */
+ 
 'use strict';
 
 //sets the flag into a room memory based on the closest owned room to it
@@ -175,7 +179,10 @@ Flag.prototype.assignAttackFlagToRoom = function () {
 }
 //------
 
-
+/**
+ * Filters flag type and calls the appropriate 'assign' function.
+ * @return {string[]} [FlagType, AssignedRoomName]
+ */
 Flag.prototype.assignFlagToRoom = function () {
 	
 	let flagType = null, assignedRoom = null;

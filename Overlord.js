@@ -1,23 +1,17 @@
 const Overseer = require('Overseer');
-//Maybe this class can handle things like requesting one overseer 
-// to send reinforcements to another overseer
 
-
-    /**********************/
-    /* Public constructor */
-    /**********************/
-    
+/**
+ * Creates an Overlord
+ * <p> The Overlord runs the empire at the top level. </p>
+ * @constructor
+ */
 function Overlord() {
     
     this.overseers = linkOverseers();
     
 };
 
-
-    /*****************************/
-    /* Public Overlord Functions */
-    /*****************************/
-    
+/** Calls all of the other functions Overlord runs each tick. */
 Overlord.prototype.run = function() {
     
     //Assign remote rooms back to the overseers.
@@ -36,6 +30,11 @@ Overlord.prototype.run = function() {
     
 };
 
+/** 
+ * Assigns all flags to Overseers
+ * <p>Assignment depends on flag type and distance to an Overseer room.
+ * See Flag.prototype.assignFlagToRoom for how this is done.
+ */
 Overlord.prototype.assignFlags = function() {
 
     //assign dependent room to the main room's overseers
@@ -68,7 +67,12 @@ Overlord.prototype.assignFlags = function() {
     
 };
 
-//saves the remote room within the memory of the assigned Overseer
+/**
+ * Saves remote rooms into the memory of assigned Overseers.
+ * @param {string} homeRoom
+ * @param {string} dependentRoom
+ * @param {string} flagType
+ */
 Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagType) {
     
     //get the overseer that will be assigned the dependent room
@@ -94,11 +98,11 @@ Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagTy
 
 };
 
-    /*********************/
-    /* Private functions */
-    /*********************/
-
 //links all the overseers to the overlord
+/**
+ * Creates and links all Overseer objects to Overlord's Memory.
+ * @return {Overseer[]}
+ */
 function linkOverseers() {
     
     let overseers = [];

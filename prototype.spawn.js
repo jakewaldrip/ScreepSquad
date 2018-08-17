@@ -273,7 +273,8 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
 	
     cl = 2;
 	m = 2;
-	
+	if(this.room.energyCapacityAvailable > 1500)
+	    m += 3;
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
     body = body.concat(_.times(m, () => MOVE) );

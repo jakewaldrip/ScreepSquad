@@ -101,7 +101,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 1700,
             remoteMiner: 1000,
             remoteDrone: 1500,
-            remoteReserver: 1600,
+            remoteReserver: 1500,
             claimer: 850
         };
     }
@@ -112,7 +112,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 2500,
             remoteMiner: 1000,
             remoteDrone: 2000,
-            remoteReserver: 1600,
+            remoteReserver: 1500,
             claimer: 850
         };
     }
@@ -285,17 +285,13 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let dependentRoom = null;
     //find first remote room that is not fully worked
     let remoteRooms = Object.keys(this.memory.remoteRooms);
-
+    
     //all creeps in the room of this role
     let creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
-
+    
     let creepsPerSource = 1;
     
-    //Hacky, but sets it so that 1&2 source rooms only get one reserver.
-    //This fix assumes that we'll use a different detection system for SK rooms(4 sources!)
-    if(role == "remoteReserver")
-        creepsPerSource = .5;
     if(role == "remoteDrone" && this.energyCapacityAvailable < 2500){
         creepsPerSource = 2;
     }
@@ -306,13 +302,16 @@ Room.prototype.getOpenDependentRoom = function (role) {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         
-        //Don't send a reserver to a nearly fully reserved room.
+        //Don't send a reserver to a nearly fully reserved room, and limit to .5 per source(1max/room)
         if(currentRoom.reservationTTL >= 4500 && role == "remoteReserver")
             creepsPerSource = 0;
+        else if(role == "remoteReserver")
+            creepsPerSource = .5;
+            
             
         let numSources = currentRoom["sources"];
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
-
+        
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
         if(numCreepsAssigned < Math.ceil(numSources * creepsPerSource) )
         {

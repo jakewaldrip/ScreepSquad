@@ -1,11 +1,24 @@
-/**********************/
-/* Public constructor */
-/**********************/
+/**
+ * @constructor
+ * @property {string} name Shorthand for Overseer.homeRoom.name
+ * @property {Room} homeRoom The object for the Overseer's homeRoom
+ * @property {Creep[]} creeps The Creeps that are assigned to homeRoom
+ * @property {Object} remoteRooms Contains name, sources, reservationTTL
+ * @property {Object} claimRooms
+ * @property {Object} attackRooms
+ * @param {Room} room The homeRoom of the Overseer
+ * @param {Creep[]} creeps An array of the creeps assigned to the room
+ */
 function Overseer(room, creeps) {
     
     this.name = room.name;
     this.homeRoom = room;
     this.creeps = creeps;
+    /**
+     * @property {string} name The name of the remoteRoom
+     * @property {number} sources The number of sources in the room.
+     * @property {number} reservationTTL The number of ticks of reservation left.
+     */
     this.remoteRooms = {};
     this.claimRooms = {};
     this.attackRooms = {};
