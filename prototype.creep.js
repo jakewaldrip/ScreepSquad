@@ -266,6 +266,9 @@ Creep.prototype.moveOpts = function () {
         
         case 'claimer':
             return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: true, swampCost: 1}; break;
+        
+        case 'remoteDefender':
+            return { reusePath: 5, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: false}; break;
             
         default:
             console.log(`<font color="efdc0e">${this.name}</font> does not have a valid moveOpts object defined.`);

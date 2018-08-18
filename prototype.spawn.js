@@ -351,6 +351,13 @@ StructureSpawn.prototype.createRemoteDefender = function(homeRoom, energyCost, d
     body = _.times(m, () => MOVE);
     body = body.concat(_.times(a, () => ATTACK), _.times(h, () => HEAL));
     
+    this.spawnCreep(body, name, { memory: {
+        role: 'remoteDefender',
+        homeRoom: homeRoom,
+      defenseRoom: defenseRoom,
+        state: 'STATE_SPAWNING',
+        workTarget: null
+    }});
 }
 
 
