@@ -89,7 +89,12 @@ Creep.prototype.runMovingRemote = function(){
         else
         {
             if(this.canReach(target) ){
-                this.getNextStateRemote();
+                if(this.memory.role == "remoteMiner"){
+                    this.moveCreepToContainer();
+                }
+                else{
+                    this.getNextStateRemote();
+                }
                 //Periodically causes a loop
                 //this.run();
             }

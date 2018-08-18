@@ -34,13 +34,14 @@ Creep.prototype.runMovingMilitary = function() {
         }
         else{
             
-            if(this.canReachToAttack(target)){
-                
-                this.getNextStateMilitary();
-                
-            }
+            this.getNextStateMilitary();
             
         }
+    }
+    else{
+        
+        this.getMilitaryTarget();
+        
     }
     //Moving code here
     //ONLY moving to target room/flag initially
@@ -94,11 +95,14 @@ Creep.prototype.runDefendingMilitary = function() {
     
     //Handle idling/grouping in a room here
     
+    //Creep should heal itself
+    //Creep should also heal any low miners/drones/reservers in room
+    
 }
 
 Creep.prototype.getNextStateMilitary = function() {
     
-    let creepParts = creep.body;
+    let creepParts = this.body;
                 
     let attackParts = _.remove(creepParts, part => part.type == ATTACK).length;
     let rangedParts = _.remove(creepParts, part => part.type == RANGED_ATTACK).length;
@@ -112,6 +116,8 @@ Creep.prototype.getNextStateMilitary = function() {
 }
 
 Creep.prototype.getMilitaryTarget = function() {
+    
+    this.memory.workTarget = null;
     
     if(this.room.name != this.memory.defenseRoom){
         //Places the properties of a RoomPosition target in memory instead
@@ -145,6 +151,14 @@ Creep.prototype.getMilitaryTarget = function() {
             //Choosing to use enemyCreep ID to keep syntax easy
             this.workTarget = closestEnemy.id;
              
+        }
+        else{
+            //Temporary code to keep it full hp when idle
+            //Will eventually be done in STATE_DEFENDING
+            this.heal(this);
+            //not sure what to do to make it defend here
+            this.say("Run Boys!")
+            
         }
     }
     

@@ -5,7 +5,7 @@ module.exports = {
     run: function(creep) {
 
 		//check the state and act appropirately
-		switch(creep.state)
+		switch(creep.memory.state)
 		{
 			case 'STATE_SPAWNING':
 
