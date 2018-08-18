@@ -1,3 +1,4 @@
+
 /** @namespace Room_Spawn */
 //handles spawning for each room
 
@@ -21,18 +22,10 @@ Room.prototype.getNextCreepToSpawn = function () {
         "miner"
     ];
     const combatPriority = [
-        
+        "remoteDefender"
     ];
     const priorityList = combatPriority.concat(domesticPriority, remotePriority);
-    const rolePriority = [
-        "remoteReserver",
-        "remoteDrone",
-        "remoteMiner",
-        "claimer",
-        "worker",
-        "drone",
-        "miner"
-    ];
+    
     
     let nextCreep, counts = {};
     
@@ -76,7 +69,9 @@ Room.prototype.spawnNextCreep = function () {
                 {
                    dependentRoom = this.getOpenDependentRoom(role);
                 }
-                
+                else if(role === 'remoteDefender'){
+                    dependentRoom = this.getOpenDefenseRoom(role);
+                }
                 //create the creep using the available spawner
                 emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
                     
@@ -116,6 +111,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             remoteMiner: 1000,
             remoteDrone: 1500,
             remoteReserver: 1500,
+            remoteDefender: 950,
             claimer: 850
         };
     }
@@ -127,6 +123,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             remoteMiner: 1000,
             remoteDrone: 2000,
             remoteReserver: 1500,
+            remoteDefender: 950,
             claimer: 850
         };
     }
@@ -327,7 +324,13 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 //get limit of combat creeps in the room
 Room.prototype.getCombatCreepLimits = function ()
 {
+    var numRemoteDefenders = 0;
     
+    //1 remoteDefender per level of defcon in remote rooms
+    numRemoteDefenders = _.sum(this.memory.remoteRooms, room => room.defcon);
+    
+    //console.log(numRemoteDefenders);
+    this.memory.creepLimits["remoteDefender"] = numRemoteDefenders;
 }
 //------------
 
@@ -384,6 +387,36 @@ Room.prototype.getOpenDependentRoom = function (role) {
     }
     
     return dependentRoom;
+}
+
+/**
+ * Finds the first remote room that is in need of defense
+ * @param {string} role The role we're checking the need for
+ * @return {string} defenseRoom The name of the room in need of defense
+ */
+Room.prototype.getOpenDefenseRoom = function (role) {
+    
+    var defenseRoom = null;
+    
+    var remoteRooms = Object.keys(this.memory.remoteRooms);
+    
+    _.forEach(remoteRooms, function(roomName) {
+        
+        let room = Game.rooms[roomName];
+        let defcon;
+        
+        //Use the room's memory if visible, homeRooms memory if not
+        if(room != undefined)
+            defcon = room.memory.defcon;
+        else
+            defcon = this.memory.remoteRooms[roomName].defcon;
+            
+        if(defcon == 1 && role == "remoteDefender"){
+            defenseRoom = roomName;
+        }
+    });
+    
+    return defenseRoom;
 }
 //--------
 

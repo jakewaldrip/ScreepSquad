@@ -19,6 +19,7 @@ function Overseer(room, creeps, overlord) {
     this.homeRoom = room;
     this.creeps = creeps;
     /**
+     * Contains only remoteRooms yet to be committed to homeRoom memory
      * @property {string} name The name of the remoteRoom
      * @property {number} sources The number of sources in the room.
      * @property {number} reservationTTL The number of ticks of reservation left.
@@ -32,7 +33,7 @@ function Overseer(room, creeps, overlord) {
 /*****************************/
 /* Public Overseer Functions */
 /*****************************/
-Overseer.prototype.run = /** @lends Overseer# */ function() {
+Overseer.prototype.run = function() {
        
     //Populate room memory
     this.objectsToMemory();
@@ -40,8 +41,6 @@ Overseer.prototype.run = /** @lends Overseer# */ function() {
     //Get stats for grafana
     global.StatTracker.getStats(this.homeRoom);
     
-    //check RemoteRooms defCon
-    this.checkDefenses();
     
     //Run Home Room
     this.homeRoom.setRoomState();
@@ -54,6 +53,28 @@ Overseer.prototype.run = /** @lends Overseer# */ function() {
 };
 //---------
 
+/**
+ * Checks the Defcon level for the Remote Rooms and adds it to homeRoom.memory.remoteRooms object.
+ */
+Overseer.prototype.checkDefenses = function () {
+    
+    _.forEach(Object.keys(this.homeRoom.memory.remoteRooms), function(roomName) {
+        
+        let room = Game.rooms[roomName];
+        
+        if(room != undefined){
+            
+            let defcon = room.memory.defcon;
+            
+            this.homeRoom.memory.remoteRooms[roomName]["defcon"] = defcon;
+            
+        }
+        else
+            this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
+        
+    }, this);
+}
+
 
 //call various functions to save objects to memory
 Overseer.prototype.objectsToMemory = function () {
@@ -63,6 +84,7 @@ Overseer.prototype.objectsToMemory = function () {
 
     //call remote rooms to memory
     this.remoteToMemory();
+    this.checkDefenses();
     this.claimToMemory();
 }
 //-------
@@ -93,9 +115,6 @@ Overseer.prototype.claimToMemory = function () {
     }, this);
 }
 
-Overseer.prototype.checkDefenses = function () {
-    
-}
 
 //Update Reservation Timers
 Overseer.prototype.updateReservationTimers = function () {
