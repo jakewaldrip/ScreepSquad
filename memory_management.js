@@ -1,3 +1,4 @@
+/** @namespace memory_management */
 module.exports = {
 
 	  //creates function to clear up memory

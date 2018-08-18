@@ -1,4 +1,4 @@
-
+/** @namespace Towers */
 //set defcon level for the room (danger!!!)
 Room.prototype.setDefconLevel = function () {
 
@@ -26,8 +26,13 @@ Room.prototype.getTowerTarget = function() {
     let lowCreep, enemies, repairTargets;
     let target;
     
+    //Get creep objects from creepsInRoom memory
     lowCreep = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
-    lowCreep = _.max(lowCreep, c => c.hitsMax - c.hits);
+        //filter out creeps not currently in the room
+        lowCreep = _.filter(lowCreep, creep => creep.room.name == this.name, this);
+            //choose the creep with the most missing health
+            lowCreep = _.max(lowCreep, c => c.hitsMax - c.hits);
+    
     if(lowCreep.hits < lowCreep.hitsMax)
         target = lowCreep;
     

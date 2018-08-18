@@ -1,9 +1,5 @@
+/** @namespace Room_GetData */
 
-/*
-Room.prototype.getData = {
-    
-    room: this,
-  */  
 Room.prototype.getData = function () {
         
         if(!this.memory){
@@ -29,7 +25,8 @@ Room.prototype.getData = function () {
         this.getRepairTargets();
 	
 	    this.getEnemyCreeps();
-	    
+	    //Important that this is called after getEnemyCreeps();
+	    this.getDefconLevel();    
     }
     
     

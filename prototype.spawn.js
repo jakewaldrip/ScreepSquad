@@ -1,9 +1,15 @@
-
+/** @namespace Spawn */
 //just uses the last 4 digits of game time(greater than possible creep lifespan)
 function randNum() { return Game.time.toString().slice(-4); }
 
 
-//Create creep functions for each role
+/**
+ * Runs createCreep functions for each role
+ * @param {string} homeRoom Name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} role The name of the role to be spawned
+ * @param {?string} dependentRoom Optional name of the target/dependent room
+ */
 StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, dependentRoom){
     var roleFunction = {
 	    
@@ -23,8 +29,9 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
 	    
 	    remoteReserver: this.createRemoteReserver,
 	    
-	    claimer: this.createClaimer
-		
+	    claimer: this.createClaimer,
+	    
+	    remoteDefender: this.createRemoteDefender	
 	};
     
     //spawn domestic creeps
@@ -98,11 +105,14 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
         c = 1 * x; 
         
     }
-    else{   
-    	//harvester body, 2 works subtract 200 from energy
-    	w = 2; m = 1;
-    	energyCost -= 250;
-    
+    else{  
+        console.log("Line 102: proto.spawn: " + this.room.storage != undefined);
+        //Drone only needs work parts when it subs as Worker for default action.
+        if(this.room.storage != undefined){
+        	//harvester body, 2 works subtract 200 from energy
+        	w = 2; m = 1;
+        	energyCost -= 250;
+        }
     	//get max parts of the remaining energy
     	let x = Math.floor(energyCost/150);
         
@@ -273,7 +283,8 @@ StructureSpawn.prototype.createRemoteReserver = function(homeRoom, energyCost, d
 	
     cl = 2;
 	m = 2;
-	
+	if(this.room.energyCapacityAvailable > 1500)
+	    m += 3;
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
     body = body.concat(_.times(m, () => MOVE) );
@@ -318,3 +329,37 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
     }});
 }
 //-----
+
+/**
+ * Create a remote defender
+ * @param {string} homeRoom The name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} defenseRoom The name of the room to defend
+ */
+StructureSpawn.prototype.createRemoteDefender = function(homeRoom, energyCost, defenseRoom){
+    
+    
+    var name = 'defender - ' + randNum();    
+    var body = [];
+    
+    let m = 0, a = 0, h = 0;
+    
+    //temporary hard coding for RCL 4
+    //Costs 950 and moves 1/tick
+    m = 6; a = 5; h = 1;
+    
+    body = _.times(m, () => MOVE);
+    body = body.concat(_.times(a, () => ATTACK), _.times(h, () => HEAL));
+    
+    this.spawnCreep(body, name, { memory: {
+        role: 'remoteDefender',
+        homeRoom: homeRoom,
+      defenseRoom: defenseRoom,
+        state: 'STATE_SPAWNING',
+        workTarget: null
+    }});
+}
+
+
+
+

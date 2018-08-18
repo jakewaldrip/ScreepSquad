@@ -1,4 +1,6 @@
-2//handles spawning for each room
+
+/** @namespace Room_Spawn */
+//handles spawning for each room
 
 //get the next creep to spawn
 //Will spawn one of each creep type with a limit > 0
@@ -7,32 +9,37 @@ Room.prototype.getNextCreepToSpawn = function () {
 
     this.getCreepLimits();
     
-    //Ascending Priority - Miner -> Drone -> Worker
-    //Important for the proper queueing of creeps.
-    const rolePriority = [
+    //Ascending priority. Will spawn from bottom to top keeping equal counts
+    const remotePriority = [
         "remoteReserver",
         "remoteDrone",
         "remoteMiner",
-        "claimer",
+        "claimer"
+    ];
+    const domesticPriority = [
         "worker",
         "drone",
         "miner"
     ];
+    const combatPriority = [
+        "remoteDefender"
+    ];
+    const priorityList = combatPriority.concat(domesticPriority, remotePriority);
+    
     
     let nextCreep, counts = {};
     
-    _.forEach(rolePriority, function(role) {
-        
-        counts[role] = this.getCreepSum(role);
-        
-        if(counts[role] < this.memory.creepLimits[role]){
-            //Keeps the number of each role even, instead of building one to max before building a second of the other role
-            if(nextCreep == null || counts[nextCreep] >= counts[role])
-                nextCreep = role;
-        }
-        
+    _.forEach(priorityList, function(role) {
+            
+            counts[role] = this.getCreepSum(role);
+            
+            if(counts[role] < this.memory.creepLimits[role]){
+                //Keeps the number of each role even, instead of building one to max before building a second of the other role
+                if(nextCreep == null || counts[nextCreep] >= counts[role])
+                    nextCreep = role;
+            }
+            
     }, this);
-    
     
     return nextCreep;
 }
@@ -62,7 +69,9 @@ Room.prototype.spawnNextCreep = function () {
                 {
                    dependentRoom = this.getOpenDependentRoom(role);
                 }
-                
+                else if(role === 'remoteDefender'){
+                    dependentRoom = this.getOpenDefenseRoom(role);
+                }
                 //create the creep using the available spawner
                 emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
                     
@@ -101,7 +110,8 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 1700,
             remoteMiner: 1000,
             remoteDrone: 1500,
-            remoteReserver: 1600,
+            remoteReserver: 1500,
+            remoteDefender: 950,
             claimer: 850
         };
     }
@@ -112,7 +122,8 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 2500,
             remoteMiner: 1000,
             remoteDrone: 2000,
-            remoteReserver: 1600,
+            remoteReserver: 1500,
+            remoteDefender: 950,
             claimer: 850
         };
     }
@@ -334,17 +345,13 @@ Room.prototype.getOpenDependentRoom = function (role) {
     let dependentRoom = null;
     //find first remote room that is not fully worked
     let remoteRooms = Object.keys(this.memory.remoteRooms);
-
+    
     //all creeps in the room of this role
     let creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
     let creepsInRole = _.filter(creepsInRoom, c => c.memory.role === role);
-
+    
     let creepsPerSource = 1;
     
-    //Hacky, but sets it so that 1&2 source rooms only get one reserver.
-    //This fix assumes that we'll use a different detection system for SK rooms(4 sources!)
-    if(role == "remoteReserver")
-        creepsPerSource = .5;
     if(role == "remoteDrone" && this.energyCapacityAvailable < 2500){
         creepsPerSource = 2;
     }
@@ -355,13 +362,16 @@ Room.prototype.getOpenDependentRoom = function (role) {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         
-        //Don't send a reserver to a nearly fully reserved room.
+        //Don't send a reserver to a nearly fully reserved room, and limit to .5 per source(1max/room)
         if(currentRoom.reservationTTL >= 4500 && role == "remoteReserver")
             creepsPerSource = 0;
+        else if(role == "remoteReserver")
+            creepsPerSource = .5;
+            
             
         let numSources = currentRoom["sources"];
         let numCreepsAssigned = _.filter(creepsInRole, c => c.memory.remoteRoom === currentRoom.name).length;
-
+        
         //if the number of creeps assigned is less than the number of sources, assign dependent room to this one
         if(numCreepsAssigned < Math.ceil(numSources * creepsPerSource) )
         {
@@ -371,6 +381,36 @@ Room.prototype.getOpenDependentRoom = function (role) {
     }
     
     return dependentRoom;
+}
+
+/**
+ * Finds the first remote room that is in need of defense
+ * @param {string} role The role we're checking the need for
+ * @return {string} defenseRoom The name of the room in need of defense
+ */
+Room.prototype.getOpenDefenseRoom = function (role) {
+    
+    var defenseRoom = null;
+    
+    var remoteRooms = Object.keys(this.memory.remoteRooms);
+    
+    _.forEach(remoteRooms, function(roomName) {
+        
+        let room = Game.rooms[roomName];
+        let defcon;
+        
+        //Use the room's memory if visible, homeRooms memory if not
+        if(room != undefined)
+            defcon = room.memory.defcon;
+        else
+            defcon = this.memory.remoteRooms[roomName].defcon;
+            
+        if(defcon == 1 && role == "remoteDefender"){
+            defenseRoom = roomName;
+        }
+    });
+    
+    return defenseRoom;
 }
 //--------
 

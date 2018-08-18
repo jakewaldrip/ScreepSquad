@@ -1,6 +1,10 @@
+/** @namespace Flag */
+ 
 'use strict';
-
-//sets the flag into a room memory based on the closest owned room to it
+/**
+ * Finds the closest Overseer room to the RemoteHarvest Flag
+ * @return {string|null} closestRoom
+ */
 Flag.prototype.assignRemoteFlagToRoom = function () {
     
     //loop through owned rooms and check if a this flag's room exists within its memory
@@ -58,7 +62,10 @@ Flag.prototype.assignRemoteFlagToRoom = function () {
 //----------------
 
 
-//sets claim flag to memory based on closest room to it
+/**
+ * Finds the closest Overseer room to the Claim Flag
+ * @return {string|null} closestRoom
+ */
 Flag.prototype.assignClaimFlagToRoom = function () {
     
     //loop through owned rooms and check if a this flag's room exists within its memory
@@ -116,8 +123,10 @@ Flag.prototype.assignClaimFlagToRoom = function () {
 }
 //--------
 
-
-//sets attack flag to memory based on closest room to it
+/**
+ * Finds the closest Overseer room to the attack flag.
+ * @return {string|null} closestRoom
+ */
 Flag.prototype.assignAttackFlagToRoom = function () {
 	
     //loop through owned rooms and check if a this flag's room exists within its memory
@@ -175,7 +184,10 @@ Flag.prototype.assignAttackFlagToRoom = function () {
 }
 //------
 
-
+/**
+ * Filters flag type and calls the appropriate 'assign' function.
+ * @return {string[]} [FlagType, AssignedRoomName]
+ */
 Flag.prototype.assignFlagToRoom = function () {
 	
 	let flagType = null, assignedRoom = null;

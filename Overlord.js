@@ -1,23 +1,23 @@
+/** 
+ * @namespace Overlord
+ * @requires Overseer
+ */
+
 const Overseer = require('Overseer');
-//Maybe this class can handle things like requesting one overseer 
-// to send reinforcements to another overseer
 
-
-    /**********************/
-    /* Public constructor */
-    /**********************/
-    
+/**
+ * Creates an Overlord
+ * <p> The Overlord runs the empire at the top level. </p>
+ * @class
+ * @constructor
+ */
 function Overlord() {
     
-    this.overseers = linkOverseers();
+    this.overseers = this.linkOverseers();
     
 };
 
-
-    /*****************************/
-    /* Public Overlord Functions */
-    /*****************************/
-    
+/** Calls all of the other functions Overlord runs each tick. */
 Overlord.prototype.run = function() {
     
     //Assign remote rooms back to the overseers.
@@ -36,6 +36,11 @@ Overlord.prototype.run = function() {
     
 };
 
+/** 
+ * Assigns all flags to Overseers
+ * <p>Assignment depends on flag type and distance to an Overseer room.
+ * See {@link Flag#assignFlagToRoom} for how this is done.
+ */
 Overlord.prototype.assignFlags = function() {
 
     //assign dependent room to the main room's overseers
@@ -68,7 +73,12 @@ Overlord.prototype.assignFlags = function() {
     
 };
 
-//saves the remote room within the memory of the assigned Overseer
+/**
+ * Saves remote rooms into the memory of assigned Overseers.
+ * @param {string} homeRoom
+ * @param {string} dependentRoom
+ * @param {string} flagType
+ */
 Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagType) {
     
     //get the overseer that will be assigned the dependent room
@@ -94,12 +104,12 @@ Overlord.prototype.assignOverseerFlag = function(homeRoom, dependentRoom, flagTy
 
 };
 
-    /*********************/
-    /* Private functions */
-    /*********************/
-
 //links all the overseers to the overlord
-function linkOverseers() {
+/**
+ * Creates and links all Overseer objects to Overlord's Memory.
+ * @return {Overseer[]}
+ */
+Overlord.prototype.linkOverseers = function() {
     
     let overseers = [];
     
@@ -115,7 +125,7 @@ function linkOverseers() {
             //Need to sort this by creep role - TO DO
             let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
             
-            let overseer = new Overseer(room, creepsInRoom);
+            let overseer = new Overseer(room, creepsInRoom, this);
             overseers.push(overseer);
         }
         

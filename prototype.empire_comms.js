@@ -1,3 +1,4 @@
+/** @namespace Empire_Comms */
 'use strict';
 
 

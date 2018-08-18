@@ -1,19 +1,35 @@
-//Capitalizes the first letter of a string
-//Used in call functions
+/** 
+ * @namespace Aux_functions
+ * @hideconstructor
+ * @inheritdoc
+*/
+
+/**
+ * Capitalizes the first letter of a string
+ * @memberof Aux_functions
+ * @return {string} 
+ */
 String.prototype.capitalizeFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }    
 
-//Gets the object from an ID
-//"override" of Array.getObjects in case array is only a single string
+/**
+ * Gets the object from an ID as a string
+ * @memberof Aux_functions
+ * @return {Object}
+ */
 String.prototype.getObjects = function(){
     
     return Game.getObjectById(this);
     
 }
 
-//Gets the objects from an array of IDs
-//returns an array
+/**
+ * Gets the objects from an array of ID strings
+ * @memberof Aux_functions
+ * @extends String
+ * @return {Object[]}
+ */
 Array.prototype.getObjects = function() {
     let objectArray = [];
     

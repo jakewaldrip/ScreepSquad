@@ -1,11 +1,29 @@
-/**********************/
-/* Public constructor */
-/**********************/
-function Overseer(room, creeps) {
+/** @namespace Overseer */
+
+/**
+ * @constructor
+ * @property {Overlord} Overlord Contains the parent Overlord reference
+ * @property {string} name Shorthand for Overseer.homeRoom.name
+ * @property {Room} homeRoom The object for the Overseer's homeRoom
+ * @property {Creep[]} creeps The Creeps that are assigned to homeRoom
+ * @property {Object} remoteRooms Contains string name, int sources, int reservationTTL
+ * @property {Object} claimRooms Contains string name, boolean isOwned
+ * @property {Object} attackRooms Contains string name, ???
+ * @param {Room} room The homeRoom of the Overseer
+ * @param {Creep[]} creeps An array of the creeps assigned to the room
+ */
+function Overseer(room, creeps, overlord) {
     
+    this.Overlord = overlord;
     this.name = room.name;
     this.homeRoom = room;
     this.creeps = creeps;
+    /**
+     * Contains only remoteRooms yet to be committed to homeRoom memory
+     * @property {string} name The name of the remoteRoom
+     * @property {number} sources The number of sources in the room.
+     * @property {number} reservationTTL The number of ticks of reservation left.
+     */
     this.remoteRooms = {};
     this.claimRooms = {};
     this.attackRooms = {};
@@ -23,6 +41,7 @@ Overseer.prototype.run = function() {
     //Get stats for grafana
     global.StatTracker.getStats(this.homeRoom);
     
+    
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
@@ -34,6 +53,28 @@ Overseer.prototype.run = function() {
 };
 //---------
 
+/**
+ * Checks the Defcon level for the Remote Rooms and adds it to homeRoom.memory.remoteRooms object.
+ */
+Overseer.prototype.checkDefenses = function () {
+    
+    _.forEach(Object.keys(this.homeRoom.memory.remoteRooms), function(roomName) {
+        
+        let room = Game.rooms[roomName];
+        
+        if(room != undefined){
+            
+            let defcon = room.memory.defcon;
+            
+            this.homeRoom.memory.remoteRooms[roomName]["defcon"] = defcon;
+            
+        }
+        else
+            this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
+        
+    }, this);
+}
+
 
 //call various functions to save objects to memory
 Overseer.prototype.objectsToMemory = function () {
@@ -43,6 +84,7 @@ Overseer.prototype.objectsToMemory = function () {
 
     //call remote rooms to memory
     this.remoteToMemory();
+    this.checkDefenses();
     this.claimToMemory();
 }
 //-------
@@ -72,6 +114,7 @@ Overseer.prototype.claimToMemory = function () {
         this.homeRoom.memory.claimRooms[roomName] = this.claimRooms[roomName];
     }, this);
 }
+
 
 //Update Reservation Timers
 Overseer.prototype.updateReservationTimers = function () {

@@ -1,3 +1,4 @@
+/** @namespace Structures */
 Structure.prototype.energyAvailable = function() {
     
     if(!this.store) return 0;

@@ -1,3 +1,4 @@
+/** @namespace Creep */
 Creep.prototype.run = function() {
     
     let role = {
@@ -12,7 +13,9 @@ Creep.prototype.run = function() {
         
         remoteMiner: require('role.RemoteMiner'),
         
-        remoteReserver: require('role.RemoteReserver')
+        remoteReserver: require('role.RemoteReserver'),
+        
+        remoteDefender: require('role.RemoteDefender')
         
     };
     
@@ -152,7 +155,7 @@ Object.defineProperty(Creep.prototype, 'state', {
 Object.defineProperty(Creep.prototype, 'isAlly', {
 
     get: function () {
-        return (this.owner == "Jakesboy2" || this.owner == "UhmBrock")
+        return (this.owner == "jakesboy2" || this.owner == "UhmBrock")
     }
 });
 
@@ -236,6 +239,78 @@ Creep.prototype.canReach = function(target) {
     return this.pos.inRangeTo(target, range);
 }
 
+//move the miner to the container next to its source, get next state and run the creep once it arrives
+Creep.prototype.moveCreepToContainer = function ()
+{
+    let target = Game.getObjectById(this.memory.workTarget);
+    let closestContainer;
+    
+    if(target instanceof Source && target.container != undefined){
+        
+        closestContainer = Game.getObjectById(target.container);
+        
+        //if source's container is invalid, reset source memory
+        if(closestContainer == null)
+            target.container = undefined;
+            
+    }
+    else if(target instanceof Source){
+        //look for structures in a 3x3 around the source
+        let structs = this.room.lookForAtArea(LOOK_STRUCTURES, target.pos.y - 1, target.pos.x -1, target.pos.y + 1, target.pos.x + 1, true);
+        
+        //finds the first container in the array "structs" that is touching the source
+        let container = _.filter(structs, lookObj => lookObj.structure.structureType == STRUCTURE_CONTAINER)[0];
+        
+        //set source container memory for next time
+        target.container = container.id;
+    }
+    
+    if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))
+    {
+        //if we're at the specific container, or no container exists, get next state and run again
+        if(this.memory.role == "miner"){
+            this.getNextStateDomestic();
+        }
+        else if(this.memory.role == "remoteMiner"){
+            this.getNextStateRemote();
+        }
+        this.run();
+        
+    }
+    else
+    {
+        let attemptedMove = false;
+        let creepOnContainer = false;
+        
+        //if creep has a path in memory and its destination is the container
+        if(this.memory._move && this.memory._move.dest)
+            if(this.memory._move.dest.x == closestContainer.pos.x && this.memory._move.dest.y && closestContainer.pos.y)
+                attemptedMove = true;
+        
+        //If we have tried to move before, look for creeps on containerPos.
+        if(attemptedMove){
+            creepOnContainer = _.size(closestContainer.pos.lookFor(LOOK_CREEPS)) > 0;
+        }
+        
+        //If this is our first try, or if there is no creep on container, attempt to move to it.
+        if(!creepOnContainer || !attemptedMove){
+            //move to the specified container
+            this.moveTo(closestContainer, this.moveOpts() );
+        }
+        //If container is occupied get next state and run again
+        else{
+            
+            if(this.memory.role == "miner"){
+                this.getNextStateDomestic();
+            }
+            else if(this.memory.role == "remoteMiner"){
+                this.getNextStateRemote();
+            }
+            this.run();
+        }
+    }
+}
+
 //returns the object containing the creep's move options
 Creep.prototype.moveOpts = function () {
     //Amount of ticks to reuse path
@@ -249,7 +324,7 @@ Creep.prototype.moveOpts = function () {
             return { reusePath: reuseAmount * 1.5, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'drone':
-            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: true, range: 1 }; break;
+            return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
         
         case 'worker':
             return { reusePath: reuseAmount, maxOps: maxOpts, ignoreCreeps: false, range: 1 }; break;
@@ -265,6 +340,9 @@ Creep.prototype.moveOpts = function () {
         
         case 'claimer':
             return { reusePath: reuseAmount * 2, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: true, swampCost: 1}; break;
+        
+        case 'remoteDefender':
+            return { reusePath: 5, maxOps: maxOpts, ignoreCreeps: false, range: 1, ignoreRoads: false}; break;
             
         default:
             console.log(`<font color="efdc0e">${this.name}</font> does not have a valid moveOpts object defined.`);
