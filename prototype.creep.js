@@ -261,8 +261,12 @@ Creep.prototype.moveCreepToContainer = function ()
         //finds the first container in the array "structs" that is touching the source
         let container = _.filter(structs, lookObj => lookObj.structure.structureType == STRUCTURE_CONTAINER)[0];
         
-        //set source container memory for next time
-        target.container = container.id;
+		if(target.container != undefined)
+		{
+			//set source container memory for next time
+			target.container = container.id;
+		}
+        
     }
     
     if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))

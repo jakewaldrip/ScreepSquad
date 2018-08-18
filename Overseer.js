@@ -70,8 +70,10 @@ Overseer.prototype.checkDefenses = function () {
             
         }
         else
-            this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
-        
+		{
+			this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
+		}
+            
     }, this);
 }
 

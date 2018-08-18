@@ -330,6 +330,7 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 }
 //-----
 
+
 /**
  * Create a remote defender
  * @param {string} homeRoom The name of the homeroom
@@ -359,6 +360,43 @@ StructureSpawn.prototype.createRemoteDefender = function(homeRoom, energyCost, d
         workTarget: null
     }});
 }
+//------------
+
+
+/**
+ * Create a domestic defender
+ * @param {string} homeRoom The name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} defenseRoom The name of the room to defend
+ */
+StructureSpawn.prototype.createDomesticDefender = function(homeRoom, energyCost, defenseRoom){
+
+}
+//--------
+
+
+/**
+ * Create a zealot attack creep
+ * @param {string} homeRoom The name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} defenseRoom The name of the room to defend
+ */
+StructureSpawn.prototype.createZealot = function(homeRoom, energyCost, defenseRoom){
+
+}
+//--------
+
+
+/**
+ * Create a stalker attack creep
+ * @param {string} homeRoom The name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} defenseRoom The name of the room to defend
+ */
+StructureSpawn.prototype.createStalker = function(homeRoom, energyCost, defenseRoom){
+
+}
+//--------
 
 
 
