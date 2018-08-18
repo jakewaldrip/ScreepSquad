@@ -16,14 +16,17 @@ Room.prototype.getNextCreepToSpawn = function () {
         "remoteMiner",
         "claimer"
     ];
+
     const domesticPriority = [
         "worker",
         "drone",
         "miner"
     ];
+
     const combatPriority = [
         "remoteDefender"
     ];
+
     const priorityList = combatPriority.concat(domesticPriority, remotePriority);
     
     
@@ -33,10 +36,14 @@ Room.prototype.getNextCreepToSpawn = function () {
             
             counts[role] = this.getCreepSum(role);
             
-            if(counts[role] < this.memory.creepLimits[role]){
+            if(counts[role] < this.memory.creepLimits[role])
+			{
                 //Keeps the number of each role even, instead of building one to max before building a second of the other role
                 if(nextCreep == null || counts[nextCreep] >= counts[role])
-                    nextCreep = role;
+				{
+					nextCreep = role;
+				}
+                    
             }
             
     }, this);
@@ -62,16 +69,19 @@ Room.prototype.spawnNextCreep = function () {
             
             let energyCost = this.getCreepSpawnEnergyCost(role);
 
-            if(this.energyAvailable >= energyCost){
+            if(this.energyAvailable >= energyCost)
+			{
                 
                 //if creep is a remote creep, set dependentRoom to first room thats not fully worked
                 if(role === 'remoteMiner' || role === 'remoteDrone' || role === 'remoteReserver')
                 {
                    dependentRoom = this.getOpenDependentRoom(role);
                 }
-                else if(role === 'remoteDefender'){
+                else if(role === 'remoteDefender')
+				{
                     dependentRoom = this.getOpenDefenseRoom(role);
                 }
+
                 //create the creep using the available spawner
                 emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
                     
@@ -342,18 +352,15 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 //get limit of combat creeps in the room
 Room.prototype.getCombatCreepLimits = function ()
 {
-    var defcon = this.memory.defcon;
-
+    
 	var numRemoteDefenders = 0;
 	var numDomesticDefenders = 0;
 	var numZealots = 0;
 	var numStalkers = 0;
 
-	//if defcon for room is above 0 spawn a defender
-	if(defcon > 0)
-	{
-		numRemoteDefenders = 1;
-	}
+	//set remote defenders to amount of defcon > 0 remote rooms
+	var numDefconRemoteRooms = _.sum(this.memory.remoteRooms, rr => rr.memory.defcon > 0);
+		numRemoteDefenders = numDefconRemoteRooms;
 
 	this.memory.creepLimits["remoteDefender"] = numRemoteDefenders;
 	this.memory.creepLimits["domesticDefender"] = numDomesticDefenders;
