@@ -93,7 +93,11 @@ Room.prototype.getStructures = function () {
         
     }
     
+Room.prototype.assignContainersToSources = function(containers){
     
+    //Assign containers to the closest source here to fix the issue with Creep.moveCreepToContainer() that miners use
+    //Potentially call it from inside Room.getStructures() for convenience
+}
     
 Room.prototype.getConstructionSites = function () {
         

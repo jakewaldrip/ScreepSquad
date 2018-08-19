@@ -348,7 +348,8 @@ Room.prototype.getCombatCreepLimits = function ()
 	var numStalkers = 0;
 
 	//set remote defenders to amount of defcon > 0 remote rooms
-	var numDefconRemoteRooms = _.sum(this.memory.remoteRooms, rr => rr.memory.defcon > 0);
+	var remoteRooms = _.map(Object.keys(this.memory.remoteRooms), rr => Game.rooms[rr]);
+	var numDefconRemoteRooms = _.sum(remoteRooms, rr => rr.memory.defcon > 0);
 		numRemoteDefenders = numDefconRemoteRooms;
 
 	this.memory.creepLimits["remoteDefender"] = numRemoteDefenders;
