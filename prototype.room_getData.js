@@ -18,6 +18,8 @@ Room.prototype.getData = function () {
         
         this.getStructures();
         
+        this.assignContainersToSources();
+        
         this.getConstructionSites();
         
         this.getDroppedEnergy();
@@ -92,7 +94,12 @@ Room.prototype.getStructures = function () {
         
         
     }
-    
+
+/**
+ * Assigns a container to the source.container property if there is one
+ * <p>Requires that Room.getStructures and Room.getSources have been run.</p>
+ * @param {StructureContainer[]} containers All container structures in the room
+ */
 Room.prototype.assignContainersToSources = function(containers){
     
     _.forEach(Object.keys(this.memory.sources), function(srcID) {
@@ -105,20 +112,22 @@ Room.prototype.assignContainersToSources = function(containers){
             
             _.forEach(containers, function(container) {
                 
-                //Get abs value of src.x - con.x && src.y - con.y to see if either == 1
-                //If so, assign that to the source.container property
+                let dx = Math.abs(source.pos.x - container.pos.x);
+                let dy = Math.abs(source.pos.y - container.pos.y);
                 
-            })
-            //assign source a container if there is one
+                if(dx <= 1 && dy <= 1){
+                    source["container"] = container;
+                }
+                
+            });
             
         }
         else{
             //do nothing
         }
         
-    });
-    //Assign containers to the closest source here to fix the issue with Creep.moveCreepToContainer() that miners use
-    //Potentially call it from inside Room.getStructures() for convenience
+    }, this);
+    
 }
     
 Room.prototype.getConstructionSites = function () {
