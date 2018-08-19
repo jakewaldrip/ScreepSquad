@@ -179,8 +179,12 @@ Room.prototype.getCreepLimits = function ()
     //get domestic creep limits
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
 
-    //get remote creep limits
-    this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
+    //get remote creep limits if we have a remote room
+    if(this.memory.remoteRooms.length > 0)
+    {
+        this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
+    }
+    
 
     //get combat creep limits
     this.getCombatCreepLimits();
@@ -295,21 +299,6 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 
     switch(roomState)
     {
-        case 'ROOM_STATE_INTERMEDIATE':
-			
-			//1 miner 2 drones per source
-            numRemoteMiners = numRemoteSources;
-            numRemoteDrones = numRemoteSoures * 2;
-
-			//only spawn reserver if we can afford it
-			if(this.energyCapacityAvailable >= 1400)
-			{
-				numReservers = numReserveRooms;
-			}
-            
-
-            break;
-
 
          case 'ROOM_STATE_ADVANCED':
 
