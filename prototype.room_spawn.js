@@ -180,7 +180,7 @@ Room.prototype.getCreepLimits = function ()
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
 
     //get remote creep limits if we have a remote room
-    if(this.memory.remoteRooms.length > 0)
+    if(Object.keys(this.memory.remoteRooms).length > 0)
     {
         this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
     }
