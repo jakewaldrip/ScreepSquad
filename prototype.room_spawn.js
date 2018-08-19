@@ -2,9 +2,10 @@
 /** @namespace Room_Spawn */
 //handles spawning for each room
 
-//get the next creep to spawn
-//Will spawn one of each creep type with a limit > 0
-//and then max out each spawn in order of rolePriority.
+/**
+ * gets the next creep we need to spawn
+ * @return {string} nextCreep the creep that we're gonna spawn
+ */
 Room.prototype.getNextCreepToSpawn = function () {
 
     this.getCreepLimits();
@@ -53,8 +54,9 @@ Room.prototype.getNextCreepToSpawn = function () {
 //-----
 
 
-//This function runs getNextCreepToSpawn, getCreepSpawnEnergyCost, and then passes
-//the params to spawner.createRole, assuming there is an available spawn.
+/**
+ * spawns the creep that we decided on with the cost that we decided on
+ */
 Room.prototype.spawnNextCreep = function () {
     
     let spawns = this.memory.structures[STRUCTURE_SPAWN].getObjects();
@@ -92,7 +94,11 @@ Room.prototype.spawnNextCreep = function () {
 //-----
 
 
-//get the energy cost of the next creep
+/**
+ * gets the energy cost of a specific creep
+ * @param {string} role the role of the creep we're checking the energy cost for
+ * @return {int} energyCost the cost of the creep
+ */
 Room.prototype.getCreepSpawnEnergyCost = function (role) {
     
     var roomState = this.memory.roomState;
@@ -150,7 +156,9 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
 //-----
 
 
-//get limit of the creeps for the room (calls all dependent functions)
+/**
+ * gets the limits for all creeps (calls all depedent functions)
+ */
 Room.prototype.getCreepLimits = function ()
 {
 
@@ -180,7 +188,7 @@ Room.prototype.getCreepLimits = function ()
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
 
     //get remote creep limits if we have a remote room
-    if(this.memory.remoteRooms.length > 0)
+    if(Object.keys(this.memory.remoteRooms).length > 0)
     {
         this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
     }
@@ -192,7 +200,11 @@ Room.prototype.getCreepLimits = function ()
 //------------
 
 
-//get limit of domestic creeps in the room
+/**
+ * gets the limits for domestic creeps
+ * @param {numOfSources} int number of souces inside the home room
+ * @param {numRemoteRooms} int number of remote rooms associated with the remote rooms
+ */
 Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 {
 
@@ -218,13 +230,12 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
         break;
         
         
-        //for beginner room state
         case 'ROOM_STATE_BEGINNER':
             
-            let workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
+            var workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
             
             //get number of miners needed to saturate the sources
-            let numMinersPerSource = Math.ceil(5 / workPerCreep);
+            var numMinersPerSource = Math.ceil(5 / workPerCreep);
             
             _.forEach(this.memory.sources, function(source) {
                 
@@ -247,16 +258,27 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
                 numWorkers = 5;
             }
             
-           
+            
             break;
 
-        //for intermediate room state
         case 'ROOM_STATE_INTERMEDIATE':
 
-            //1 miner per source at this point will saturate the sources
-            numMiners = numOfSources;
+            var workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
+            
+            //get number of miners needed to saturate the sources
+            var numMinersPerSource = Math.ceil(5 / workPerCreep);
+            
+            _.forEach(this.memory.sources, function(source) {
+                
+                if(numMinersPerSource > source.accessTiles.length)
+                    numMiners += source.accessTiles.length;
+                else
+                    numMiners += numMinersPerSource;
+                    
+            });
+
             numDrones = 4;
-            numWorkers = 6 + numRemoteRooms;
+            numWorkers = 6;
             
             break;
 
@@ -286,7 +308,13 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 //-----------
 
 
-//get limit of remote creeps in the room
+/**
+ * gets the limits for remote creeps and saves into memory
+ * @param {int} numRemoteRooms number of remote rooms associated with the remote rooms
+ * @param {int} numRemoteSources number of remote sources in this room
+ * @param {int} numReserveRooms number of rooms that need to be reserved
+ *@param {int} numClaimRooms number of claim rooms associated with the remote rooms
+ */
 Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms)
 {
 
@@ -338,7 +366,9 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 //-----------
 
 
-//get limit of combat creeps in the room
+/**
+ * gets the limits for combat creeps and saves into memory
+ */
 Room.prototype.getCombatCreepLimits = function ()
 {
     
@@ -348,7 +378,7 @@ Room.prototype.getCombatCreepLimits = function ()
 	var numStalkers = 0;
 
 	//set remote defenders to amount of defcon > 0 remote rooms
-	var numDefconRemoteRooms = _.sum(this.memory.remoteRooms, rr => rr.memory.defcon > 0);
+	var numDefconRemoteRooms = _.sum(this.memory.remoteRooms, rr => rr.defcon > 0);
 		numRemoteDefenders = numDefconRemoteRooms;
 
 	this.memory.creepLimits["remoteDefender"] = numRemoteDefenders;
@@ -359,7 +389,11 @@ Room.prototype.getCombatCreepLimits = function ()
 //------------
 
 
-//passes creep role and returns the number of existing creeps in the room of this role
+/**
+ * gets the number of creeps of a specific role passed to it
+ * @param {string} role the role of the creep we're checking for
+ * @return {int} numOfRole the number of creeps in this role
+ */
 Room.prototype.getCreepSum = function (role) {
 
     var creepsInRoom = _.map(this.memory.creepsInRoom, name => Game.creeps[name]);
@@ -369,7 +403,11 @@ Room.prototype.getCreepSum = function (role) {
 }
 
 
-//returns first remote room thats not fully worked
+/**
+ * gets the first depedent room that needs this creep to work it
+ * @param {string} role the role of the creep we're checking for
+ * @return {string} depedentRoom the name of the room we're looking for
+ */
 Room.prototype.getOpenDependentRoom = function (role) {
    
     let dependentRoom = null;

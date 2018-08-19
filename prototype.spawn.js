@@ -106,7 +106,6 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
         
     }
     else{  
-        console.log("Line 102: proto.spawn: " + this.room.storage != undefined);
         //Drone only needs work parts when it subs as Worker for default action.
         if(this.room.storage != undefined){
         	//harvester body, 2 works subtract 200 from energy

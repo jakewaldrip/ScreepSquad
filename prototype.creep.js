@@ -242,9 +242,11 @@ Creep.prototype.canReach = function(target) {
 //move the miner to the container next to its source, get next state and run the creep once it arrives
 Creep.prototype.moveCreepToContainer = function ()
 {
+    //Get target(likely a source)
     let target = Game.getObjectById(this.memory.workTarget);
     let closestContainer;
     
+    //If target is a source and source has a container property assigned, use that property
     if(target instanceof Source && target.container != undefined){
         
         closestContainer = Game.getObjectById(target.container);
@@ -254,24 +256,11 @@ Creep.prototype.moveCreepToContainer = function ()
             target.container = undefined;
             
     }
-    else if(target instanceof Source){
-        //look for structures in a 3x3 around the source
-        let structs = this.room.lookForAtArea(LOOK_STRUCTURES, target.pos.y - 1, target.pos.x -1, target.pos.y + 1, target.pos.x + 1, true);
-        
-        //finds the first container in the array "structs" that is touching the source
-        let container = _.filter(structs, lookObj => lookObj.structure.structureType == STRUCTURE_CONTAINER)[0];
-        
-		if(target.container != undefined)
-		{
-			//set source container memory for next time
-			target.container = container.id;
-		}
-        
-    }
     
+    //if target container doesn't exist or creep is on the container, getNextState and run again.
     if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))
     {
-        //if we're at the specific container, or no container exists, get next state and run again
+        console.log("test");
         if(this.memory.role == "miner"){
             this.getNextStateDomestic();
         }
@@ -281,12 +270,16 @@ Creep.prototype.moveCreepToContainer = function ()
         this.run();
         
     }
+    //container exists and creep is not on it
     else
     {
+        
+        //whether we have tried to move already
         let attemptedMove = false;
+        //whether we are on the container
         let creepOnContainer = false;
         
-        //if creep has a path in memory and its destination is the container
+        //if creep has a path in memory and its destination is the container, show that we have tried to move to container before
         if(this.memory._move && this.memory._move.dest)
             if(this.memory._move.dest.x == closestContainer.pos.x && this.memory._move.dest.y && closestContainer.pos.y)
                 attemptedMove = true;
@@ -299,7 +292,7 @@ Creep.prototype.moveCreepToContainer = function ()
         //If this is our first try, or if there is no creep on container, attempt to move to it.
         if(!creepOnContainer || !attemptedMove){
             //move to the specified container
-            this.moveTo(closestContainer, this.moveOpts() );
+            this.moveTo(closestContainer);
         }
         //If container is occupied get next state and run again
         else{

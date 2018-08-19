@@ -4,6 +4,14 @@
 module.exports = {
     run: function(creep) {
 
+
+        //check if we need to flee before doing anything
+        if (creep.room.memory.defcon > 0) {
+            this.memory.state = 'STATE_FLEE';
+        }
+        //-------------
+
+
 		//check the state and act appropirately
 		switch(creep.state)
 		{
@@ -33,6 +41,14 @@ module.exports = {
                 creep.runUseEnergyRemote();
 
             break;
+
+
+		    case 'STATE_FLEE':
+
+		        creep.runRemoteFlee();
+
+		    break;
+
 
 			default: 
 

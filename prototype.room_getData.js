@@ -18,6 +18,8 @@ Room.prototype.getData = function () {
         
         this.getStructures();
         
+        this.assignContainersToSources();
+        
         this.getConstructionSites();
         
         this.getDroppedEnergy();
@@ -92,8 +94,41 @@ Room.prototype.getStructures = function () {
         
         
     }
+
+/**
+ * Assigns a container to the source.container property if there is one
+ * <p>Requires that Room.getStructures and Room.getSources have been run.</p>
+ * @param {StructureContainer[]} containers All container structures in the room
+ */
+Room.prototype.assignContainersToSources = function(containers){
     
+    _.forEach(Object.keys(this.memory.sources), function(srcID) {
+        
+        let source = Game.getObjectById(srcID);
+        
+        if(source.container == null || Game.getObjectById(source.container) == null){
+            
+            let containers = _.map(this.memory.structures[STRUCTURE_CONTAINER], cid => Game.getObjectById(cid));
+            
+            _.forEach(containers, function(container) {
+                
+                let dx = Math.abs(source.pos.x - container.pos.x);
+                let dy = Math.abs(source.pos.y - container.pos.y);
+                
+                if(dx <= 1 && dy <= 1){
+                    source["container"] = container;
+                }
+                
+            });
+            
+        }
+        else{
+            //do nothing
+        }
+        
+    }, this);
     
+}
     
 Room.prototype.getConstructionSites = function () {
         
@@ -129,8 +164,17 @@ Room.prototype.getDroppedEnergy = function () {
 
 Room.prototype.getRepairTargets = function () {
 	    //change this to change how high walls and ramparts are repaired
-	    const wallMaxMultiplier = 15000;
-	    
+	    const wallMaxMultiplier = {
+	        0: 0,
+	        1: 15000,
+	        2: 30000,
+	        3: 45000,
+	        4: 80000,
+	        5: 100000,
+	        6: 250000,
+	        7: 500000,
+	        8: 1000000
+	    }
         let formattedTargets = {};
         
         _.forEach(this.structures, function(s) { 
@@ -141,7 +185,7 @@ Room.prototype.getRepairTargets = function () {
                 hpPercent = s.hits / s.hitsMax;
             }
             else{
-                hpPercent = s.hits / (this.controller.level * wallMaxMultiplier);
+                hpPercent = s.hits / (wallMaxMultiplier[this.controller.level]);
             }
             
             if(hpPercent < 1){
