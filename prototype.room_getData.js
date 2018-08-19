@@ -95,6 +95,28 @@ Room.prototype.getStructures = function () {
     
 Room.prototype.assignContainersToSources = function(containers){
     
+    _.forEach(Object.keys(this.memory.sources), function(srcID) {
+        
+        let source = Game.getObjectById(srcID);
+        
+        if(source.container == null || Game.getObjectById(source.container) == null){
+            
+            let containers = _.map(this.memory.structures[STRUCTURE_CONTAINER], cid => Game.getObjectById(cid));
+            
+            _.forEach(containers, function(container) {
+                
+                //Get abs value of src.x - con.x && src.y - con.y to see if either == 1
+                //If so, assign that to the source.container property
+                
+            })
+            //assign source a container if there is one
+            
+        }
+        else{
+            //do nothing
+        }
+        
+    });
     //Assign containers to the closest source here to fix the issue with Creep.moveCreepToContainer() that miners use
     //Potentially call it from inside Room.getStructures() for convenience
 }
