@@ -154,15 +154,9 @@ Creep.prototype.runWorkDomestic = function () {
 			if(target.energy < target.energyCapacity || target == this.room.controller 
 			|| target.progress < target.progressTotal || target.hits < target.hitsMax || target == this.room.storage)
 			{
-			    if(target instanceof StructureRoad)
-			    {
-			        this.getTarget();
-			    }
-			    else
-			    {
+			    
 			        //do work on the target
 			        this.useEnergy(target);
-			    }
 			}
 			else
 			{
