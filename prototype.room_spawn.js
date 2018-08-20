@@ -7,7 +7,7 @@
  * @return {string} nextCreep the creep that we're gonna spawn
  */
 Room.prototype.getNextCreepToSpawn = function () {
-
+    
     this.getCreepLimits();
     
     //Ascending priority. Will spawn from bottom to top keeping equal counts
