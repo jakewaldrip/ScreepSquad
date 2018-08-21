@@ -108,16 +108,8 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
     else{  
         
         
-        //harvester body, if no storage, 2 work
-		if(this.room.storage != undefined)
-		{
-			w = 0; m = 0;
-		}
-		else
-		{
-			w = 2; m = 1;
-			energyCost -= 250;
-		}
+        w = 2; m = 1;
+	    energyCost -= 250;
         
         	
     	//get max parts of the remaining energy
