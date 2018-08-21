@@ -106,12 +106,20 @@ StructureSpawn.prototype.createDrone = function (homeRoom, energyCost) {
         
     }
     else{  
-        //Drone only needs work parts when it subs as Worker for default action.
-        if(this.room.storage != undefined){
-        	//harvester body, 2 works subtract 200 from energy
-        	w = 2; m = 1;
-        	energyCost -= 250;
-        }
+        
+        
+        //harvester body, if no storage, 2 work
+		if(this.room.storage != undefined)
+		{
+			w = 0; m = 0;
+		}
+		else
+		{
+			w = 2; m = 1;
+			energyCost -= 250;
+		}
+        
+        	
     	//get max parts of the remaining energy
     	let x = Math.floor(energyCost/150);
         

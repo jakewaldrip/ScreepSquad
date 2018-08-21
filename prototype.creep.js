@@ -273,6 +273,7 @@ Creep.prototype.moveCreepToContainer = function ()
     //container exists and creep is not on it
     else
     {
+        
         //whether we have tried to move already
         let attemptedMove = false;
         //whether we are on the container
@@ -291,7 +292,7 @@ Creep.prototype.moveCreepToContainer = function ()
         //If this is our first try, or if there is no creep on container, attempt to move to it.
         if(!creepOnContainer || !attemptedMove){
             //move to the specified container
-            this.moveTo(closestContainer, this.moveOpts() );
+            this.moveTo(closestContainer);
         }
         //If container is occupied get next state and run again
         else{

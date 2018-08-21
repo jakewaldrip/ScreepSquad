@@ -304,3 +304,40 @@ Creep.prototype.runClaiming = function(){
     this.claimController(target);
 }
 //-----------
+
+
+/**
+* command the remote creep to flee the room
+* <p> Allows the remote creep to flee the room to saftey </p>
+*/
+Creep.prototype.runRemoteFlee = function ()
+{
+    let homeRoom = this.memory.homeRoom;
+    let remoteRoomDefcon = Game.rooms[this.memory.remoteRoom].memory.defcon;
+
+    //check if the room has become safe in the mean time, go back to a normal state if so
+    if (remoteRoomDefcon > 0)
+    {
+        //if we're in the home room, stay put
+        if (this.memory.homeRoom === this.room.name)
+        {
+            //alert the other creeps of the danger going on in the remote room
+            this.say("DANGER!");
+
+            //get off exit tile if we have to
+            if(this.isOnExitTile())
+            {
+                this.moveAwayFromExit();
+            }
+        }
+        else
+        {
+            //we're in the remote room, run asf
+            this.moveTo(Game.rooms[this.memory.homeRoom]);
+        }
+    }
+    else
+    {
+        this.getNextStateRemote();
+    }
+}

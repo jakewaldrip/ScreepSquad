@@ -418,7 +418,7 @@ Creep.prototype.getEnergyJob = function() {
         job = this.getClosest(objects);
     
     var canAccessStorage = false;
-    
+
     if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
