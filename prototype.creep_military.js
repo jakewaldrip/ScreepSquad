@@ -175,9 +175,10 @@ Creep.prototype.getMilitaryTarget = function() {
             
             //Choosing to use enemyCreep ID to keep syntax easy
             this.workTarget = closestEnemy.id;
-             
+            this.state = 'STATE_MOVING';
         }
         else{
+            this.getNextStateMilitary();
             //Temporary code to keep it full hp when idle
             //Will eventually be done in STATE_DEFENDING
             this.heal(this);
@@ -186,8 +187,6 @@ Creep.prototype.getMilitaryTarget = function() {
             
         }
     }
-    
-    this.state = 'STATE_MOVING';
     //Probably check memory for dedicated target
     //and then moveTo it using moveState?
     
