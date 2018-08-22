@@ -147,6 +147,7 @@ Creep.prototype.getMilitaryTarget = function() {
     if(this.room.name != this.memory.defenseRoom){
         //Places the properties of a RoomPosition target in memory instead
         this.workTarget = {x: 25, y: 25, roomName: this.memory.defenseRoom};
+        this.state = 'STATE_MOVING';
     }
     else{
         
