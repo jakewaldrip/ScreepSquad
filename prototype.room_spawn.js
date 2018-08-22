@@ -482,7 +482,7 @@ Room.prototype.getOpenDefenseRoom = function (role) {
         if(defcon == 1 && role == "remoteDefender"){
             defenseRoom = roomName;
         }
-    });
+    }, this);
     
     return defenseRoom;
 }
