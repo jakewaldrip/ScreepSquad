@@ -6,8 +6,8 @@ module.exports = {
 
 
         //check if we need to flee before doing anything
-        if (creep.room.memory.defcon > 0) {
-            this.memory.state = 'STATE_FLEE';
+        if (creep.memory.remoteRoom.defcon > 0) {
+            creep.memory.state = 'STATE_FLEE';
         }
         //-------------
 

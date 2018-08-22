@@ -313,8 +313,8 @@ Creep.prototype.runClaiming = function(){
 Creep.prototype.runRemoteFlee = function ()
 {
     let homeRoom = this.memory.homeRoom;
-    let remoteRoomDefcon = Game.rooms[this.memory.remoteRoom].memory.defcon;
-
+    let remoteRoomDefcon = this.room.memory.remoteRooms[this.memory.remoteRoom].defcon;
+    
     //check if the room has become safe in the mean time, go back to a normal state if so
     if (remoteRoomDefcon > 0)
     {
@@ -338,6 +338,7 @@ Creep.prototype.runRemoteFlee = function ()
     }
     else
     {
-        this.getNextStateRemote();
+        this.memory.workTarget = null;
+        this.state = 'STATE_SPAWNING';
     }
 }

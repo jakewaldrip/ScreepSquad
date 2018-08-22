@@ -260,7 +260,7 @@ Creep.prototype.moveCreepToContainer = function ()
     //if target container doesn't exist or creep is on the container, getNextState and run again.
     if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))
     {
-        console.log("test");
+        
         if(this.memory.role == "miner"){
             this.getNextStateDomestic();
         }
