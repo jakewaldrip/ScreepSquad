@@ -336,7 +336,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 			//2 drones per source until we can afford big ass drones
             if(this.energyCapacityAvailable < 2500)
             {
-                numRemoteDrones = numRemoteSources * 2;
+                numRemoteDrones = numRemoteSources + 1;
             }
             else
             {
@@ -476,7 +476,7 @@ Room.prototype.getOpenDefenseRoom = function (role) {
         if(defcon == 1 && role == "remoteDefender"){
             defenseRoom = roomName;
         }
-    });
+    }, this);
     
     return defenseRoom;
 }
