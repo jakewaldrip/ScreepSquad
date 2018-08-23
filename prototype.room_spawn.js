@@ -285,10 +285,17 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
             
-            //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
-            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
-            numDrones = 2 + numRemoteRooms;
-            numWorkers = 4 + numRemoteRooms;
+            if(this.storage.store[RESOURCE_ENERGY] >= 100000){
+                //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
+                numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
+                numDrones = 2 + numRemoteRooms;
+                numWorkers = 4 + numRemoteRooms;
+            }
+            else{
+                numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
+                numDrones = 2;
+                numWorkers = 4;
+            }
             
             break;
 
@@ -430,11 +437,11 @@ Room.prototype.getOpenDependentRoom = function (role) {
         //number of sources in room should be number of creeps working the room
         let currentRoom = this.memory.remoteRooms[ remoteRooms[i] ];
         
-        //Don't send a reserver to a nearly fully reserved room, and limit to .5 per source(1max/room)
+        //Don't send a reserver to a nearly fully reserved room, and limit to .25 per source(1max/room)
         if(currentRoom.reservationTTL >= 4500 && role == "remoteReserver")
             creepsPerSource = 0;
         else if(role == "remoteReserver")
-            creepsPerSource = .5;
+            creepsPerSource = .25;
             
             
         let numSources = currentRoom["sources"];
@@ -462,6 +469,9 @@ Room.prototype.getOpenDefenseRoom = function (role) {
     
     var remoteRooms = Object.keys(this.memory.remoteRooms);
     
+    //In order to have more than one room being defended at once
+    //We need to count the number of defenders that have the remoteroom as their target
+    
     _.forEach(remoteRooms, function(roomName) {
         
         let room = Game.rooms[roomName];
@@ -473,6 +483,7 @@ Room.prototype.getOpenDefenseRoom = function (role) {
         else
             defcon = this.memory.remoteRooms[roomName].defcon;
             
+        //This format allows us to assign different types of defenders based on the threat/defcon level
         if(defcon == 1 && role == "remoteDefender"){
             defenseRoom = roomName;
         }
