@@ -284,17 +284,15 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
+            //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
+            numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
+            numDrones = 2;
+            numWorkers = 3 + numRemoteRooms;
             
-            if(this.storage.store[RESOURCE_ENERGY] >= 100000){
-                //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
-                numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
-                numDrones = 2 + numRemoteRooms;
-                numWorkers = 4 + numRemoteRooms;
-            }
-            else{
-                numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length;
-                numDrones = 2;
-                numWorkers = 4;
+            if(energyCap < 1800)
+            {
+                numDrones++;
+                numWorkers++;
             }
             
             break;
