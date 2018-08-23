@@ -342,3 +342,26 @@ Creep.prototype.runRemoteFlee = function ()
         this.state = 'STATE_SPAWNING';
     }
 }
+
+/**
+ * Checks to see if creep needs to change to flee_state
+ */
+Creep.prototype.needToFlee = function () {
+    
+    let remoteRoom = Game.rooms[this.memory.remoteRoom];
+
+    let defcon = 0;
+    
+    if(remoteRoom.memory != undefined){
+        defcon = remoteRoom.memory.defcon;
+    }
+    else{
+        let homeRoom = Game.rooms[this.memory.homeRoom];
+        
+        if(homeRoom.memory != undefined){
+            defcon = homeRoom.memory.remoteRooms[this.memory.remoteRoom].defcon;
+        }
+    }
+    
+    return defcon > 0;
+}
