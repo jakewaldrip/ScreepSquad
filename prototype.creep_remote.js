@@ -271,7 +271,7 @@ Creep.prototype.getRemoteTarget = function (targetType){
     targetType = targetType || null;
     
     //If not in remote room and not a remoteDrone OR if not in remote room and you are a drone, but you aren't full
-    if(this.room.name != this.memory.remoteRoom && this.Empty ){
+    if(this.room.name != this.memory.remoteRoom && ( this.Empty || this.memory.role == "remoteMiner") ){
         //Places the properties of a RoomPosition target in memory instead
         this.workTarget = {x: 25, y: 25, roomName: this.memory.remoteRoom};
     }
