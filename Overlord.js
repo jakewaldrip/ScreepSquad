@@ -14,6 +14,8 @@ const Overseer = require('Overseer');
 function Overlord() {
     
     this.overseers = this.linkOverseers();
+    this.requestHelp = this.getRequestHelpRooms();
+    this.sendHelp = this.getSendHelpRooms();
     
 };
 
@@ -134,6 +136,33 @@ Overlord.prototype.linkOverseers = function() {
     return overseers;
     
 };
+
+
+/*
+* Get all rooms that need help and the type of help they need
+* @return {Object} array of objects containing the rooms that need help and what help they need
+* form for object is [requestingRoom, typeOfHelp]
+*/
+Overlord.prototype.getRequestHelpRooms = function()
+{
+    
+    return null;
+}
+//------------------
+
+
+/*
+* Get all rooms that can help and the type of help they're sending
+* @param {Object} helpObject : [requestingRoom, typeOfHelp]
+* @return {Object} array of objects containing the rooms that are helping and what help they are sending
+* form for object is [helpingRoom, typeOfHelp]
+*/
+Overlord.prototype.getSendHelpRooms = function(helpObject)
+{
+    
+    return null;
+}
+//------------------
 
 
 //Export the constructor for the object

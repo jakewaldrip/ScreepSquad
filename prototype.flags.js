@@ -205,7 +205,7 @@ Flag.prototype.assignFlagToRoom = function () {
         }
     
     	//if its double red, attack flag
-        else if(this.color === COLOR_RED && this.secondaryColor === COLOR_RED) {
+        else if(this.color === COLOR_RED) {
             flagType = "Attack";
             assignedRoom = this.assignAttackFlagToRoom();
         }

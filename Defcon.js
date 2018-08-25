@@ -11,7 +11,7 @@ Room.prototype.getDefconLevel = function ()
     var enemies = this.memory.enemies;
     var combatEnemies = this.memory.enemies.combatCreeps;
     var healingEnemies;
-    var roomName = this.roomName;
+    var roomName = this.name;
 
     //set defcon to what it was last tick, 0 if this is the first check
     if (this.memory.defcon != undefined)
@@ -41,6 +41,8 @@ Room.prototype.getDefconLevel = function ()
         }
         else
         {
+            //This line could have the consequence of spawning a remoteDefender for each new remoteRoom
+            //Since they would be considered a higher priority spawn than the miners
             //no vision, assume we still in danger until a defender goes and checks it out
             defconLevel = 1;
         }
