@@ -3,42 +3,27 @@
 
 module.exports = {
     run: function(creep) {
-		
-		var state;
-
-		//if no state, set state to spawning
-		if(creep.memory.state != undefined)
-		{	
-			state = creep.memory.state
-		}
-		else
-		{
-			creep.memory.state = 'STATE_SPAWNING';
-			state = creep.memory.state;
-		}
-		//--------
-
 
 		//check the state and act appropirately
-		switch(state)
+		switch(creep.state)
 		{
 			case 'STATE_SPAWNING':
 
-
+                creep.runSpawningDomestic();
 
 			break;
 
 
 			case 'STATE_MOVING':
 
-
+                creep.runMovingDomestic();
 
 			break;
 
 
-		    case 'STATE_HARVESTING':
+		    case 'STATE_GET_RESOURCES':
 
-
+                creep.runHarvestingDomestic();
 
 			break;
 

@@ -3,13 +3,13 @@
 
 module.exports = {
     run: function(creep) {
-		
-		//if no state, set state to spawning
-		if(creep.state == undefined)
-		{
-			creep.state = 'STATE_SPAWNING';
-		}
-		//--------
+
+
+        //check if we need to flee before doing anything
+        if ( creep.needToFlee() ) {
+            creep.memory.state = 'STATE_FLEE';
+        }
+        //-------------
 
 
 		//check the state and act appropirately
@@ -17,32 +17,32 @@ module.exports = {
 		{
 			case 'STATE_SPAWNING':
 
-				creep.runSpawningDomestic();
+                creep.runSpawningRemote();
 
 			break;
 
 
 			case 'STATE_MOVING':
 
-				creep.runMovingDomestic();
+                creep.runMovingRemote();
 
 			break;
 
 
 		    case 'STATE_USE_RESOURCES':
 
-				creep.runWorkDomestic();
+                creep.runHarvestingRemote();
 
 			break;
 
 
-			case 'STATE_GET_RESOURCES':
+		    case 'STATE_FLEE':
 
-				creep.runHarvestingDomestic();
+		        creep.runRemoteFlee();
 
-			break;
+		    break;
 
-
+    
 			default: 
 
 				console.log("Invalid creep state for " + creep.name);

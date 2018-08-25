@@ -1,21 +1,11 @@
-//Aux Functions for Room object
-//boolean read-only Room.isOwned property
-Object.defineProperty(Room.prototype, 'isOwned', {
+/** @namespace Room */
+Room.prototype.runTowers = function() {
     
-    get: function() {
-        
-        if(this.controller != undefined && this.controller.my)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    	
-    }
+    let towers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
     
-});
+    _.forEach(towers, tower => tower.run());
+    
+}
 
 //check if the room is owned by you
 Room.prototype.isOwnedRoom = function () {
@@ -29,27 +19,9 @@ Room.prototype.isOwnedRoom = function () {
 	{
 		return false;
 	}
+	
 }
 //-----
-
-//boolean read-only Room.isAlly property.
-Object.defineProperty(Room.prototype, 'isAlly', {
-    
-    get: function() {
-        if(this.controller != undefined)
-    	{
-    		if(this.controller.owner === 'jakesboy2' || this.controller.owner === 'UhmBrock')
-    		{
-    			return true;
-    		}
-    		else
-    		{
-    			return false;
-    		}
-    	}
-    }
-    
-});
 
 //check if the room is owned by an ally
 Room.prototype.isAllyRoom = function () {
@@ -79,9 +51,9 @@ Object.defineProperty(Room.prototype, 'roomState', {
        return this._roomState;
        
    },
-   set: function (newValue) {
+   set: function (value) {
        //Can do validation if needed
-       this._roomState = newValue;
+       this._roomState = value;
    }
    
 });
@@ -89,6 +61,27 @@ Object.defineProperty(Room.prototype, 'roomState', {
 //set room state to memory
 Room.prototype.setRoomState = function () {
 	
+    var containers = this.memory.structures[STRUCTURE_CONTAINER];
+
+    //check if containers exist
+    if(this.memory.creepsInRoom.length >= 3 && containers.length > 0)
+    {
+        if(this.storage && this.memory.creepsInRoom.length >= 6)
+        {
+            this.memory.roomState = "ROOM_STATE_ADVANCED";
+        }
+        else
+        {
+            this.memory.roomState = "ROOM_STATE_INTERMEDIATE";
+        }
+    }
+    else if(this.memory.creepsInRoom.length >= 3)
+    {
+        this.memory.roomState = "ROOM_STATE_BEGINNER";
+    }
+    else{
+        this.memory.roomState = "ROOM_STATE_INTRO";
+    }
 }
 //------
 
