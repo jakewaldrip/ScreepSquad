@@ -71,9 +71,17 @@ Room.prototype.getHelperRoom = function(requestingRoom, helpType)
 //-------------------
 
 
-//decide if your room needs help
+//decide if your room needs help and ask
 Room.prototype.requestHelp = function()
 {
 
+}
+//-------------------
+
+
+//decide if you can send help and do it
+Room.prototype.sendHelp = function(requestingRoom, helpType)
+{
+    
 }
 //-------------------
