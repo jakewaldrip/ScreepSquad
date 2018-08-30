@@ -30,6 +30,7 @@ module.exports = {
 			{
 				//if it exists, delete stale data
 				Memory.rooms[room].jobQueues = {};
+				Memory.rooms[room].creepCounts = {};
 			}
 		}
 

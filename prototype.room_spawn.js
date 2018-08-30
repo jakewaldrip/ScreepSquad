@@ -30,22 +30,23 @@ Room.prototype.getNextCreepToSpawn = function () {
 
     const priorityList = combatPriority.concat(domesticPriority, remotePriority);
     
-    
     let nextCreep, counts = {};
     
     _.forEach(priorityList, function(role) {
             
-            counts[role] = this.getCreepSum(role);
+        if(this.memory.creepCounts[role] == undefined)
+            this.memory.creepCounts[role] = this.getCreepSum(role);
             
-            if(counts[role] < this.memory.creepLimits[role])
+            
+        if(this.memory.creepCounts[role] < this.memory.creepLimits[role])
+		{
+            //Keeps the number of each role even, instead of building one to max before building a second of the other role
+            if(nextCreep == null || this.memory.creepCounts[nextCreep] >= this.memory.creepCounts[role])
 			{
-                //Keeps the number of each role even, instead of building one to max before building a second of the other role
-                if(nextCreep == null || counts[nextCreep] >= counts[role])
-				{
-					nextCreep = role;
-				}
-                    
-            }
+				nextCreep = role;
+			}
+                
+        }
             
     }, this);
     
@@ -59,37 +60,39 @@ Room.prototype.getNextCreepToSpawn = function () {
  */
 Room.prototype.spawnNextCreep = function () {
     
-    let spawns = this.memory.structures[STRUCTURE_SPAWN].getObjects();
-    let emptySpawner = _.find(spawns, spawn => spawn.spawning == null);
+    _.forEach(this.memory.structures[STRUCTURE_SPAWN].getObjects(), function(spawn) {
     
-    if(emptySpawner != null){
-        
-        let role = this.getNextCreepToSpawn();
-        let dependentRoom = null;
-        
-        if(role != undefined){
+        if(spawn.spawning == null){
             
-            let energyCost = this.getCreepSpawnEnergyCost(role);
-
-            if(this.energyAvailable >= energyCost)
-			{
+            let role = this.getNextCreepToSpawn();
+            let dependentRoom = null;
+            
+            if(role != undefined){
                 
-                //if creep is a remote creep, set dependentRoom to first room thats not fully worked
-                if(role === 'remoteMiner' || role === 'remoteDrone' || role === 'remoteReserver')
-                {
-                   dependentRoom = this.getOpenDependentRoom(role);
-                }
-                else if(role === 'remoteDefender')
-				{
-                    dependentRoom = this.getOpenDefenseRoom(role);
-                }
-
-                //create the creep using the available spawner
-                emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
+                let energyCost = this.getCreepSpawnEnergyCost(role);
+    
+                if(this.energyAvailable >= energyCost)
+    			{
                     
+                    //if creep is a remote creep, set dependentRoom to first room thats not fully worked
+                    if(role === 'remoteMiner' || role === 'remoteDrone' || role === 'remoteReserver')
+                    {
+                       dependentRoom = this.getOpenDependentRoom(role);
+                    }
+                    else if(role === 'remoteDefender')
+    				{
+                        dependentRoom = this.getOpenDefenseRoom(role);
+                    }
+    
+                    //create the creep using the available spawne
+                    //Increment creep count in memory, so next spawn doesn't create the same creep. 
+                    this.memory.creepCounts[role]++;
+                    spawn.createRole(this.name, energyCost, role, dependentRoom);
+                        
+                }
             }
         }
-    }
+    }, this);
 }
 //-----
 
@@ -289,7 +292,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             numDrones = 2;
             numWorkers = 3 + numRemoteRooms;
             
-            if(energyCap < 1800)
+            if(energyCap < 1800 || this.storage.store[RESOURCE_ENERGY] >= 150000)
             {
                 numDrones++;
                 numWorkers++;

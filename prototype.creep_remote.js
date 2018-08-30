@@ -89,6 +89,7 @@ Creep.prototype.runMovingRemote = function(){
         else
         {
             if(this.canReach(target) ){
+                //might not be needed here, since I added it as the default moving state for miners
                 if(this.memory.role == "remoteMiner"){
                     this.moveCreepToContainer();
                 }
@@ -97,6 +98,7 @@ Creep.prototype.runMovingRemote = function(){
                 }
                 //Periodically causes a loop
                 //this.run();
+                
             }
             else{
                 
@@ -106,7 +108,14 @@ Creep.prototype.runMovingRemote = function(){
 			    }
 			    else
 			    {
-			        this.moveTo(target, this.moveOpts() );
+			        
+			        if(this.memory.role == "remoteMiner"){
+			            this.moveCreepToContainer();
+			        }
+			        else{
+			            this.moveTo(target, this.moveOpts() );
+			        }
+			        
 			    }
             }
             
