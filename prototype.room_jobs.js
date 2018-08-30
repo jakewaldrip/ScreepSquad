@@ -419,10 +419,10 @@ Creep.prototype.getEnergyJob = function() {
     
     var canAccessStorage = false;
 
-    if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
+    if(this.memory.role != "drone" && ( job == null || job == undefined || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
-    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity*.75 )){
+    else if(this.memory.role == "drone" && ( job == null || job == undefined || job.energyAvailable() < this.carryCapacity*.75 )){
         canAccessStorage = true;
     }
     //possible consequences

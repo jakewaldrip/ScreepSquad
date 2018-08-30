@@ -134,8 +134,8 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
     else if(roomState == "ROOM_STATE_ADVANCED"){
         roleMaxCost = {
             miner: 700,
-            drone: 2000,
-            worker: 2500,
+            drone: 1800,
+            worker: 1800,
             remoteMiner: 1000,
             remoteDrone: 2000,
             remoteReserver: 1500,
@@ -288,6 +288,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
             numDrones = 2;
             numWorkers = 3 + numRemoteRooms;
+            
             
             if(energyCap < 1800)
             {

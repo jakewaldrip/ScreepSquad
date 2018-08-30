@@ -271,7 +271,7 @@ Creep.prototype.getRemoteTarget = function (targetType){
     targetType = targetType || null;
     
     //If not in remote room and not a remoteDrone OR if not in remote room and you are a drone, but you aren't full
-    if(this.room.name != this.memory.remoteRoom && this.Empty ){
+    if(this.room.name != this.memory.remoteRoom && ( this.Empty || this.memory.role == "remoteMiner") ){
         //Places the properties of a RoomPosition target in memory instead
         this.workTarget = {x: 25, y: 25, roomName: this.memory.remoteRoom};
     }
@@ -312,14 +312,14 @@ Creep.prototype.runClaiming = function(){
 */
 Creep.prototype.runRemoteFlee = function ()
 {
-    let homeRoom = this.memory.homeRoom;
-    let remoteRoomDefcon = this.room.memory.remoteRooms[this.memory.remoteRoom].defcon;
+    let homeRoom = Game.rooms[this.memory.homeRoom];
+    let remoteRoomDefcon = homeRoom.memory.remoteRooms[this.memory.remoteRoom].defcon;
     
     //check if the room has become safe in the mean time, go back to a normal state if so
     if (remoteRoomDefcon > 0)
     {
         //if we're in the home room, stay put
-        if (this.memory.homeRoom === this.room.name)
+        if (homeRoom.name === this.room.name)
         {
             //alert the other creeps of the danger going on in the remote room
             this.say("DANGER!");
@@ -329,11 +329,31 @@ Creep.prototype.runRemoteFlee = function ()
             {
                 this.moveAwayFromExit();
             }
+            else{
+                
+                //Find a position 5 tiles into the homeRoom, to avoid clogging exits;
+                let exitDir = this.room.findExitTo(this.memory.remoteRoom);
+                let posArray = [this.pos.x, this.pos.y, this.room.name];
+                
+                if(exitDir == FIND_EXIT_TOP)
+                    posArray[1] = 5;
+                else if(exitDir == FIND_EXIT_BOTTOM)
+                    posArray[1] = 45;
+                else if(exitDir == FIND_EXIT_LEFT)
+                    posArray[0] = 5;
+                else if(exitDir == FIND_EXIT_RIGHT)
+                    posArray[0] = 45;
+                    
+                let targetPos = new RoomPosition(posArray[0], posArray[1], posArray[2]);
+                
+                this.moveTo(targetPos);
+            }
         }
         else
         {
+            let homePosition = new RoomPosition(25, 25, homeRoom.name);
             //we're in the remote room, run asf
-            this.moveTo(Game.rooms[this.memory.homeRoom]);
+            this.moveTo(homePosition);
         }
     }
     else
@@ -345,6 +365,7 @@ Creep.prototype.runRemoteFlee = function ()
 
 /**
  * Checks to see if creep needs to change to flee_state
+ * @return {boolean} needToFlee Whether or not the defcon is > 0
  */
 Creep.prototype.needToFlee = function () {
     
@@ -352,13 +373,13 @@ Creep.prototype.needToFlee = function () {
 
     let defcon = 0;
     
-    if(remoteRoom.memory != undefined){
+    if(remoteRoom != undefined){
         defcon = remoteRoom.memory.defcon;
     }
     else{
         let homeRoom = Game.rooms[this.memory.homeRoom];
         
-        if(homeRoom.memory != undefined){
+        if(homeRoom != undefined){
             defcon = homeRoom.memory.remoteRooms[this.memory.remoteRoom].defcon;
         }
     }

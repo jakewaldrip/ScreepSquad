@@ -71,7 +71,9 @@ Overseer.prototype.checkDefenses = function () {
         }
         else
 		{
-			this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
+		    //If defCon was previously defined, don't reset it. Otherwise, initialize it
+		    if(this.homeRoom.memory.remoteRooms[roomName].defcon == undefined)
+			    this.homeRoom.memory.remoteRooms[roomName]["defcon"] = 0;
 		}
             
     }, this);
