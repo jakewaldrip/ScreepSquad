@@ -52,7 +52,7 @@ Creep.prototype.runUseEnergyRemote = function(){
 
 //run moving for remote creeps
 Creep.prototype.runMovingRemote = function(){
-
+	
     //get work target id/object
     var target = this.workTarget;
     
