@@ -58,9 +58,13 @@ Creep.prototype.runMovingDomestic = function () {
 			    }
 			    else
 			    {
-			        this.moveTo(target, this.moveOpts() );
-			    }
-			    
+			        if(this.memory.role == 'miner'){
+			            this.moveCreepToContainer();
+			        }
+			        else{
+			            this.moveTo(target, this.moveOpts() );
+		            }
+			    }   
 			}
 		}
 	}

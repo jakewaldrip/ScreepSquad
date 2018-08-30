@@ -276,7 +276,7 @@ Creep.prototype.moveCreepToContainer = function ()
         
         //whether we have tried to move already
         let attemptedMove = false;
-        //whether we are on the container
+        //whether there is a creep on the container
         let creepOnContainer = false;
         
         //if creep has a path in memory and its destination is the container, show that we have tried to move to container before
@@ -289,21 +289,37 @@ Creep.prototype.moveCreepToContainer = function ()
             creepOnContainer = _.size(closestContainer.pos.lookFor(LOOK_CREEPS)) > 0;
         }
         
-        //If this is our first try, or if there is no creep on container, attempt to move to it.
-        if(!creepOnContainer || !attemptedMove){
+        //If there is no creep on container, attempt to move to it.
+        if(!creepOnContainer){
             //move to the specified container
             this.moveTo(closestContainer);
         }
-        //If container is occupied get next state and run again
+        //If container is occupied get next state and run again, or move to source if not in range
         else{
             
             if(this.memory.role == "miner"){
-                this.getNextStateDomestic();
+                
+                //if we can reach the source, switch states, else move to it
+                if( this.canReach(target) ){
+                    this.getNextStateDomestic();
+                    this.run();
+                }
+                else{
+                    this.moveTo(target);
+                }
+                    
             }
             else if(this.memory.role == "remoteMiner"){
-                this.getNextStateRemote();
+                
+                //if we can reach the source, switch states, else move to it
+                if(this.canReach(target) ){
+                    this.getNextStateRemote();
+                    this.run()
+                }
+                else{
+                    this.moveTo(target);
+                }
             }
-            this.run();
         }
     }
 }
