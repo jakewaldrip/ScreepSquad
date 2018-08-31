@@ -203,10 +203,15 @@ Creep.prototype.getNextStateDomestic = function () {
 		//if creep has resources, use them
 		nextState = 'STATE_USE_RESOURCES';
 	}
+	else if (this.role === 'powerUpgrader')
+	{
+	    //if power upgrader has no energy, get some
+        nextState = 'STATE_GET_RESOURCES_PU'
+	}
 	else
 	{
-		//if creep has no resources, get them some
-		nextState = 'STATE_GET_RESOURCES'; 
+	    //if creep has no resources, get them some
+	    nextState = 'STATE_GET_RESOURCES';
 	}
 	
 	this.state = nextState;
