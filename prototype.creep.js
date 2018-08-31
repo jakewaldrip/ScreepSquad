@@ -261,13 +261,26 @@ Creep.prototype.moveCreepToContainer = function ()
     if(closestContainer == null || this.pos.isEqualTo(closestContainer.pos))
     {
         
-        if(this.memory.role == "miner"){
-            this.getNextStateDomestic();
-        }
-        else if(this.memory.role == "remoteMiner"){
-            this.getNextStateRemote();
-        }
-        this.run();
+		//kk so this basically says if the closest container doesn't exist (usually because it expired)
+		//check if we're in range of the source, move to it, otherwise start mining... feel free to change around to be more elegant or if i missed a test case
+		//check if the container even exists, if not just move to the source
+		if(closestContainer == null && !this.canReach(target))
+		{
+			this.moveTo(target);
+		}
+		else
+		{
+			if(this.memory.role == "miner"){
+
+				this.getNextStateDomestic();
+			}
+			else if(this.memory.role == "remoteMiner"){
+
+				this.getNextStateRemote();
+			}
+			this.run();
+		}
+        
         
     }
     //container exists and creep is not on it
