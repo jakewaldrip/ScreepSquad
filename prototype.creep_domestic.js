@@ -79,6 +79,24 @@ Creep.prototype.runMovingDomestic = function () {
 //--------
 
 
+//run moving for upgrader
+Creep.prototype.runMovingUpgrader = function (){
+    
+    var target = Game.getObjectById(this.memory.linkTarget);
+    
+    if(!this.canReach(target)){
+        
+        //if not at target, move to target
+        this.moveTo(target);
+    }
+    else
+    {
+        this.memory.state = 'STATE_GET_RESOURCES';
+    }
+}
+//--------
+
+
 //gets energy for the creep and switches to proper state upon becoming full
 Creep.prototype.runHarvestingDomestic = function () {
     
@@ -172,8 +190,9 @@ Creep.prototype.runWorkDomestic = function () {
 		}
 		catch(err)
 		{
-			console.log(this.name + " has encountered an issue in runWorkDomestic");
-			console.log('<font color="#e04e4e">       ' + err.stack + "</font>");
+		    //happens frequenly enough without causing error where im commenting these out lol
+			//console.log(this.name + " has encountered an issue in runWorkDomestic");
+			//console.log('<font color="#e04e4e">       ' + err.stack + "</font>");
 		}
 
 	}
@@ -184,6 +203,56 @@ Creep.prototype.runWorkDomestic = function () {
 	}
 }
 //---------
+
+/*
+ * gets energy for the power upgrader creep
+ */
+Creep.prototype.runGetEnergyUpgrader = function () {
+    
+    //check if the link is empty, or creep is full
+    //change state if either is true
+    //otherwise get energy from link
+    var linkTarget = Game.getObjectById(this.memory.linkTarget);
+    
+    if(this.Full || linkTarget.energy === 0){
+        
+        //change state to do some work
+        this.memory.state = 'STATE_USE_RESOURCES';
+    }
+    else{
+        
+        //get energy from the link
+        if(this.withdraw(linkTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            
+            this.memory.state = 'STATE_MOVING';
+        }
+    }
+}
+//---------
+
+
+/*
+ * use energy to upgrade controller for power upgrader creep
+ */
+Creep.prototype.runUseResourcesUpgrader = function () {
+
+    //check if we're out of energy
+    //if so change states
+    //otherwise upgrade controller
+    if(this.Empty){
+        
+        //get you some energy son
+        this.memory.state = 'STATE_GET_RESOURCES';
+    }
+    else{
+        
+        //upgrade that controller son
+        if(this.upgradeController(this.room.controller) == ERR_NOT_IN_RANGE){
+           
+           this.memory.state = 'STATE_MOVING'; 
+        }
+    }
+}
 
 
 //switches the creep to the next state
@@ -205,8 +274,8 @@ Creep.prototype.getNextStateDomestic = function () {
 	}
 	else
 	{
-		//if creep has no resources, get them some
-		nextState = 'STATE_GET_RESOURCES'; 
+	    //if creep has no resources, get them some
+	    nextState = 'STATE_GET_RESOURCES';
 	}
 	
 	this.state = nextState;

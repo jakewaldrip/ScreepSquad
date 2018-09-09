@@ -278,7 +278,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             });
 
             numDrones = 4;
-            numWorkers = 6;
+            numWorkers = 5;
             
             break;
 
@@ -355,13 +355,17 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             numRemoteMiners = numRemoteSources;
             
 			//2 drones per source until we can afford big ass drones
-            if(this.energyCapacityAvailable < 2500)
+            if(this.energyCapacityAvailable < 1400)
+            {
+                numRemoteDrones = numRemoteSources;
+            }
+            else if(this.energyCapacityAvailable < 2500)
             {
                 numRemoteDrones = numRemoteSources + 1;
             }
             else
             {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources + 1;
             }
 
 			//only spawn reserver if we can afford it

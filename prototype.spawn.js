@@ -200,6 +200,54 @@ StructureSpawn.prototype.createWorker = function (homeRoom, energyCost) {
 //----
 
 
+/*
+ * create power upgrader
+ * @param {String} homeRoom
+ * @param {int} energyCost
+ */
+StructureSpawn.prototype.createPowerUpgrader = function (homeRoom, energyCost) {
+
+    //random num for name
+    var name = 'powerUpgrader - ' + randNum();
+    var body = [];
+
+    let w = 0, m = 0,c = 0;
+    
+    //if we don't quite have 2300 energy to work with make a mini lol
+    if (energyCost < 2300)
+    {
+        w = 15;
+        energyCost -= 1500;
+        c = Math.floor(energyCost / 100);
+        m = Math.floor(energyCost / 100);
+    }
+    else
+    {
+        c = 8;
+        m = 8;
+        energyCost -= 800;
+        w = Math.floor(energyCost / 100);
+    }
+
+
+    body = _.times(w, () => WORK);
+    body = body.concat(_.times(m, () => MOVE));
+    body = body.concat(_.times(c, () => CARRY));
+
+    //create the creep
+    this.spawnCreep(body, name, {
+        memory: {
+            role: 'powerUpgrader',
+            homeRoom: homeRoom,
+            state: 'STATE_SPAWNING',
+            linkTarget: null
+        }
+    });
+
+}
+//----
+
+
 //create remote miner
 //900 energy cap at inter + adv room state
 StructureSpawn.prototype.createRemoteMiner = function(homeRoom, energyCost, dependentRoom)
