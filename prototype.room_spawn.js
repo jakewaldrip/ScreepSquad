@@ -445,7 +445,7 @@ Room.prototype.getOpenDependentRoom = function (role) {
     
     let creepsPerSource = 1;
     
-    if(role == "remoteDrone" && this.energyCapacityAvailable < 2500){
+    if(role == "remoteDrone"){ // && this.energyCapacityAvailable < 2500){
         creepsPerSource = 2;
     }
     
