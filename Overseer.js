@@ -45,7 +45,7 @@ Overseer.prototype.run = function() {
     //Run Home Room
     this.homeRoom.setRoomState();
     this.homeRoom.spawnNextCreep();
-    this.homeRoom.runTowers();
+    this.homeRoom.runStructures();
     
     //simulate remoteRooms TTL
     this.updateReservationTimers();

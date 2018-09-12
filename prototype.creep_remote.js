@@ -264,7 +264,7 @@ Creep.prototype.runReservingRemote = function(){
     var target = Game.getObjectById(this.workTarget);
     
     //Can optionally sign the controller here
-    //this.signController(target, "");
+    this.signController(target, "");
     this.reserveController(target);
 }
 //----------------

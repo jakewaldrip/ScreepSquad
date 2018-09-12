@@ -502,18 +502,34 @@ Creep.prototype.getRemoteWorkJob = function() {
                 return {x: 25, y: 25, roomName: this.memory.homeRoom};
             }
             else{
-                //act like a drone would
-                //return this.getWorkJob("drone");
                 
+                //find closest link
+                //we find closest because all that matters is the upgraders link is filled
+                //so if its a shorter walk for whatever reason to just go to controller then
+                //we will do this instead
+                let allLinksID = this.room.memory.structures[STRUCTURE_LINK];
+                let allLinks = allLinksID.getObjects();
+                let closestLink = this.pos.findClosestByRange(allLinks);
+
+                //check if link exists and isn't full
+                if(closestLink != null && closestLink.energy < closestLink.energyCapacity){
+
+                    return closestLink.id;
+                }
+                else{
                 
-                //Will eventually change this into a function to find 
-                //the link closest to the remoteRoom exit
-                let homeRoom = Game.rooms[this.memory.homeRoom];
-                if(homeRoom.storage != undefined)
-                    return homeRoom.storage.id;
-                else
-                    console.log(this.name + ": No storage found!");
-                
+                    //if link doesn't exist or full, fill storage
+                    let homeRoom = Game.rooms[this.memory.homeRoom];
+                    
+                    if(homeRoom.storage != undefined){
+                        
+                        return homeRoom.storage.id;
+                    }
+                    else{
+                    
+                        console.log(this.name + ": No storage found!");
+                    }
+                }
             }
         break;
         

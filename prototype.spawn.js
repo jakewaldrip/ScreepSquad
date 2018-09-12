@@ -240,7 +240,7 @@ StructureSpawn.prototype.createPowerUpgrader = function (homeRoom, energyCost) {
             role: 'powerUpgrader',
             homeRoom: homeRoom,
             state: 'STATE_SPAWNING',
-            linkTarget: null
+            workTarget: null
         }
     });
 

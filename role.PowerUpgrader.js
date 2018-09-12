@@ -22,8 +22,7 @@ module.exports = {
 
             case 'STATE_MOVING':
 
-                
-                creep.runMovingUpgrader();
+                creep.runMovingDomestic();
 
                 break;
 

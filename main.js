@@ -37,7 +37,7 @@ const profiler = require('screeps-profiler');
 
 //uncomment the next line to enable profiler
 //wiki on how to use it: https://github.com/screepers/screeps-profiler
-profiler.enable();
+//profiler.enable();
 
 module.exports.loop = function () {
 profiler.wrap(function() {

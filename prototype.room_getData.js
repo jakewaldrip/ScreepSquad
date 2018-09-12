@@ -66,8 +66,8 @@ Room.prototype.getSources = function () {
     }
     
     
-//DEPRECATED - Use Room.prototype.getStructures instead.
-Room.prototype.oldGetStructures = function () {
+    
+Room.prototype.getStructures = function () {
         
         
         
@@ -95,37 +95,6 @@ Room.prototype.oldGetStructures = function () {
         
     }
 
-Room.prototype.getStructures = function () {
-    
-    const structuresConstants = {
-            STRUCTURE_ROAD, STRUCTURE_EXTENSION, STRUCTURE_WALL,
-            STRUCTURE_RAMPART, STRUCTURE_SPAWN, STRUCTURE_CONTROLLER,
-            STRUCTURE_CONTAINER, STRUCTURE_LINK, STRUCTURE_STORAGE, 
-            STRUCTURE_TOWER, STRUCTURE_OBSERVER, STRUCTURE_EXTRACTOR,
-            STRUCTURE_LAB, STRUCTURE_TERMINAL, STRUCTURE_NUKER,
-            STRUCTURE_KEEPER_LAIR, STRUCTURE_PORTAL,
-            STRUCTURE_POWER_BANK, STRUCTURE_POWER_SPAWN
-        };
-        
-    let sortedStructures = {};
-    
-    //initialize sortedStructures properties to 0
-    _.forEach(structuresConstants, function(constant) {
-        sortedStructures[constant] = [];
-    });
-    
-    let roomStructures = this.find(FIND_STRUCTURES);
-    
-    //store each structure into sortedStructures
-    _.forEach(roomStructures, function(structure) {
-        
-        sortedStructures[structure.structureType].push(structure.id);
-        
-    });
-        
-    //store sortedStructures into room.memory
-    this.memory.structures = sortedStructures;
-}
 /**
  * Assigns a container to the source.container property if there is one
  * <p>Requires that Room.getStructures and Room.getSources have been run.</p>
