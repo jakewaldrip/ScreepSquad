@@ -457,7 +457,7 @@ Creep.prototype.getClosest = function(objects){
 
     for(i = 0; i < objects.length; i++){
         
-        obj = objects[i];
+        let obj = objects[i];
         
         var range = this.pos.getRangeTo(obj);
         
