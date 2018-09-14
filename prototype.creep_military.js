@@ -24,7 +24,7 @@ Creep.prototype.runMovingMilitary = function() {
         
         if(target instanceof RoomPosition){
             //avoid getting stuck on exit tile
-            this.moveTo(target, this.moveOpts() );
+            this.travelTo(target );
             if(this.room.name == target.roomName){
                 
                 this.getMilitaryTarget();
@@ -60,7 +60,7 @@ Creep.prototype.runAttackingMilitary = function() {
         this.heal(this);
     }
     else if(this.attack(target) == ERR_NOT_IN_RANGE){
-        this.moveTo(target, this.moveOpts() );
+        this.travelTo(target );
         //Worst case this will return a non-0 and change nothing, even if we dont' have parts
         this.heal(this);
     }
@@ -83,7 +83,7 @@ Creep.prototype.runRangedAttackingMilitary = function() {
         let moveOpts = this.moveOpts();
         moveOpts["range"] = 3;
         
-        this.moveTo(target, moveOpts);
+        this.travelTo(target, moveOpts);
         this.heal(this);
     }
     
@@ -110,7 +110,7 @@ Creep.prototype.runDefendingMilitary = function() {
         let moveOpts = this.moveOpts();
         moveOpts["range"] = 3;
         
-        this.moveTo(target, moveOpts);
+        this.travelTo(target, moveOpts);
     }
     //Creep should heal itself
     //Creep should also heal any low miners/drones/reservers in room
@@ -189,6 +189,6 @@ Creep.prototype.getMilitaryTarget = function() {
         }
     }
     //Probably check memory for dedicated target
-    //and then moveTo it using moveState?
+    //and then travelTo it using moveState?
     
 }

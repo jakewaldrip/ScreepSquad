@@ -78,7 +78,7 @@ Creep.prototype.runMovingRemote = function(){
         if(target instanceof RoomPosition)
         {
             //avoids getting stuck on exit tile if there is no target from getRemoteTarget()
-            this.moveTo(target, this.moveOpts() );
+            this.travelTo(target );
             if(this.room.name == targetRoom){
                 this.getRemoteTarget();
                 //Definitely causes a loop
@@ -113,7 +113,7 @@ Creep.prototype.runMovingRemote = function(){
 			            this.moveCreepToContainer();
 			        }
 			        else{
-			            this.moveTo(target, this.moveOpts() );
+			            this.travelTo(target );
 			        }
 			        
 			    }
@@ -355,14 +355,14 @@ Creep.prototype.runRemoteFlee = function ()
                     
                 let targetPos = new RoomPosition(posArray[0], posArray[1], posArray[2]);
                 
-                this.moveTo(targetPos);
+                this.travelTo(targetPos);
             }
         }
         else
         {
             let homePosition = new RoomPosition(25, 25, homeRoom.name);
             //we're in the remote room, run asf
-            this.moveTo(homePosition);
+            this.travelTo(homePosition);
         }
     }
     else

@@ -23,6 +23,7 @@ require('prototype.structures');
 require('prototype.towers');
 require('Defcon');
 require('prototype.empire_comms');
+require('Traveler');
 
 /******************/
 /*      Roles     */
@@ -63,13 +64,13 @@ profiler.wrap(function() {
             }
             else
             {
-                attackCreep.moveTo(new RoomPosition(25, 25, "W42S9"));
+                attackCreep.travelTo(new RoomPosition(25, 25, "W42S9"));
             }
         }
         else{
             let target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
             if(attackCreep.attack(target) == ERR_NOT_IN_RANGE){
-                attackCreep.moveTo(target);
+                attackCreep.travelTo(target);
                 attackCreep.heal(attackCreep);
             }
         }
