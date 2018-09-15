@@ -99,7 +99,7 @@ class Traveler {
             let color = "orange";
             if (ret.incomplete) {
                 // uncommenting this is a great way to diagnose creep behavior issues
-                // console.log(`TRAVELER: incomplete path for ${creep.name}`);
+                console.log(`TRAVELER: incomplete path for ${creep.name}`);
                 color = "red";
             }
             if (options.returnData) {
@@ -223,7 +223,10 @@ class Traveler {
         let originRoomName = origin.roomName;
         let destRoomName = destination.roomName;
         // check to see whether findRoute should be used
-        let roomDistance = Game.map.getRoomLinearDistance(origin.roomName, destination.roomName);
+        let roomDistance = 0;
+        if(originRoomName != destRoomName)
+            roomDistance = Game.map.getRoomLinearDistance(origin.roomName, destination.roomName);
+            
         let allowedRooms = options.route;
         if (!allowedRooms && (options.useFindRoute || (options.useFindRoute === undefined && roomDistance > 2))) {
             let route = this.findRoute(origin.roomName, destination.roomName, options);

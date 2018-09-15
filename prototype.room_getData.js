@@ -164,7 +164,7 @@ Room.prototype.getDroppedEnergy = function () {
 
 Room.prototype.getRepairTargets = function () {
 	    //change this to change how high walls and ramparts are repaired
-	    const wallMaxMultiplier = {
+	    const wallMaxHealth = {
 	        0: 0,
 	        1: 15000,
 	        2: 30000,
@@ -172,7 +172,7 @@ Room.prototype.getRepairTargets = function () {
 	        4: 80000,
 	        5: 100000,
 	        6: 250000,
-	        7: 500000,
+	        7: 750000,
 	        8: 1000000
 	    }
         let formattedTargets = {};
@@ -185,7 +185,7 @@ Room.prototype.getRepairTargets = function () {
                 hpPercent = s.hits / s.hitsMax;
             }
             else{
-                hpPercent = s.hits / (wallMaxMultiplier[this.controller.level]);
+                hpPercent = s.hits / (wallMaxHealth[this.controller.level]);
             }
             
             if(hpPercent < 1){
