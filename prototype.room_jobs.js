@@ -507,8 +507,7 @@ Creep.prototype.getRemoteWorkJob = function() {
                 //we find closest because all that matters is the upgraders link is filled
                 //so if its a shorter walk for whatever reason to just go to controller then
                 //we will do this instead
-                let allLinksID = this.room.memory.structures[STRUCTURE_LINK];
-                let allLinks = allLinksID.getObjects();
+                let allLinks = this.room.memory.structures[STRUCTURE_LINK].getObjects();
                 let closestLink = this.pos.findClosestByRange(allLinks);
 
                 //check if link exists and isn't full

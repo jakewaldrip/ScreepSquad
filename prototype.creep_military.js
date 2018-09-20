@@ -91,33 +91,36 @@ Creep.prototype.runRangedAttackingMilitary = function() {
 }
 
 Creep.prototype.runDefendingMilitary = function() {
-    
-    //Handle idling/grouping in a room here
-    let target;
-    let homeRoom = Game.rooms[this.memory.homeRoom];
-    
-    //Filter homeRoom's creepsInRoom for creeps in the current room with low HP
-    let lowCreeps = _.map(homeRoom.memory.creepsInRoom, name => Game.creeps[name]);
-    lowCreeps = _.filter(lowCreeps, creep => creep.room.name == this.room.name, this);
-    lowCreeps = _.filter(lowCreeps, creep => creep.hits < creep.hitsMax);
-    
-    //finds the creep with the most missing HP
-    target = _.max(lowCreeps, creep => creep.hitsMax - creep.hits);
-    
-    if(this.rangedHeal(target) == ERR_NOT_IN_RANGE){
+    if(this.room.memory.defcon == 0){
+        //Handle idling/grouping in a room here
+        let target;
+        let homeRoom = Game.rooms[this.memory.homeRoom];
         
-        //temporary extension of range
-        let moveOpts = this.moveOpts();
-        moveOpts["range"] = 3;
+        //Filter homeRoom's creepsInRoom for creeps in the current room with low HP
+        let lowCreeps = _.map(homeRoom.memory.creepsInRoom, name => Game.creeps[name]);
+        lowCreeps = _.filter(lowCreeps, creep => creep.room.name == this.room.name, this);
+        lowCreeps = _.filter(lowCreeps, creep => creep.hits < creep.hitsMax);
         
-        this.travelTo(target, moveOpts);
+        //finds the creep with the most missing HP
+        target = _.max(lowCreeps, creep => creep.hitsMax - creep.hits);
+        
+        if(this.rangedHeal(target) == ERR_NOT_IN_RANGE){
+            
+            //temporary extension of range
+            let moveOpts = this.moveOpts();
+            moveOpts["range"] = 3;
+            
+            this.travelTo(target, moveOpts);
+        }
+        //Creep should heal itself
+        //Creep should also heal any low miners/drones/reservers in room
+        //Maybe should be looking to see if any remoteRooms in other areas need protected?
+        //Since that would probably prevent some issues with spawning where this room has 0 Defcon now,
+        // but the other room raised limit to 1 remoteDefender, which is idling in the 0 defcon room.
     }
-    //Creep should heal itself
-    //Creep should also heal any low miners/drones/reservers in room
-    //Maybe should be looking to see if any remoteRooms in other areas need protected?
-    //Since that would probably prevent some issues with spawning where this room has 0 Defcon now,
-    // but the other room raised limit to 1 remoteDefender, which is idling in the 0 defcon room.
-    
+    else{
+        this.getNextStateMilitary();
+    }
 }
 
 Creep.prototype.getNextStateMilitary = function() {

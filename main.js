@@ -38,7 +38,7 @@ const profiler = require('screeps-profiler');
 
 //uncomment the next line to enable profiler
 //wiki on how to use it: https://github.com/screepers/screeps-profiler
-//profiler.enable();
+profiler.enable();
 
 module.exports.loop = function () {
 profiler.wrap(function() {
@@ -54,29 +54,51 @@ profiler.wrap(function() {
      //Leaving it just in case for now, will remove later 
     /*
     //Temporary code to attack neighbor
-    let attackCreep = Game.creeps["AttackBoy"];
+    const HITPOINTSTOFLEE = 1200;
+    let attackCreep = Game.creeps["attackBoy2"];
     if(attackCreep != undefined){
-        attackCreep.say("I love you");
-        if(attackCreep.room.name != "W42S9"){
-            if(attackCreep.isOnExitTile())
-            {
-                attackCreep.moveAwayFromExit();
+        attackCreep.say("Ily bae!");
+        if(attackCreep.room.name != "W12S48"){
+            if(attackCreep.hits == attackCreep.hitsMax){
+                attackCreep.travelTo(new RoomPosition(25, 25, "W12S48"));
             }
-            else
-            {
-                attackCreep.travelTo(new RoomPosition(25, 25, "W42S9"));
-            }
-        }
-        else{
-            let target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
-            if(attackCreep.attack(target) == ERR_NOT_IN_RANGE){
-                attackCreep.travelTo(target);
+            else{
+                attackCreep.travelTo(new RoomPosition(25, 48, "W12S47"));
+                //attackCreep.move(TOP);
                 attackCreep.heal(attackCreep);
             }
         }
+        else if(attackCreep.hits > attackCreep.hitsMax - HITPOINTSTOFLEE){
+            if(attackCreep.memory.target == null){
+                attackCreep.memory.target = "5ba1a2ba79ce12155c3d32c3";
+                //creep.memory.target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
+            }
+            let target = Game.getObjectById(attackCreep.memory.target);
+            if(attackCreep.rangedAttack(target) == ERR_NOT_IN_RANGE){
+            //if(attackCreep.attack(target) == ERR_NOT_IN_RANGE){
+                attackCreep.travelTo(target);
+                attackCreep.heal(attackCreep);
+            }
+            else if(attackCreep.rangedAttack(target) == ERR_INVALID_TARGET){
+                attackCreep.memory.target = null;
+            }
+            attackCreep.heal(attackCreep);
+        }
+        else{
+            attackCreep.memory.target = null;
+            attackCreep.travelTo(new RoomPosition(attackCreep.pos.x, 48, "W12S47"));
+            attackCreep.heal(attackCreep);
+        }
     }
     else{
-        Game.spawns.Spawn1.spawnCreep( [MOVE, MOVE, ATTACK, ATTACK], "AttackBoy");
+        let body = [];
+        body = _.times(6, () => MOVE);
+    	body = body.concat(_.times(6, () => RANGED_ATTACK));
+    	body = body.concat(_.times(14, () => MOVE) );
+    	body = body.concat(_.times(14, () => HEAL) );
+        
+        if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2"))
+            console.log("Spawning an attackBoy2");
     }
     */
     
