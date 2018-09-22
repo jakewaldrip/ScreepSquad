@@ -16,6 +16,8 @@ Room.prototype.getData = function () {
         /* Functions performed every tick */
         /**********************************/
         
+        this.getEvents();
+        
         this.getStructures();
         
         this.assignContainersToSources();
@@ -48,6 +50,9 @@ Room.prototype.getSources = function () {
                 
                 formattedSources[source.id] = {};
                 
+                //TO-DO:
+                //Replace the below line using the new inexpensive Room.getTerrain and TerrainObj.get(x, y)
+                //Should save a small amount of CPU
                 let adjacentTiles = room.lookForAtArea(LOOK_TERRAIN, source.pos.y -1, source.pos.x -1, 
                                                                      source.pos.y +1, source.pos.x + 1, true)
                 
@@ -65,7 +70,61 @@ Room.prototype.getSources = function () {
         }
     }
     
+Room.prototype.getEvents = function () {
+    let upgradingThisTick = 0;
     
+    let eventLog = this.getEventLog();
+    
+    _.forEach(eventLog, function(event) {
+        
+        switch(event["event"]) {
+            
+            case 1: //EVENT_ATTACK
+                break;
+                
+            case 2: //EVENT_OBJECT_DESTROYED
+                console.log("A structure of type", event.data["type"], "was destroyed.");
+                break;
+                
+            case 3: //EVENT_ATTACK_CONTROLLER
+                break;
+                
+            case 4: //EVENT_BUILD
+            
+                // can track progress of const site, who is building it
+                let object = Game.getObjectById(event.data["targetId"]);
+                
+                if(object == null){
+                    //if object is null on build event then we know that something was completed
+                    console.log("Something has been built");
+                }
+                break;
+                
+            case 5: //EVENT_HARVEST
+                break;
+                
+            case 6: //EVENT_HEAL
+                break;
+                
+            case 7: //EVENT_REPAIR
+                break;
+                
+            case 8: //EVENT_RESERVE_CONTROLLER
+                break;
+            
+            case 9: //EVENT_UPGRADE_CONTROLLER
+                upgradingThisTick += event.data["amount"];
+                break;
+                
+            case 10: //EVENT_EXIT
+                break;
+                
+        }
+    });
+    
+    //if(upgradingThisTick > 0)
+    //    console.log("Controller upgraded by", upgradingThisTick);
+}
     
 Room.prototype.getStructures = function () {
         
@@ -83,6 +142,9 @@ Room.prototype.getStructures = function () {
         
         let sortedStructures = {};
         
+        //TO-DO:
+        //Replace this with a check if the Event_Log has a build event or a destroy event,
+        //and see if we can reduce how often we have to refresh this memory obj
         let roomStructures = this.find(FIND_STRUCTURES);
         
         _.forEach(structuresConstants, function(constant) {
@@ -108,7 +170,7 @@ Room.prototype.assignContainersToSources = function(containers){
         
         if(source.container == null || Game.getObjectById(source.container) == null){
             
-            let containers = _.map(this.memory.structures[STRUCTURE_CONTAINER], cid => Game.getObjectById(cid));
+            let containers = this.memory.structures[STRUCTURE_CONTAINER].getObjects();
             
             _.forEach(containers, function(container) {
                 

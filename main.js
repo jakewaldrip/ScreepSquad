@@ -54,7 +54,7 @@ profiler.wrap(function() {
      //Leaving it just in case for now, will remove later 
     /*
     //Temporary code to attack neighbor
-    const HITPOINTSTOFLEE = 500;
+    const HITPOINTSTOFLEE = 1000;
     let attackCreep = Game.creeps["attackBoy2"];
     let targetRoom = "W11S47";
     let homeRoom = "W12S47";
@@ -97,8 +97,7 @@ profiler.wrap(function() {
         }
         else{
             attackCreep.memory.target = null;
-            attackCreep.travelTo(new RoomPosition(20, 20, "W12S48"));
-            //attackCreep.travelTo(new RoomPosition(attackCreep.pos.x, 48, homeRoom));
+            attackCreep.travelTo(new RoomPosition(attackCreep.pos.x, 48, homeRoom));
             attackCreep.heal(attackCreep);
         }
     }
