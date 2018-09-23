@@ -62,7 +62,7 @@ Creep.prototype.runMovingDomestic = function () {
 			            this.moveCreepToContainer();
 			        }
 			        else{
-			            this.moveTo(target, this.moveOpts() );
+			            this.travelTo(target);
 		            }
 			    }   
 			}
@@ -190,9 +190,23 @@ Creep.prototype.runWorkDomestic = function () {
  */
 Creep.prototype.runGetEnergyUpgrader = function () {
     
+    var linkTarget = this.memory.linkTarget;
     //check if the link is empty, or creep is full
-    //change state if either is true
-    //otherwise get energy from link
+    if(linkTarget.energy === 0 || this.Full){
+        
+        this.memory.state = 'STATE_USE_RESOURCES';
+    }
+    else{ //get energy from the link
+        
+        if(this.canReach(linkTarget)){
+            
+            this.withdraw(linkTarget, RESOURCE_ENERGY);
+        }
+        else{
+            
+            this.memory.state = 'STATE_MOVING';
+        }
+    }
 }
 //---------
 
@@ -203,8 +217,21 @@ Creep.prototype.runGetEnergyUpgrader = function () {
 Creep.prototype.runUseResourcesUpgrader = function () {
 
     //check if we're out of energy
-    //if so change states
-    //otherwise upgrade controller
+    if(this.Empty){
+        
+        this.memory.state = 'STATE_GET_RESOURCES';
+    }
+    else{ //upgrade the controller
+        
+        if(this.canReach(this.room.controller)){
+            
+            this.upgradeController();
+        }
+        else{
+            
+            this.memory.state = 'STATE_MOVING';
+        }
+    }
 }
 
 
@@ -224,11 +251,6 @@ Creep.prototype.getNextStateDomestic = function () {
 	{
 		//if creep has resources, use them
 		nextState = 'STATE_USE_RESOURCES';
-	}
-	else if (this.role === 'powerUpgrader')
-	{
-	    //if power upgrader has no energy, get some
-        nextState = 'STATE_GET_RESOURCES_PU'
 	}
 	else
 	{

@@ -134,10 +134,11 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
     else if(roomState == "ROOM_STATE_ADVANCED"){
         roleMaxCost = {
             miner: 700,
-            drone: 1800,
+            drone: 2000,
             worker: 1800,
+            powerUpgrader: 2300,
             remoteMiner: 1000,
-            remoteDrone: 2000,
+            remoteDrone: 2300,
             remoteReserver: 1500,
             remoteDefender: 950,
             claimer: 850
@@ -216,6 +217,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
     var numMiners = 0;
     var numDrones = 0;
     var numWorkers = 0;
+    var numPowerUpgraders = 0;
     
 
     //get creep limits for each room state
@@ -284,12 +286,13 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
+            
             //1 miner per source to saturate sources, plus 1 miner for each extractor tied to the room
             numMiners = numOfSources + this.memory.structures[STRUCTURE_EXTRACTOR].length; //+ this.memory.remoteRooms.extractors.length
             numDrones = 2;
             numWorkers = 2 + numRemoteRooms;
             
-            
+            //energy cap conditions for extra creeps when they're smaller
             if(energyCap < 1800)
             {
 				//if our creeps aren't being built with at least 1800 energy spawn an extra worker and drone
@@ -297,10 +300,10 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
                 numWorkers++;
             }
 
+            //storage conditions for extra workers
 			if(this.storage.store[RESOURCE_ENERGY] >= 150000)
 			{	
-				//if we have 150k+ in the storage get another drone and 2 workers out
-				numDrones++;
+				//if we have 150k+ in the storage get another 2 workers out
 				numWorkers+=2;
 			}
 			else if(this.storage.store[RESOURCE_ENERGY] > 75000)
@@ -308,6 +311,8 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 				//if we have 75k in the storage just get 1 more worker out
 				numWorkers++;
 			}
+			
+			//set spawn conditions for power upgrader and adjust worker accordingly
 
 
             
@@ -325,6 +330,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
     this.memory.creepLimits["miner"] = numMiners;
     this.memory.creepLimits["drone"] = numDrones;
     this.memory.creepLimits["worker"] = numWorkers;
+    this.memory.creepLimits["powerUpgrader"] = numPowerUpgraders;
 }
 //-----------
 

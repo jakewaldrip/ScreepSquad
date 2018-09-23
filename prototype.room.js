@@ -14,6 +14,54 @@ Room.prototype.runTowers = function() {
  */
 Room.prototype.runLinks = function() {
 
+    var allLinksId = this.memory.structures[STRUCTURE_LINK];
+    var allLinks = allLinksId.getObjects();
+    var controller = this.controller;
+    var upgraderLink;
+    var supportLinks;
+
+
+    //if the memory slot for upgrader link is defined, continue, else add it
+    if(this.memory.upgraderLink != undefined && this.memory.upgraderLink != null){
+               
+        //convert into objects what is needed
+        upgraderLink = this.memory.upgraderLink.getObjects();
+        supportLinks = _.filter(allLinks, l => l !== upgraderLink);
+        
+        //loop over the support links and run them
+        for(let i = 0; i < supportLinks.length; ++i){
+                
+            //variable in loop to keep logic clear
+            let currentLink = supportLinks[i];
+            let energyCap = currentLink.energyCapacity;
+            let currentEnergy = currentLink.energy;
+            let currentCooldown = currentLink.cooldown;
+            let upgraderLinkEnergy = upgraderLink.energy;
+            
+            //check if upgrader link needs energy
+            if(upgraderLinkEnergy < energyCap){
+                
+                //if the link cannot be used, just continue
+                if(currentEnergy  === 0 || currentCooldown > 0){
+                    continue;
+                }
+                else{ 
+                    
+                    //if it can be used, transfer
+                    currentLink.transferEnergy(upgraderLink);
+                }
+            }
+        }
+        
+        
+    }
+    else{
+        
+        //set upgrader link into memory
+        this.memory.upgraderLink = controller.pos.findClosestByRange(allLinks).id;
+        console.log("Setting the upgrader link in memory successful: " + this.memory.upgraderLink);
+    }
+
 }
 //------
 
@@ -37,6 +85,7 @@ Room.prototype.runStructures = function(){
     this.runTowers();
 
     //run links for the room
+	this.runLinks();
     
     //run terminal for the room
 
