@@ -24,7 +24,7 @@ Creep.prototype.runMovingMilitary = function() {
         
         if(target instanceof RoomPosition){
             //avoid getting stuck on exit tile
-            this.moveTo(target, this.moveOpts() );
+            this.travelTo(target );
             if(this.room.name == target.roomName){
                 
                 this.getMilitaryTarget();
@@ -60,7 +60,7 @@ Creep.prototype.runAttackingMilitary = function() {
         this.heal(this);
     }
     else if(this.attack(target) == ERR_NOT_IN_RANGE){
-        this.moveTo(target, this.moveOpts() );
+        this.travelTo(target);
         //Worst case this will return a non-0 and change nothing, even if we dont' have parts
         this.heal(this);
     }
@@ -83,7 +83,7 @@ Creep.prototype.runRangedAttackingMilitary = function() {
         let moveOpts = this.moveOpts();
         moveOpts["range"] = 3;
         
-        this.moveTo(target, moveOpts);
+        this.travelTo(target, moveOpts);
         this.heal(this);
     }
     
@@ -91,33 +91,36 @@ Creep.prototype.runRangedAttackingMilitary = function() {
 }
 
 Creep.prototype.runDefendingMilitary = function() {
-    
-    //Handle idling/grouping in a room here
-    let target;
-    let homeRoom = Game.rooms[this.memory.homeRoom];
-    
-    //Filter homeRoom's creepsInRoom for creeps in the current room with low HP
-    let lowCreeps = _.map(homeRoom.memory.creepsInRoom, name => Game.creeps[name]);
-    lowCreeps = _.filter(lowCreeps, creep => creep.room.name == this.room.name, this);
-    lowCreeps = _.filter(lowCreeps, creep => creep.hits < creep.hitsMax);
-    
-    //finds the creep with the most missing HP
-    target = _.max(lowCreeps, creep => creep.hitsMax - creep.hits);
-    
-    if(this.rangedHeal(target) == ERR_NOT_IN_RANGE){
+    if(this.room.memory.defcon == 0){
+        //Handle idling/grouping in a room here
+        let target;
+        let homeRoom = Game.rooms[this.memory.homeRoom];
         
-        //temporary extension of range
-        let moveOpts = this.moveOpts();
-        moveOpts["range"] = 3;
+        //Filter homeRoom's creepsInRoom for creeps in the current room with low HP
+        let lowCreeps = _.map(homeRoom.memory.creepsInRoom, name => Game.creeps[name]);
+        lowCreeps = _.filter(lowCreeps, creep => creep.room.name == this.room.name, this);
+        lowCreeps = _.filter(lowCreeps, creep => creep.hits < creep.hitsMax);
         
-        this.moveTo(target, moveOpts);
+        //finds the creep with the most missing HP
+        target = _.max(lowCreeps, creep => creep.hitsMax - creep.hits);
+        
+        if(this.rangedHeal(target) == ERR_NOT_IN_RANGE){
+            
+            //temporary extension of range
+            let moveOpts = this.moveOpts();
+            moveOpts["range"] = 3;
+            
+            this.travelTo(target, moveOpts);
+        }
+        //Creep should heal itself
+        //Creep should also heal any low miners/drones/reservers in room
+        //Maybe should be looking to see if any remoteRooms in other areas need protected?
+        //Since that would probably prevent some issues with spawning where this room has 0 Defcon now,
+        // but the other room raised limit to 1 remoteDefender, which is idling in the 0 defcon room.
     }
-    //Creep should heal itself
-    //Creep should also heal any low miners/drones/reservers in room
-    //Maybe should be looking to see if any remoteRooms in other areas need protected?
-    //Since that would probably prevent some issues with spawning where this room has 0 Defcon now,
-    // but the other room raised limit to 1 remoteDefender, which is idling in the 0 defcon room.
-    
+    else{
+        this.getNextStateMilitary();
+    }
 }
 
 Creep.prototype.getNextStateMilitary = function() {
@@ -189,6 +192,6 @@ Creep.prototype.getMilitaryTarget = function() {
         }
     }
     //Probably check memory for dedicated target
-    //and then moveTo it using moveState?
+    //and then travelTo it using moveState?
     
 }

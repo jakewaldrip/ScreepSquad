@@ -266,7 +266,7 @@ Creep.prototype.moveCreepToContainer = function ()
 		//check if the container even exists, if not just move to the source
 		if(closestContainer == null && !this.canReach(target))
 		{
-			this.moveTo(target);
+			this.travelTo(target);
 		}
 		else
 		{
@@ -305,7 +305,7 @@ Creep.prototype.moveCreepToContainer = function ()
         //If there is no creep on container, attempt to move to it.
         if(!creepOnContainer){
             //move to the specified container
-            this.moveTo(closestContainer);
+            this.travelTo(closestContainer);
         }
         //If container is occupied get next state and run again, or move to source if not in range
         else{
@@ -318,7 +318,7 @@ Creep.prototype.moveCreepToContainer = function ()
                     this.run();
                 }
                 else{
-                    this.moveTo(target);
+                    this.travelTo(target);
                 }
                     
             }
@@ -330,7 +330,7 @@ Creep.prototype.moveCreepToContainer = function ()
                     this.run()
                 }
                 else{
-                    this.moveTo(target);
+                    this.travelTo(target);
                 }
             }
         }

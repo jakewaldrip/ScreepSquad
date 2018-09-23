@@ -134,11 +134,11 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
     else if(roomState == "ROOM_STATE_ADVANCED"){
         roleMaxCost = {
             miner: 700,
-            drone: 1800,
+            drone: 2000,
             worker: 1800,
             powerUpgrader: 2300,
             remoteMiner: 1000,
-            remoteDrone: 2000,
+            remoteDrone: 2300,
             remoteReserver: 1500,
             remoteDefender: 950,
             claimer: 850

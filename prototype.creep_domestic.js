@@ -62,7 +62,7 @@ Creep.prototype.runMovingDomestic = function () {
 			            this.moveCreepToContainer();
 			        }
 			        else{
-			            this.moveTo(target, this.moveOpts() );
+			            this.travelTo(target);
 		            }
 			    }   
 			}
