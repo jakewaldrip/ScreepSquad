@@ -496,23 +496,53 @@ Creep.prototype.getRemoteWorkJob = function() {
         
         
         case 'remoteDrone':
-            
             if(this.room.name != this.memory.homeRoom){
                 //Target center of homeRoom
                 return {x: 25, y: 25, roomName: this.memory.homeRoom};
             }
             else{
-                //act like a drone would
-                //return this.getWorkJob("drone");
-                
-                
-                //Will eventually change this into a function to find 
-                //the link closest to the remoteRoom exit
+
                 let homeRoom = Game.rooms[this.memory.homeRoom];
-                if(homeRoom.storage != undefined)
-                    return homeRoom.storage.id;
-                else
-                    console.log(this.name + ": No storage found!");
+
+				
+				if(this.room.memory.structures[STRUCTURE_LINK].length > 0){
+					//get closest link to the remote drone
+					var allLinksId = this.room.memory.structures[STRUCTURE_LINK];
+					var allLinks = allLinksId.getObjects();
+					var upgraderLink = Game.getObjectById(this.room.memory.upgraderLink);
+					var supportLinks = _.filter(allLinks, l => l !== upgraderLink);
+					
+					for(var i = 0; i < supportLinks.length; ++i){
+						
+						let currentLink = supportLinks[i];
+						
+						//if this link needs energy, target it
+						if(currentLink.energy < currentLink.energyCapacity){
+
+							return currentLink.id;
+						}
+						else{
+							
+							continue;
+						}
+					}
+
+
+					//target the local storage if we do not return on a link
+					if(homeRoom.storage != undefined)
+						return homeRoom.storage.id;
+					else
+						console.log(this.name + ": No storage found!");
+				}
+				else{
+					
+					//target the local storage if we do not have links to target
+					if(homeRoom.storage != undefined)
+						return homeRoom.storage.id;
+					else
+						console.log(this.name + ": No storage found!");
+				}
+                
                 
             }
         break;

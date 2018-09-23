@@ -293,9 +293,9 @@ Creep.prototype.getRemoteTarget = function (targetType){
     
     else //if targetType == "WORK" / this.Full
     {
-        
         //Very basic function (Only has default targets in it)
         this.workTarget = this.getRemoteWorkJob();
+		console.log(this.workTarget);
         
     }
     

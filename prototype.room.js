@@ -39,7 +39,8 @@ Room.prototype.runLinks = function() {
             let upgraderLinkEnergy = upgraderLink.energy;
             
             //check if upgrader link needs energy
-            if(upgraderLinkEnergy < energyCap){
+			//set it to cap-1 because it costs energy to send from a link and 800 will never be hit from a transfer
+            if(upgraderLinkEnergy < energyCap - 1){
                 
                 //if the link cannot be used, just continue
                 if(currentEnergy  === 0 || currentCooldown > 0){
@@ -47,8 +48,9 @@ Room.prototype.runLinks = function() {
                 }
                 else{ 
                     
-                    //if it can be used, transfer
+                    //if it can be used, transfer and break loop
                     currentLink.transferEnergy(upgraderLink);
+					break;
                 }
             }
         }
