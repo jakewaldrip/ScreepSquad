@@ -50,14 +50,21 @@ profiler.wrap(function() {
     var overlord = new Overlord();
     overlord.run(); 
     
-    /* Leaving it just in case for now, will remove later 
-    
+     //Leaving it just in case for now, will remove later 
+    /*
     //Temporary code to attack neighbor
     let attackCreep = Game.creeps["AttackBoy"];
     if(attackCreep != undefined){
         attackCreep.say("I love you");
-        if(attackCreep.room.name != "W11S47"){
-            attackCreep.moveTo(new RoomPosition(25, 25, "W11S47"));
+        if(attackCreep.room.name != "W42S9"){
+            if(attackCreep.isOnExitTile())
+            {
+                attackCreep.moveAwayFromExit();
+            }
+            else
+            {
+                attackCreep.moveTo(new RoomPosition(25, 25, "W42S9"));
+            }
         }
         else{
             let target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
@@ -68,9 +75,9 @@ profiler.wrap(function() {
         }
     }
     else{
-        Game.spawns.Spawn1.spawnCreep( [TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, HEAL], "AttackBoy");
+        Game.spawns.Spawn1.spawnCreep( [MOVE, MOVE, ATTACK, ATTACK], "AttackBoy");
     }
-    
     */
+    
 });
 }

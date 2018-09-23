@@ -6,6 +6,53 @@ Room.prototype.runTowers = function() {
     _.forEach(towers, tower => tower.run());
     
 }
+//-------
+
+
+/*
+ * Run the links for the room
+ */
+Room.prototype.runLinks = function() {
+
+	//get the upgrader link
+
+	//get the sub links
+
+	//check if the upgrader link needs energy
+
+	//loop through the sub links that are not on cool down
+		//send the upgrader link the energy
+
+}
+//------
+
+
+/*
+ * Run the links for the room
+ */
+Room.prototype.runTerminal = function() {
+
+}
+//------
+
+
+/*
+ * run all structures for the room (towers, terminals, links, etc)
+ * purely functional, no return or params
+ */
+Room.prototype.runStructures = function(){
+
+    //run towers for the room
+    this.runTowers();
+
+    //run links for the room
+	this.runLinks();
+    
+    //run terminal for the room
+
+}
+//-------
+
 
 //check if the room is owned by you
 Room.prototype.isOwnedRoom = function () {

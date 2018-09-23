@@ -29,14 +29,14 @@ module.exports = {
 
             case 'STATE_USE_RESOURCES':
 
-                
+                creep.runUseResourcesUpgrader();
 
                 break;
 
 
             case 'STATE_GET_RESOURCES':
 
-                
+                creep,runGetEnergyUpgrader();
 
                 break;
 

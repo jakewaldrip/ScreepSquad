@@ -185,6 +185,28 @@ Creep.prototype.runWorkDomestic = function () {
 }
 //---------
 
+/*
+ * gets energy for the power upgrader creep
+ */
+Creep.prototype.runGetEnergyUpgrader = function () {
+    
+    //check if the link is empty, or creep is full
+    //change state if either is true
+    //otherwise get energy from link
+}
+//---------
+
+
+/*
+ * use energy to upgrade controller for power upgrader creep
+ */
+Creep.prototype.runUseResourcesUpgrader = function () {
+
+    //check if we're out of energy
+    //if so change states
+    //otherwise upgrade controller
+}
+
 
 //switches the creep to the next state
 Creep.prototype.getNextStateDomestic = function () {
