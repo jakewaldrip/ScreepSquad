@@ -139,7 +139,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 1800,
             powerUpgrader: 2800,
             remoteMiner: 1000,
-            remoteDrone: 2800,
+            remoteDrone: 2300,
             remoteReserver: 1500,
             remoteDefender: 950,
             claimer: 850
