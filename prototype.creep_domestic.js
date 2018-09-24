@@ -190,7 +190,6 @@ Creep.prototype.runWorkDomestic = function () {
  */
 Creep.prototype.runGetEnergyUpgrader = function () {
     
-    
     var linkTarget = Game.getObjectById(this.memory.workTarget);
     //check if the link is empty, or creep is full
     if(linkTarget.energy === 0 || this.Full){
@@ -218,7 +217,7 @@ Creep.prototype.runUseResourcesUpgrader = function () {
     ;
     //check if we're out of energy
     if(this.Empty){
-        
+        this.memory.workTarget = this.room.memory.upgraderLink;
         this.memory.state = 'STATE_GET_RESOURCES';
     }
     else{ //upgrade the controller
@@ -227,7 +226,7 @@ Creep.prototype.runUseResourcesUpgrader = function () {
             this.upgradeController(this.room.controller);
         }
         else{
-            
+            this.memory.workTarget = this.room.controller.id;
             this.memory.state = 'STATE_MOVING';
         }
     }
