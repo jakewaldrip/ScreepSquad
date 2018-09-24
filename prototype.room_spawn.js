@@ -139,7 +139,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             worker: 1800,
             powerUpgrader: 2800,
             remoteMiner: 1000,
-            remoteDrone: 2800,
+            remoteDrone: 2300,
             remoteReserver: 1500,
             remoteDefender: 950,
             claimer: 850
@@ -316,7 +316,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 			}
 			
 			//set spawn conditions for power upgrader and adjust worker accordingly
-			if(numLinks > 2 && energyCap >= 2300){
+			if(numLinks >= 2 && energyCap >= 2300){
 			    numWorkers = 1;
 			    numPowerUpgraders = 1;
 

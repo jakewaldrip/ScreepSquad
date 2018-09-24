@@ -114,8 +114,7 @@ Room.prototype.getWorkerJobQueue = function () {
 
 //get energy targets for STATE_GET_ENERGY
 //returns [ [id, dropType], [], ... ]
-Room.prototype.
-tJobQueue = function() {
+Room.prototype.getEnergyJobQueue = function() {
     const MIN_TARGET_AMOUNT = 300;
     
     let dropArray = [], 
