@@ -202,7 +202,7 @@ Creep.prototype.runGetEnergyUpgrader = function () {
             this.withdraw(linkTarget, RESOURCE_ENERGY);
         }
         else{
-            
+
             this.memory.state = 'STATE_MOVING';
         }
     }

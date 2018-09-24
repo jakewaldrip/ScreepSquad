@@ -91,8 +91,14 @@ Room.prototype.getWorkerJobQueue = function () {
     lowTowers = removeClaimedJobs(lowTowers);
     
     let controller = [this.controller];
-    controller = removeClaimedJobs(controller);
     
+    //If RCL == 8, don't target controller ever
+    if(this.controller.level == 8){
+        controller = [];
+    }
+    else{
+        controller = removeClaimedJobs(controller);
+    }
     
     let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
