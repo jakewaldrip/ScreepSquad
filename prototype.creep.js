@@ -15,7 +15,9 @@ Creep.prototype.run = function() {
         
         remoteReserver: require('role.RemoteReserver'),
         
-        remoteDefender: require('role.RemoteDefender')
+        remoteDefender: require('role.RemoteDefender'),
+        
+        powerUpgrader: require('role.PowerUpgrader')
         
     };
     

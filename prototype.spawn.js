@@ -18,6 +18,8 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
         drone: this.createDrone,
         
         worker: this.createWorker,
+        
+        powerUpgrader: this.createPowerUpgrader
 	
     };
 	

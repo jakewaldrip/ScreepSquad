@@ -83,7 +83,7 @@ Room.prototype.getEvents = function () {
                 break;
                 
             case 2: //EVENT_OBJECT_DESTROYED
-                console.log("A structure of type", event.data["type"], "was destroyed.");
+                //crowding console with error idk why console.log("A structure of type", event.data["type"], "was destroyed.");
                 break;
                 
             case 3: //EVENT_ATTACK_CONTROLLER

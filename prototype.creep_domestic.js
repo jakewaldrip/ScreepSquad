@@ -190,14 +190,14 @@ Creep.prototype.runWorkDomestic = function () {
  */
 Creep.prototype.runGetEnergyUpgrader = function () {
     
-    var linkTarget = this.memory.linkTarget;
+    
+    var linkTarget = Game.getObjectById(this.memory.workTarget);
     //check if the link is empty, or creep is full
     if(linkTarget.energy === 0 || this.Full){
         
         this.memory.state = 'STATE_USE_RESOURCES';
     }
     else{ //get energy from the link
-        
         if(this.canReach(linkTarget)){
             
             this.withdraw(linkTarget, RESOURCE_ENERGY);
@@ -215,7 +215,7 @@ Creep.prototype.runGetEnergyUpgrader = function () {
  * use energy to upgrade controller for power upgrader creep
  */
 Creep.prototype.runUseResourcesUpgrader = function () {
-
+    ;
     //check if we're out of energy
     if(this.Empty){
         
@@ -224,8 +224,7 @@ Creep.prototype.runUseResourcesUpgrader = function () {
     else{ //upgrade the controller
         
         if(this.canReach(this.room.controller)){
-            
-            this.upgradeController();
+            this.upgradeController(this.room.controller);
         }
         else{
             
@@ -241,7 +240,7 @@ Creep.prototype.getNextStateDomestic = function () {
     var target = Game.getObjectById(this.workTarget);
     var currentState = this.state;
 	var nextState;
-
+	
 	//if creep is a miner only give access to get resources
 	if(this.role === 'miner' || target instanceof Source)
 	{
@@ -258,6 +257,7 @@ Creep.prototype.getNextStateDomestic = function () {
 	    nextState = 'STATE_GET_RESOURCES';
 	}
 	
+	
 	this.state = nextState;
 }
 //---------
@@ -272,11 +272,14 @@ Creep.prototype.getTarget = function (targetType) {
     targetType = targetType || null;
     
     //check if the creep is empty to decide which target to get
-    if((this.Empty && this.role != "miner") || targetType == RESOURCE_ENERGY)
+    if((this.Empty && this.role != "miner" && this.role != "powerUpgrader") || targetType == RESOURCE_ENERGY)
     {
         
         //if creep has no energy, get an energy job
         this.workTarget = this.getEnergyJob();
+    }
+    else if(this.role === 'powerUpgrader'){
+        this.workTarget = this.room.memory.upgraderLink;
     }
     else //if targetType == "WORK"
     {

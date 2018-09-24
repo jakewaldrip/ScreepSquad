@@ -4,13 +4,15 @@
 module.exports = {
     run: function (creep) {
 
+        
         //if no state, set state to spawning
         if (creep.state == undefined) {
             creep.state = 'STATE_SPAWNING';
         }
         //--------
-
-
+        if(creep.memory.workTarget == null){
+            creep.memory.workTarget = creep.room.memory.upgradeLink;
+        }
         //check the state and act appropirately
         switch (creep.state) {
             case 'STATE_SPAWNING':
@@ -36,7 +38,7 @@ module.exports = {
 
             case 'STATE_GET_RESOURCES':
 
-                creep,runGetEnergyUpgrader();
+                creep.runGetEnergyUpgrader();
 
                 break;
 

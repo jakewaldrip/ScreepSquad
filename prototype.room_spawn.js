@@ -19,6 +19,7 @@ Room.prototype.getNextCreepToSpawn = function () {
     ];
 
     const domesticPriority = [
+        "powerUpgrader",
         "worker",
         "drone",
         "miner"
@@ -136,9 +137,9 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 2000,
             worker: 1800,
-            powerUpgrader: 2300,
+            powerUpgrader: 2800,
             remoteMiner: 1000,
-            remoteDrone: 2300,
+            remoteDrone: 2800,
             remoteReserver: 1500,
             remoteDefender: 950,
             claimer: 850
@@ -292,6 +293,8 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             numDrones = 2;
             numWorkers = 2 + numRemoteRooms;
             
+            var numLinks = this.memory.structures[STRUCTURE_LINK].length;
+            
             //energy cap conditions for extra creeps when they're smaller
             if(energyCap < 1800)
             {
@@ -313,6 +316,15 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 			}
 			
 			//set spawn conditions for power upgrader and adjust worker accordingly
+			if(numLinks > 2 && energyCap >= 2300){
+			    numWorkers = 1;
+			    numPowerUpgraders = 1;
+
+				//give us an extra worker if we have hella storage
+				if(this.storage.store[RESOURCE_ENERGY] > 150000){
+					numWorkers++;
+				}
+			}
 
 
             
