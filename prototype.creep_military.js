@@ -55,13 +55,12 @@ Creep.prototype.runAttackingMilitary = function() {
         this.getMilitaryTarget();
         this.heal(this);
     }
-    
-    else if(this.hits < this.hitsMax/2){
-        this.heal(this);
-    }
     else if(this.attack(target) == ERR_NOT_IN_RANGE){
         this.travelTo(target);
         //Worst case this will return a non-0 and change nothing, even if we dont' have parts
+        this.heal(this);
+    }
+    else if(this.hits < this.hitsMax/2){
         this.heal(this);
     }
     

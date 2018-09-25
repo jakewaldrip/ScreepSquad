@@ -352,7 +352,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
  * @param {int} numRemoteRooms number of remote rooms associated with the remote rooms
  * @param {int} numRemoteSources number of remote sources in this room
  * @param {int} numReserveRooms number of rooms that need to be reserved
- *@param {int} numClaimRooms number of claim rooms associated with the remote rooms
+ * @param {int} numClaimRooms number of claim rooms associated with the remote rooms
  */
 Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms)
 {
@@ -383,7 +383,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             }
             else
             {
-                numRemoteDrones = numRemoteSources + 1;
+                numRemoteDrones = numRemoteSources;
             }
 
 			//only spawn reserver if we can afford it
