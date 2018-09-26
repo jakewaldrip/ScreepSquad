@@ -73,7 +73,6 @@ Creep.prototype.runRangedAttackingMilitary = function() {
     
     if(target == null){
         this.getMilitaryTarget();
-        this.heal(this);
     }
     else{
         
@@ -82,11 +81,8 @@ Creep.prototype.runRangedAttackingMilitary = function() {
         if(result == ERR_NOT_IN_RANGE){
             
             this.travelTo(target, { range: 3, movingTarget: true });
-            this.heal(this);
-            
         }
         else if(result == OK){
-            
             let range = this.pos.getRangeTo(target.pos);
             
             //Very basic kiting, just moves in opposite direction of the creep
@@ -106,7 +102,11 @@ Creep.prototype.runRangedAttackingMilitary = function() {
             }
             
         }
-    }    
+    }
+    
+    if(this.hits < this.hitsMax)
+        this.heal(this);
+        
 }
 
 Creep.prototype.runDefendingMilitary = function() {

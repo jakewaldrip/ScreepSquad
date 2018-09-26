@@ -18,7 +18,7 @@ Creep.prototype.runGetEnergyRemote = function(){
 	if(!this.Full) {
         
 		//if creep is not full, get energy
-		if(target.energyAvailable() > 0)
+		if(target != null && target.energyAvailable() > 0)
             this.getEnergy(target);
         else
             this.getRemoteTarget(RESOURCE_ENERGY);
