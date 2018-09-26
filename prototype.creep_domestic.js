@@ -113,7 +113,7 @@ Creep.prototype.runHarvestingDomestic = function () {
 	            }
             }catch(err)
             {
-                console.log(err + ", sorry you're fak'd");
+                console.log(err.stack + ", sorry you're fak'd");
                 this.getTarget(RESOURCE_ENERGY);
             }
 			

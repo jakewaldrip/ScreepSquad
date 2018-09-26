@@ -87,7 +87,8 @@ Room.prototype.runStructures = function(){
     this.runTowers();
 
     //run links for the room
-	this.runLinks();
+    if(this.memory.structures[STRUCTURE_LINK].length > 0)
+	    this.runLinks();
     
     //run terminal for the room
 

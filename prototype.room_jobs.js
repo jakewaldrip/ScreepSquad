@@ -123,7 +123,8 @@ Room.prototype.getWorkerJobQueue = function () {
 Room.prototype.getEnergyJobQueue = function() {
     const MIN_TARGET_AMOUNT = 300;
     
-    let dropArray = [], 
+    let dropArray = [],
+        tombstoneArray = [],
         containerArray = [], 
         mergedArray = [];
         
