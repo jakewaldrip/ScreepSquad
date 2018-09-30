@@ -1,7 +1,7 @@
 /** @namespace Room */
 Room.prototype.runTowers = function() {
     
-    let towers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
+    let towers = this.memory.structures[STRUCTURE_TOWER].getObjects();
     
     _.forEach(towers, tower => tower.run());
     
@@ -14,8 +14,7 @@ Room.prototype.runTowers = function() {
  */
 Room.prototype.runLinks = function() {
 
-    var allLinksId = this.memory.structures[STRUCTURE_LINK];
-    var allLinks = allLinksId.getObjects();
+    var allLinks = this.memory.structures[STRUCTURE_LINK].getObjects();
     var controller = this.controller;
     var upgraderLink;
     var supportLinks;

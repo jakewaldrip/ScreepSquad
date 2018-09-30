@@ -223,6 +223,7 @@ Creep.prototype.runUseResourcesUpgrader = function () {
     else{ //upgrade the controller
         
         if(this.canReach(this.room.controller)){
+            this.memory.workTarget - this.room.controller.id;
             this.upgradeController(this.room.controller);
         }
         else{
