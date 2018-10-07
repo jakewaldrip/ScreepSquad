@@ -57,7 +57,7 @@ Room.prototype.getMinerJobQueue = function () {
 
 //get job queue for drones
 Room.prototype.getDroneJobQueue = function () {
-    let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_POWER_SPAWN) && (s.energy < s.energyCapacity));
+    let fillStructures = _.filter(this.structures, s => (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && (s.energy < s.energyCapacity));
     
     fillStructures = removeClaimedJobs(fillStructures);
     

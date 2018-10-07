@@ -27,7 +27,7 @@ Creep.prototype.runMovingDomestic = function () {
 		//check if creep is in the correct room
 		if(this.homeRoom != this.room.name)
 		{
-			target = new RoomPosition(25, 25, homeRoom);
+			target = new RoomPosition(25, 25, this.homeRoom);
 		}
 		else
 		{
