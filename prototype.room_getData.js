@@ -86,6 +86,8 @@ Room.prototype.getEvents = function () {
             case 2: //EVENT_OBJECT_DESTROYED
                 //console.log("An object of type", event["type"], "was destroyed.");
                 if(event["type"] != "creep"){
+                    console.log("Triggering safe mode defense!");
+                    //this.controller.activateSafeMode();
                     //console.log("not a creep tho!");
                 }
                 else if(event["type"] == "creep"){

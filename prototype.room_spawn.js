@@ -316,7 +316,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 			}
 			
 			//set spawn conditions for power upgrader and adjust worker accordingly
-			if(numLinks >= 2 && energyCap >= 2300){
+			if(numLinks >= 2 && energyCap >= 1800){
 			    numWorkers = 1;
 			    numPowerUpgraders = 1;
 

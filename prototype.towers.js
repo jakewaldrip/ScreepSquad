@@ -56,7 +56,14 @@ Room.prototype.getTowerTarget = function() {
             enemies = _.map(this.memory.enemies[type], id => Game.getObjectById(id));
             
             //finds closest enemy to the center of the room (Might change to controller, or spawn)
-            target = _.min(enemies, enemy => enemy.pos.getRangeTo(25, 25)); 
+            target = _.min(enemies, enemy => enemy.pos.getRangeTo(25, 25));
+            
+            /* 
+            //temp code for avoiding tower drainers that leave and enter room
+            if(target.pos.y > 43){
+                target = undefined;
+            }
+            */
         }
         
         if(target == undefined){
@@ -84,7 +91,7 @@ Room.prototype.getTowerTarget = function() {
 
  	//get all the towers in the room
  	let towerID = this.memory.structures[STRUCTURE_TOWER];
- 	
+
  	let towers = towerID.getObjects();
  	
     //call run for each tower if a target exists
