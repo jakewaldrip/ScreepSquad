@@ -268,7 +268,7 @@ Creep.prototype.moveCreepToContainer = function ()
 		//check if the container even exists, if not just move to the source
 		if(closestContainer == null && !this.canReach(target))
 		{
-			this.travelTo(target);
+			this.travelTo(target, {allowHostile: true});
 		}
 		else
 		{
@@ -295,8 +295,8 @@ Creep.prototype.moveCreepToContainer = function ()
         let creepOnContainer = false;
         
         //if creep has a path in memory and its destination is the container, show that we have tried to move to container before
-        if(this.memory._move && this.memory._move.dest)
-            if(this.memory._move.dest.x == closestContainer.pos.x && this.memory._move.dest.y && closestContainer.pos.y)
+        if(this.memory._trav && this.memory._trav.state)
+            if(this.memory._trav.state[4] == closestContainer.pos.x && this.memory._trav.state[5] == closestContainer.pos.y)
                 attemptedMove = true;
         
         //If we have tried to move before, look for creeps on containerPos.
@@ -320,7 +320,7 @@ Creep.prototype.moveCreepToContainer = function ()
                     this.run();
                 }
                 else{
-                    this.travelTo(target);
+                    this.travelTo(target, {allowHostile: true});
                 }
                     
             }
@@ -332,7 +332,7 @@ Creep.prototype.moveCreepToContainer = function ()
                     this.run()
                 }
                 else{
-                    this.travelTo(target);
+                    this.travelTo(target, {allowHostile: true});
                 }
             }
         }
