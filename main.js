@@ -42,7 +42,6 @@ profiler.enable();
 
 module.exports.loop = function () {
 profiler.wrap(function() {
-
     //clean up memory from no longer existing objects and flags
     MemoryManager.garbageCollection();
     MemoryManager.deadFlagCleaning();
@@ -51,13 +50,38 @@ profiler.wrap(function() {
     var overlord = new Overlord();
     overlord.run(); 
     
-     //Leaving it just in case for now, will remove later 
+    //Temporary auto-construct code
     /*
+    if(Game.rooms["W17S44"].controller.level == 5){
+        let room = Game.rooms["W17S44"];
+        if(Game.flags["Flag1"] != undefined){
+            let flag = Game.flags["Flag1"].pos;
+            room.createConstructionSite(flag.x, flag.y+1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(flag.x, flag.y-1, STRUCTURE_EXTENSION);
+            room.createConstructionSite(flag.x+1, flag.y, STRUCTURE_EXTENSION);
+            room.createConstructionSite(flag.x-1, flag.y, STRUCTURE_EXTENSION);
+            room.createConstructionSite(flag.x, flag.y, STRUCTURE_EXTENSION);
+            /*
+            room.createConstructionSite(flag.x+1, flag.y+1, STRUCTURE_ROAD);
+            room.createConstructionSite(flag.x-1, flag.y-1, STRUCTURE_ROAD);
+            room.createConstructionSite(flag.x-1, flag.y+1, STRUCTURE_ROAD);
+            
+            room.createConstructionSite(13, 35, STRUCTURE_TOWER);
+            
+            Game.flags["Flag1"].remove();
+        }
+    }
+    */
+    
+     //Leaving it just in case for now, will remove later 
+    
     //Temporary code to attack neighbor
     const HITPOINTSTOFLEE = 1000;
     let attackCreep = Game.creeps["attackBoy2"];
-    let targetRoom = "W11S47";
-    let homeRoom = "W12S47";
+    let targetRoom = "W18S44";
+    let homeRoom = "W17S44";
+    //change to target structures or creeps
+    let onlyStructures = false;
     let manualTarget = null;
     
     if(attackCreep != undefined){
@@ -81,8 +105,14 @@ profiler.wrap(function() {
             
             //decide whether to hit structures or creeps
             if(target == null){
-                //target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
-                target = attackCreep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                if(onlyStructures)
+                    target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
+                else
+                    target = attackCreep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+                if(target == null)
+                    target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
+                    
                 if(target != null)
                     attackCreep.memory.target = target.id;
             }
@@ -97,18 +127,26 @@ profiler.wrap(function() {
         }
         else{
             attackCreep.memory.target = null;
+            //move straight UP into homeRoom
             attackCreep.travelTo(new RoomPosition(attackCreep.pos.x, 48, homeRoom));
             attackCreep.heal(attackCreep);
         }
     }
+   /*
+    //Basic attacker
+    else{
+        let body = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE];
+        if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
+            console.log("Spawning an attackboy2");
+    }
     // Use this one for extra remote defense
-    
+    /*
     else{
         let body = [RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE,  RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL];
         if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
             console.log("Spawning an attackBoy2");
     }
-    /*
+    */
     //Use this one for breaking towers
     else{
         let body = [];
@@ -117,10 +155,10 @@ profiler.wrap(function() {
     	body = body.concat(_.times(14, () => MOVE) );
     	body = body.concat(_.times(14, () => HEAL) );
         
-        //if(Game.spawns.Spawn2.spawnCreep( body, "attackBoy2") == 0)
-            //console.log("Spawning an attackBoy2");
+        if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
+            console.log("Spawning an attackBoy2");
     }
-    */
+    
     
     //attackCreep.travelTo(new RoomPosition(30, 15, targetRoom));
 });

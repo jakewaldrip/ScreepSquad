@@ -80,10 +80,19 @@ Room.prototype.getEvents = function () {
         switch(event["event"]) {
             
             case 1: //EVENT_ATTACK
+                //console.log(JSON.stringify(event));
                 break;
                 
             case 2: //EVENT_OBJECT_DESTROYED
-                //crowding console with error idk why console.log("A structure of type", event.data["type"], "was destroyed.");
+                //console.log("An object of type", event["type"], "was destroyed.");
+                if(event["type"] != "creep"){
+                    console.log("Triggering safe mode defense!");
+                    //this.controller.activateSafeMode();
+                    //console.log("not a creep tho!");
+                }
+                else if(event["type"] == "creep"){
+                    //console.log("RIP Creep");
+                }
                 break;
                 
             case 3: //EVENT_ATTACK_CONTROLLER
@@ -104,9 +113,11 @@ Room.prototype.getEvents = function () {
                 break;
                 
             case 6: //EVENT_HEAL
+                //console.log(JSON.stringify(event));
                 break;
                 
             case 7: //EVENT_REPAIR
+                //console.log(JSON.stringify(event));
                 break;
                 
             case 8: //EVENT_RESERVE_CONTROLLER
@@ -235,7 +246,7 @@ Room.prototype.getRepairTargets = function () {
 	        5: 100000,
 	        6: 250000,
 	        7: 750000,
-	        8: 1000000
+	        8: 10000000
 	    }
         let formattedTargets = {};
         
