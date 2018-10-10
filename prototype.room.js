@@ -149,6 +149,14 @@ Object.defineProperty(Room.prototype, 'roomState', {
 //set room state to memory
 Room.prototype.setRoomState = function () {
 	
+    //add 2 states, end state, and power upgrader state (names up for debate)
+    //power upgrader state is 2300 energy + 3 links
+    //end state is lvl 8, changes power upgrader
+    //possibly 1 other state for a full time supporting room, or just lump together with end state?
+    //possibly a state/something that tags a room as a military outpost if its main purpose is
+    //attacking other rooms as a forward base, but not sure what we would perform differently in the room
+    //if this happened to be the case
+
     var containers = this.memory.structures[STRUCTURE_CONTAINER];
 
     //check if containers exist

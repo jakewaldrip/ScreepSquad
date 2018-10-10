@@ -317,8 +317,17 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 			
 			//set spawn conditions for power upgrader and adjust worker accordingly
 			if(numLinks >= 2 && energyCap >= 2300){
-			    numWorkers = 1;
+
 			    numPowerUpgraders = 1;
+
+                //check if we have construction sites to decide worker limit
+			    if (this.memory.constructionSites.length > 0) {
+			        numWorkers = 4;
+			    }
+			    else {
+			        numWorkers = 2;
+			    }
+                    
 
 				//give us an extra worker if we have hella storage
 				if(this.storage.store[RESOURCE_ENERGY] > 150000){
