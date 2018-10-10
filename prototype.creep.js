@@ -289,25 +289,18 @@ Creep.prototype.moveCreepToContainer = function ()
     else
     {
         
-        //whether we have tried to move already
-        let attemptedMove = false;
         //whether there is a creep on the container
         let creepOnContainer = false;
         
-        //if creep has a path in memory and its destination is the container, show that we have tried to move to container before
-        if(this.memory._trav && this.memory._trav.state)
-            if(this.memory._trav.state[4] == closestContainer.pos.x && this.memory._trav.state[5] == closestContainer.pos.y)
-                attemptedMove = true;
-        
         //If we have tried to move before, look for creeps on containerPos.
-        if(attemptedMove){
+        if(this.memory.attemptedMove){
             creepOnContainer = _.size(closestContainer.pos.lookFor(LOOK_CREEPS)) > 0;
         }
         
         //If there is no creep on container, attempt to move to it.
         if(!creepOnContainer){
-            //move to the specified container
-            this.travelTo(closestContainer);
+            this.travelTo(closestContainer, { range: 0 });
+            this.memory.attemptedMove = true;
         }
         //If container is occupied get next state and run again, or move to source if not in range
         else{
@@ -316,6 +309,7 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if( this.canReach(target) ){
+                    this.memory.attemptedMove = false;
                     this.getNextStateDomestic();
                     this.run();
                 }
@@ -328,6 +322,7 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if(this.canReach(target) ){
+                    this.memory.attemptedMove = false;
                     this.getNextStateRemote();
                     this.run()
                 }
