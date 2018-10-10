@@ -419,17 +419,18 @@ Creep.prototype.getEnergyJob = function() {
     var job;
     
     //remoteDrones get biggest energy, all else get closest
-    if(this.memory.role == "remoteDrone" || this.memory.role == "drone")
+    if(this.memory.role == "remoteDrone" || this.memory.role == "drone"
+     && objects.length > 0)
         job = _.max(objects, o => o.energyAvailable() );    
     else
         job = this.getClosest(objects);
     
     var canAccessStorage = false;
 
-    if(this.memory.role != "drone" && ( job == null || job == undefined || job.energyAvailable() < STORAGE_THRESHOLD)){
+    if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
-    else if(this.memory.role == "drone" && ( job == null || job == undefined || job.energyAvailable() < this.carryCapacity*.75 )){
+    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity*.75 )){
         canAccessStorage = true;
     }
     //possible consequences
