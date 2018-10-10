@@ -18,6 +18,8 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
         drone: this.createDrone,
         
         worker: this.createWorker,
+        
+        powerUpgrader: this.createPowerUpgrader
 	
     };
 	
@@ -44,7 +46,7 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
     if(remoteRoleFunction.hasOwnProperty(role))
     {
     	console.log(`${this.name} is hatching a ${role}!`);
-	remoteRoleFunction[role].call(this, homeRoom, energyCost, dependentRoom);
+	    remoteRoleFunction[role].call(this, homeRoom, energyCost, dependentRoom);
     }
         
 }
@@ -360,7 +362,7 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
     let cl = 0, m = 0;
 	
     cl = 1;
-	m = 2;
+	m = 1;
     
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
@@ -368,7 +370,7 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 	
     //create the creep
     this.spawnCreep(body, name, { memory: {
-    	role: 'remoteDrone',
+    	role: 'claimer',
     	homeRoom: homeRoom,
 	claimRoom: dependentRoom,
     	state: 'STATE_SPAWNING',
@@ -387,22 +389,22 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 StructureSpawn.prototype.createRemoteDefender = function(homeRoom, energyCost, defenseRoom){
     
     
-    var name = 'defender - ' + randNum();    
+    var name = 'remoteDefender - ' + randNum();    
     var body = [];
     
     let m = 0, a = 0, h = 0;
     
     //temporary hard coding for RCL 4
     //Costs 950 and moves 1/tick
-    m = 6; a = 5; h = 1;
+    m = 6; ra = 5; h = 1;
     
     body = _.times(m, () => MOVE);
-    body = body.concat(_.times(a, () => ATTACK), _.times(h, () => HEAL));
+    body = body.concat(_.times(ra, () => RANGED_ATTACK), _.times(h, () => HEAL));
     
     this.spawnCreep(body, name, { memory: {
         role: 'remoteDefender',
         homeRoom: homeRoom,
-      defenseRoom: defenseRoom,
+    defenseRoom: defenseRoom,
         state: 'STATE_SPAWNING',
         workTarget: null
     }});

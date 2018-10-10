@@ -27,7 +27,7 @@ Creep.prototype.runMovingDomestic = function () {
 		//check if creep is in the correct room
 		if(this.homeRoom != this.room.name)
 		{
-			target = new RoomPosition(25, 25, homeRoom);
+			target = new RoomPosition(25, 25, this.homeRoom);
 		}
 		else
 		{
@@ -113,7 +113,7 @@ Creep.prototype.runHarvestingDomestic = function () {
 	            }
             }catch(err)
             {
-                console.log(err + ", sorry you're fak'd");
+                console.log(err.stack + ", sorry you're fak'd");
                 this.getTarget(RESOURCE_ENERGY);
             }
 			
@@ -190,9 +190,22 @@ Creep.prototype.runWorkDomestic = function () {
  */
 Creep.prototype.runGetEnergyUpgrader = function () {
     
+    var linkTarget = Game.getObjectById(this.memory.workTarget);
     //check if the link is empty, or creep is full
-    //change state if either is true
-    //otherwise get energy from link
+    if(linkTarget.energy === 0 || this.Full){
+        
+        this.memory.state = 'STATE_USE_RESOURCES';
+    }
+    else{ //get energy from the link
+        if(this.canReach(linkTarget)){
+            
+            this.withdraw(linkTarget, RESOURCE_ENERGY);
+        }
+        else{
+
+            this.memory.state = 'STATE_MOVING';
+        }
+    }
 }
 //---------
 
@@ -201,10 +214,23 @@ Creep.prototype.runGetEnergyUpgrader = function () {
  * use energy to upgrade controller for power upgrader creep
  */
 Creep.prototype.runUseResourcesUpgrader = function () {
-
+    ;
     //check if we're out of energy
-    //if so change states
-    //otherwise upgrade controller
+    if(this.Empty){
+        this.memory.workTarget = this.room.memory.upgraderLink;
+        this.memory.state = 'STATE_GET_RESOURCES';
+    }
+    else{ //upgrade the controller
+        
+        if(this.canReach(this.room.controller)){
+            this.memory.workTarget - this.room.controller.id;
+            this.upgradeController(this.room.controller);
+        }
+        else{
+            this.memory.workTarget = this.room.controller.id;
+            this.memory.state = 'STATE_MOVING';
+        }
+    }
 }
 
 
@@ -214,7 +240,7 @@ Creep.prototype.getNextStateDomestic = function () {
     var target = Game.getObjectById(this.workTarget);
     var currentState = this.state;
 	var nextState;
-
+	
 	//if creep is a miner only give access to get resources
 	if(this.role === 'miner' || target instanceof Source)
 	{
@@ -225,16 +251,12 @@ Creep.prototype.getNextStateDomestic = function () {
 		//if creep has resources, use them
 		nextState = 'STATE_USE_RESOURCES';
 	}
-	else if (this.role === 'powerUpgrader')
-	{
-	    //if power upgrader has no energy, get some
-        nextState = 'STATE_GET_RESOURCES_PU'
-	}
 	else
 	{
 	    //if creep has no resources, get them some
 	    nextState = 'STATE_GET_RESOURCES';
 	}
+	
 	
 	this.state = nextState;
 }
@@ -250,11 +272,14 @@ Creep.prototype.getTarget = function (targetType) {
     targetType = targetType || null;
     
     //check if the creep is empty to decide which target to get
-    if((this.Empty && this.role != "miner") || targetType == RESOURCE_ENERGY)
+    if((this.Empty && this.role != "miner" && this.role != "powerUpgrader") || targetType == RESOURCE_ENERGY)
     {
         
         //if creep has no energy, get an energy job
         this.workTarget = this.getEnergyJob();
+    }
+    else if(this.role === 'powerUpgrader'){
+        this.workTarget = this.room.memory.upgraderLink;
     }
     else //if targetType == "WORK"
     {

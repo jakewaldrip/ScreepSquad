@@ -19,6 +19,7 @@ Room.prototype.getNextCreepToSpawn = function () {
     ];
 
     const domesticPriority = [
+        "powerUpgrader",
         "worker",
         "drone",
         "miner"
@@ -83,6 +84,10 @@ Room.prototype.spawnNextCreep = function () {
 				{
                     dependentRoom = this.getOpenDefenseRoom(role);
                 }
+                else if(role === 'claimer')
+                {
+                    dependentRoom = this.getOpenClaimRoom(role);
+                }
 
                 //create the creep using the available spawner
                 emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
@@ -136,7 +141,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             miner: 700,
             drone: 2000,
             worker: 1800,
-            powerUpgrader: 2300,
+            powerUpgrader: 3000,
             remoteMiner: 1000,
             remoteDrone: 2300,
             remoteReserver: 1500,
@@ -188,6 +193,10 @@ Room.prototype.getCreepLimits = function ()
     //get domestic creep limits
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
 
+    //get claimer limit
+    if(this.energyCapacityAvailable >= 650)
+        this.memory.creepLimits["claimer"] = numClaimRooms;
+    
     //get remote creep limits if we have a remote room
     if(numRemoteRooms > 0)
     {
@@ -292,6 +301,8 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             numDrones = 2;
             numWorkers = 2 + numRemoteRooms;
             
+            var numLinks = this.memory.structures[STRUCTURE_LINK].length;
+            
             //energy cap conditions for extra creeps when they're smaller
             if(energyCap < 1800)
             {
@@ -313,6 +324,24 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 			}
 			
 			//set spawn conditions for power upgrader and adjust worker accordingly
+			if(numLinks >= 2 && energyCap >= 1800){
+
+			    numPowerUpgraders = 1;
+
+                //check if we have construction sites to decide worker limit
+			    if (this.memory.constructionSites.length > 0) {
+			        numWorkers = 4;
+			    }
+			    else {
+			        numWorkers = 2;
+			    }
+                    
+
+				//give us an extra worker if we have hella storage
+				if(this.storage.store[RESOURCE_ENERGY] > 150000){
+					numWorkers++;
+				}
+			}
 
 
             
@@ -340,7 +369,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
  * @param {int} numRemoteRooms number of remote rooms associated with the remote rooms
  * @param {int} numRemoteSources number of remote sources in this room
  * @param {int} numReserveRooms number of rooms that need to be reserved
- *@param {int} numClaimRooms number of claim rooms associated with the remote rooms
+ * @param {int} numClaimRooms number of claim rooms associated with the remote rooms
  */
 Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms)
 {
@@ -348,7 +377,6 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
     var numRemoteMiners = 0;
     var numRemoteDrones = 0;
     var numReservers = 0;
-    var numClaimers = numClaimRooms;
 
     var roomState = this.memory.roomState;
 
@@ -371,7 +399,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             }
             else
             {
-                numRemoteDrones = numRemoteSources + 1;
+                numRemoteDrones = numRemoteSources;
             }
 
 			//only spawn reserver if we can afford it
@@ -392,7 +420,6 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
     this.memory.creepLimits["remoteMiner"] = numRemoteMiners;
     this.memory.creepLimits["remoteDrone"] = numRemoteDrones;
     this.memory.creepLimits["remoteReserver"] = numReservers;
-    this.memory.creepLimits["claimer"] = numClaimers;
 }
 //-----------
 
@@ -517,3 +544,27 @@ Room.prototype.getOpenDefenseRoom = function (role) {
 }
 //--------
 
+/**
+ * Finds the first claim room that needs role
+ * @param {string} role The role 
+ * @return {string} claimRoom The name of the room assigned
+ */
+Room.prototype.getOpenClaimRoom = function (role) {
+    
+    var claimRoom = null;
+    
+    var claimRooms = Object.keys(this.memory.claimRooms);
+    
+    var claimCreeps = _.filter(Game.creeps, creep => creep.memory.role == role);
+    
+    _.forEach(claimRooms, function(roomName) {
+        
+       //Check if no claimers are targeting this room
+       if(!_.any(claimCreeps, claimer => claimer.memory.dependentRoom == roomName)){
+           claimRoom = roomName;
+       }
+        
+    });
+    
+    return claimRoom;
+}

@@ -18,7 +18,7 @@ Creep.prototype.runGetEnergyRemote = function(){
 	if(!this.Full) {
         
 		//if creep is not full, get energy
-		if(target.energyAvailable() > 0)
+		if(target != null && target.energyAvailable() > 0)
             this.getEnergy(target);
         else
             this.getRemoteTarget(RESOURCE_ENERGY);
@@ -78,7 +78,7 @@ Creep.prototype.runMovingRemote = function(){
         if(target instanceof RoomPosition)
         {
             //avoids getting stuck on exit tile if there is no target from getRemoteTarget()
-            this.travelTo(target );
+            this.travelTo(target, {allowHostile: true});
             if(this.room.name == targetRoom){
                 this.getRemoteTarget();
                 //Definitely causes a loop
@@ -113,7 +113,7 @@ Creep.prototype.runMovingRemote = function(){
 			            this.moveCreepToContainer();
 			        }
 			        else{
-			            this.travelTo(target );
+			            this.travelTo(target, {allowHostile: true});
 			        }
 			        
 			    }
@@ -264,7 +264,7 @@ Creep.prototype.runReservingRemote = function(){
     var target = Game.getObjectById(this.workTarget);
     
     //Can optionally sign the controller here
-    this.signController(target, "");
+    //this.signController(target, "");
     this.reserveController(target);
 }
 //----------------
@@ -293,27 +293,14 @@ Creep.prototype.getRemoteTarget = function (targetType){
     
     else //if targetType == "WORK" / this.Full
     {
-        
         //Very basic function (Only has default targets in it)
         this.workTarget = this.getRemoteWorkJob();
+		//console.log(this.workTarget);
         
     }
     
     this.state = 'STATE_MOVING';
 }
-
-
-//run clamining state
-Creep.prototype.runClaiming = function(){
-    
-    var target = Game.getObjectById(this.workTarget);
-    
-    //Can optionally sign the controller here
-    //this.signController(target, "");
-    this.claimController(target);
-}
-//-----------
-
 
 /**
 * command the remote creep to flee the room

@@ -15,7 +15,11 @@ Creep.prototype.run = function() {
         
         remoteReserver: require('role.RemoteReserver'),
         
-        remoteDefender: require('role.RemoteDefender')
+        remoteDefender: require('role.RemoteDefender'),
+        
+        claimer: require('role.Claimer'),
+        
+        powerUpgrader: require('role.PowerUpgrader')
         
     };
     
@@ -266,7 +270,7 @@ Creep.prototype.moveCreepToContainer = function ()
 		//check if the container even exists, if not just move to the source
 		if(closestContainer == null && !this.canReach(target))
 		{
-			this.travelTo(target);
+			this.travelTo(target, {allowHostile: true});
 		}
 		else
 		{
@@ -287,25 +291,18 @@ Creep.prototype.moveCreepToContainer = function ()
     else
     {
         
-        //whether we have tried to move already
-        let attemptedMove = false;
         //whether there is a creep on the container
         let creepOnContainer = false;
         
-        //if creep has a path in memory and its destination is the container, show that we have tried to move to container before
-        if(this.memory._move && this.memory._move.dest)
-            if(this.memory._move.dest.x == closestContainer.pos.x && this.memory._move.dest.y && closestContainer.pos.y)
-                attemptedMove = true;
-        
         //If we have tried to move before, look for creeps on containerPos.
-        if(attemptedMove){
+        if(this.memory.attemptedMove){
             creepOnContainer = _.size(closestContainer.pos.lookFor(LOOK_CREEPS)) > 0;
         }
         
         //If there is no creep on container, attempt to move to it.
         if(!creepOnContainer){
-            //move to the specified container
-            this.travelTo(closestContainer);
+            this.travelTo(closestContainer, { range: 0 });
+            this.memory.attemptedMove = true;
         }
         //If container is occupied get next state and run again, or move to source if not in range
         else{
@@ -314,11 +311,12 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if( this.canReach(target) ){
+                    delete this.memory.attemptedMove;
                     this.getNextStateDomestic();
                     this.run();
                 }
                 else{
-                    this.travelTo(target);
+                    this.travelTo(target, {allowHostile: true});
                 }
                     
             }
@@ -326,11 +324,12 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if(this.canReach(target) ){
+                    delete this.memory.attemptedMove;
                     this.getNextStateRemote();
                     this.run()
                 }
                 else{
-                    this.travelTo(target);
+                    this.travelTo(target, {allowHostile: true});
                 }
             }
         }

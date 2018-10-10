@@ -1,7 +1,7 @@
 /** @namespace Room */
 Room.prototype.runTowers = function() {
     
-    let towers = _.map(this.memory.structures[STRUCTURE_TOWER], id => Game.getObjectById(id));
+    let towers = this.memory.structures[STRUCTURE_TOWER].getObjects();
     
     _.forEach(towers, tower => tower.run());
     
@@ -14,14 +14,54 @@ Room.prototype.runTowers = function() {
  */
 Room.prototype.runLinks = function() {
 
-	//get the upgrader link
+    var allLinks = this.memory.structures[STRUCTURE_LINK].getObjects();
+    var controller = this.controller;
+    var upgraderLink;
+    var supportLinks;
 
-	//get the sub links
 
-	//check if the upgrader link needs energy
-
-	//loop through the sub links that are not on cool down
-		//send the upgrader link the energy
+    //if the memory slot for upgrader link is defined, continue, else add it
+    if(this.memory.upgraderLink != undefined && this.memory.upgraderLink != null){
+               
+        //convert into objects what is needed
+        upgraderLink = this.memory.upgraderLink.getObjects();
+        supportLinks = _.filter(allLinks, l => l !== upgraderLink);
+        
+        //loop over the support links and run them
+        for(let i = 0; i < supportLinks.length; ++i){
+                
+            //variable in loop to keep logic clear
+            let currentLink = supportLinks[i];
+            let energyCap = currentLink.energyCapacity;
+            let currentEnergy = currentLink.energy;
+            let currentCooldown = currentLink.cooldown;
+            let upgraderLinkEnergy = upgraderLink.energy;
+            
+            //check if upgrader link needs energy
+			//set it to cap-1 because it costs energy to send from a link and 800 will never be hit from a transfer
+            if(upgraderLinkEnergy < energyCap - 1){
+                
+                //if the link cannot be used, just continue
+                if(currentEnergy  === 0 || currentCooldown > 0){
+                    continue;
+                }
+                else{ 
+                    
+                    //if it can be used, transfer and break loop
+                    currentLink.transferEnergy(upgraderLink);
+					break;
+                }
+            }
+        }
+        
+        
+    }
+    else{
+        
+        //set upgrader link into memory
+        this.memory.upgraderLink = controller.pos.findClosestByRange(allLinks).id;
+        console.log("Setting the upgrader link in memory successful: " + this.memory.upgraderLink);
+    }
 
 }
 //------
@@ -46,7 +86,8 @@ Room.prototype.runStructures = function(){
     this.runTowers();
 
     //run links for the room
-	this.runLinks();
+    if(this.memory.structures[STRUCTURE_LINK].length > 0)
+	    this.runLinks();
     
     //run terminal for the room
 
@@ -108,6 +149,14 @@ Object.defineProperty(Room.prototype, 'roomState', {
 //set room state to memory
 Room.prototype.setRoomState = function () {
 	
+    //add 2 states, end state, and power upgrader state (names up for debate)
+    //power upgrader state is 2300 energy + 3 links
+    //end state is lvl 8, changes power upgrader
+    //possibly 1 other state for a full time supporting room, or just lump together with end state?
+    //possibly a state/something that tags a room as a military outpost if its main purpose is
+    //attacking other rooms as a forward base, but not sure what we would perform differently in the room
+    //if this happened to be the case
+
     var containers = this.memory.structures[STRUCTURE_CONTAINER];
 
     //check if containers exist

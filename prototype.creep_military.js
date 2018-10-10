@@ -55,13 +55,12 @@ Creep.prototype.runAttackingMilitary = function() {
         this.getMilitaryTarget();
         this.heal(this);
     }
-    
-    else if(this.hits < this.hitsMax/2){
+    else if(this.attack(target) == ERR_NOT_IN_RANGE){
+        this.travelTo(target, {movingTarget: true});
+        //Worst case this will return a non-0 and change nothing, even if we dont' have parts
         this.heal(this);
     }
-    else if(this.attack(target) == ERR_NOT_IN_RANGE){
-        this.travelTo(target);
-        //Worst case this will return a non-0 and change nothing, even if we dont' have parts
+    else if(this.hits < this.hitsMax/2){
         this.heal(this);
     }
     
@@ -74,20 +73,40 @@ Creep.prototype.runRangedAttackingMilitary = function() {
     
     if(target == null){
         this.getMilitaryTarget();
-        this.heal(this);
+    }
+    else{
+        
+        let result = this.rangedAttack(target);
+        
+        if(result == ERR_NOT_IN_RANGE){
+            
+            this.travelTo(target, { range: 3, movingTarget: true });
+        }
+        else if(result == OK){
+            let range = this.pos.getRangeTo(target.pos);
+            
+            //Very basic kiting, just moves in opposite direction of the creep
+            //Does not account for walls or other 
+            if(range < 3){
+                
+                let targetDirection = this.pos.getDirectionTo(target.pos);
+                let moveDirection;
+                
+                if(targetDirection <= 4)
+                    moveDirection = targetDirection + 4;
+                else
+                    moveDirection = targetDirection - 4;
+                
+                this.move(moveDirection);
+                    
+            }
+            
+        }
     }
     
-    else if(this.rangedAttack(target) == ERR_NOT_IN_RANGE){
-        
-        //make it so range is 3 TEMPORARY
-        let moveOpts = this.moveOpts();
-        moveOpts["range"] = 3;
-        
-        this.travelTo(target, moveOpts);
+    if(this.hits < this.hitsMax)
         this.heal(this);
-    }
-    
-    
+        
 }
 
 Creep.prototype.runDefendingMilitary = function() {
@@ -104,13 +123,8 @@ Creep.prototype.runDefendingMilitary = function() {
         //finds the creep with the most missing HP
         target = _.max(lowCreeps, creep => creep.hitsMax - creep.hits);
         
-        if(this.rangedHeal(target) == ERR_NOT_IN_RANGE){
-            
-            //temporary extension of range
-            let moveOpts = this.moveOpts();
-            moveOpts["range"] = 3;
-            
-            this.travelTo(target, moveOpts);
+        if(this.heal(target) == ERR_NOT_IN_RANGE){
+            this.travelTo(target);
         }
         //Creep should heal itself
         //Creep should also heal any low miners/drones/reservers in room

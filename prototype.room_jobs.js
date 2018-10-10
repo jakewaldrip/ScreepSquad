@@ -91,8 +91,14 @@ Room.prototype.getWorkerJobQueue = function () {
     lowTowers = removeClaimedJobs(lowTowers);
     
     let controller = [this.controller];
-    controller = removeClaimedJobs(controller);
     
+    //If RCL == 8, don't target controller ever
+    if(this.controller.level == 8){
+        controller = [];
+    }
+    else{
+        controller = removeClaimedJobs(controller);
+    }
     
     let targets = controller.concat(lowTowers, priorityRepairTargets, constSites, repairTargets);
     
@@ -117,7 +123,8 @@ Room.prototype.getWorkerJobQueue = function () {
 Room.prototype.getEnergyJobQueue = function() {
     const MIN_TARGET_AMOUNT = 300;
     
-    let dropArray = [], 
+    let dropArray = [],
+        tombstoneArray = [],
         containerArray = [], 
         mergedArray = [];
         
@@ -412,17 +419,18 @@ Creep.prototype.getEnergyJob = function() {
     var job;
     
     //remoteDrones get biggest energy, all else get closest
-    if(this.memory.role == "remoteDrone" || this.memory.role == "drone")
+    if(this.memory.role == "remoteDrone" || this.memory.role == "drone"
+     && objects.length > 0)
         job = _.max(objects, o => o.energyAvailable() );    
     else
         job = this.getClosest(objects);
     
     var canAccessStorage = false;
 
-    if(this.memory.role != "drone" && ( job == null || job == undefined || job.energyAvailable() < STORAGE_THRESHOLD)){
+    if(this.memory.role != "drone" && ( job == null || job.energyAvailable() < STORAGE_THRESHOLD)){
         canAccessStorage = true;
     }
-    else if(this.memory.role == "drone" && ( job == null || job == undefined || job.energyAvailable() < this.carryCapacity*.75 )){
+    else if(this.memory.role == "drone" && ( job == null || job.energyAvailable() < this.carryCapacity*.75 )){
         canAccessStorage = true;
     }
     //possible consequences
@@ -496,40 +504,54 @@ Creep.prototype.getRemoteWorkJob = function() {
         
         
         case 'remoteDrone':
-            
             if(this.room.name != this.memory.homeRoom){
                 //Target center of homeRoom
                 return {x: 25, y: 25, roomName: this.memory.homeRoom};
             }
             else{
-                
-                //find closest link
-                //we find closest because all that matters is the upgraders link is filled
-                //so if its a shorter walk for whatever reason to just go to controller then
-                //we will do this instead
-                let allLinksID = this.room.memory.structures[STRUCTURE_LINK];
-                let allLinks = allLinksID.getObjects();
-                let closestLink = this.pos.findClosestByRange(allLinks);
 
-                //check if link exists and isn't full
-                if(closestLink != null && closestLink.energy < closestLink.energyCapacity){
+                let homeRoom = Game.rooms[this.memory.homeRoom];
 
-                    return closestLink.id;
-                }
-                else{
+				
+				if(this.room.memory.structures[STRUCTURE_LINK].length > 0){
+					//get closest link to the remote drone
+					var allLinksId = this.room.memory.structures[STRUCTURE_LINK];
+					var allLinks = allLinksId.getObjects();
+					var upgraderLink = Game.getObjectById(this.room.memory.upgraderLink);
+					var supportLinks = _.filter(allLinks, l => l !== upgraderLink);
+					
+					for(var i = 0; i < supportLinks.length; ++i){
+						
+						let currentLink = supportLinks[i];
+						
+						//if this link needs energy, target it
+						if(currentLink.energy < currentLink.energyCapacity){
+
+							return currentLink.id;
+						}
+						else{
+							
+							continue;
+						}
+					}
+
+
+					//target the local storage if we do not return on a link
+					if(homeRoom.storage != undefined)
+						return homeRoom.storage.id;
+					else
+						console.log(this.name + ": No storage found!");
+				}
+				else{
+					
+					//target the local storage if we do not have links to target
+					if(homeRoom.storage != undefined)
+						return homeRoom.storage.id;
+					else
+						console.log(this.name + ": No storage found!");
+				}
                 
-                    //if link doesn't exist or full, fill storage
-                    let homeRoom = Game.rooms[this.memory.homeRoom];
-                    
-                    if(homeRoom.storage != undefined){
-                        
-                        return homeRoom.storage.id;
-                    }
-                    else{
-                    
-                        console.log(this.name + ": No storage found!");
-                    }
-                }
+                
             }
         break;
         
