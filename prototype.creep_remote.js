@@ -302,19 +302,6 @@ Creep.prototype.getRemoteTarget = function (targetType){
     this.state = 'STATE_MOVING';
 }
 
-
-//run clamining state
-Creep.prototype.runClaiming = function(){
-    
-    var target = Game.getObjectById(this.workTarget);
-    
-    //Can optionally sign the controller here
-    //this.signController(target, "");
-    this.claimController(target);
-}
-//-----------
-
-
 /**
 * command the remote creep to flee the room
 * <p> Allows the remote creep to flee the room to saftey </p>

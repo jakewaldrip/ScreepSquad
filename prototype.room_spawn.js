@@ -84,6 +84,10 @@ Room.prototype.spawnNextCreep = function () {
 				{
                     dependentRoom = this.getOpenDefenseRoom(role);
                 }
+                else if(role === 'claimer')
+                {
+                    dependentRoom = this.getOpenClaimRoom(role);
+                }
 
                 //create the creep using the available spawner
                 emptySpawner.createRole(this.name, energyCost, role, dependentRoom);
@@ -189,6 +193,10 @@ Room.prototype.getCreepLimits = function ()
     //get domestic creep limits
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
 
+    //get claimer limit
+    if(this.energyCapacityAvailable >= 650)
+        this.memory.creepLimits["claimer"] = numClaimRooms;
+    
     //get remote creep limits if we have a remote room
     if(numRemoteRooms > 0)
     {
@@ -360,7 +368,6 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
     var numRemoteMiners = 0;
     var numRemoteDrones = 0;
     var numReservers = 0;
-    var numClaimers = numClaimRooms;
 
     var roomState = this.memory.roomState;
 
@@ -404,7 +411,6 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
     this.memory.creepLimits["remoteMiner"] = numRemoteMiners;
     this.memory.creepLimits["remoteDrone"] = numRemoteDrones;
     this.memory.creepLimits["remoteReserver"] = numReservers;
-    this.memory.creepLimits["claimer"] = numClaimers;
 }
 //-----------
 
@@ -529,3 +535,27 @@ Room.prototype.getOpenDefenseRoom = function (role) {
 }
 //--------
 
+/**
+ * Finds the first claim room that needs role
+ * @param {string} role The role 
+ * @return {string} claimRoom The name of the room assigned
+ */
+Room.prototype.getOpenClaimRoom = function (role) {
+    
+    var claimRoom = null;
+    
+    var claimRooms = Object.keys(this.memory.claimRooms);
+    
+    var claimCreeps = _.filter(Game.creeps, creep => creep.memory.role == role);
+    
+    _.forEach(claimRooms, function(roomName) {
+        
+       //Check if no claimers are targeting this room
+       if(!_.any(claimCreeps, claimer => claimer.memory.dependentRoom == roomName)){
+           claimRoom = roomName;
+       }
+        
+    });
+    
+    return claimRoom;
+}

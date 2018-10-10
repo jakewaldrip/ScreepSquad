@@ -362,7 +362,7 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
     let cl = 0, m = 0;
 	
     cl = 1;
-	m = 2;
+	m = 1;
     
     //create body array for creep given the parts
     body = _.times(cl, () => CLAIM);
@@ -370,7 +370,7 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 	
     //create the creep
     this.spawnCreep(body, name, { memory: {
-    	role: 'remoteDrone',
+    	role: 'claimer',
     	homeRoom: homeRoom,
 	claimRoom: dependentRoom,
     	state: 'STATE_SPAWNING',

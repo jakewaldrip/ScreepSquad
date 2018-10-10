@@ -17,6 +17,8 @@ Creep.prototype.run = function() {
         
         remoteDefender: require('role.RemoteDefender'),
         
+        claimer: require('role.Claimer'),
+        
         powerUpgrader: require('role.PowerUpgrader')
         
     };
@@ -309,7 +311,7 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if( this.canReach(target) ){
-                    this.memory.attemptedMove = false;
+                    delete this.memory.attemptedMove;
                     this.getNextStateDomestic();
                     this.run();
                 }
@@ -322,7 +324,7 @@ Creep.prototype.moveCreepToContainer = function ()
                 
                 //if we can reach the source, switch states, else move to it
                 if(this.canReach(target) ){
-                    this.memory.attemptedMove = false;
+                    delete this.memory.attemptedMove;
                     this.getNextStateRemote();
                     this.run()
                 }
