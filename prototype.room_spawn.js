@@ -15,7 +15,7 @@ Room.prototype.getNextCreepToSpawn = function () {
         "remoteReserver",
         "remoteDrone",
         "remoteMiner",
-        //"colonizer",
+        "colonizer",
         "claimer"
     ];
 
@@ -427,7 +427,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 			//2 drones per source until we can afford big ass drones
             if(this.energyCapacityAvailable < 1400)
             {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if(this.energyCapacityAvailable < 2500)
             {
@@ -456,7 +456,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 
             //2 drones per source until we can afford big ass drones
             if (this.energyCapacityAvailable < 1400) {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if (this.energyCapacityAvailable < 2500) {
                 numRemoteDrones = numRemoteSources + 1;
@@ -481,7 +481,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 
             //2 drones per source until we can afford big ass drones
             if (this.energyCapacityAvailable < 1400) {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if (this.energyCapacityAvailable < 2500) {
                 numRemoteDrones = numRemoteSources + 1;

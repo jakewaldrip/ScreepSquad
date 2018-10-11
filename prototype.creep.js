@@ -73,6 +73,9 @@ Creep.prototype.getEnergy = function(targetObj){
     else if(targetObj instanceof Structure){
         return this.withdraw(targetObj, RESOURCE_ENERGY);
     }
+    else if(targetObj instanceof Source){
+        return this.harvest(targetObj);
+    }
     else{
         return ERR_INVALID_TARGET;
     }
