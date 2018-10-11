@@ -18,19 +18,21 @@ Room.prototype.getData = function () {
         
         this.getEvents();
         
-        this.getStructures();
-        
-        this.assignContainersToSources();
-        
-        this.getConstructionSites();
-        
-        this.getDroppedEnergy();
-        
-        this.getRepairTargets();
-	
-	    this.getEnemyCreeps();
+        if(this.controller){
+            this.getStructures();
+            
+            this.assignContainersToSources();
+            
+            this.getConstructionSites();
+            
+            this.getDroppedEnergy();
+            
+            this.getRepairTargets();
+
+    	    this.getEnemyCreeps();
 	    //Important that this is called after getEnemyCreeps();
-	    this.getDefconLevel();    
+	        this.getDefconLevel();    
+        }
     }
     
     

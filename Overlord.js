@@ -121,6 +121,11 @@ Overlord.prototype.linkOverseers = function() {
         
         room.getData();
         
+        //catch highway rooms
+        if(!room.memory.structures){
+            return;
+        }
+        
         let spawnIDs = room.memory.structures[STRUCTURE_SPAWN];
         
         //if(spawnIDs.length > 0 && Game.getObjectById(spawnIDs[0]).my){

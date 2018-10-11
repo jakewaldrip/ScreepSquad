@@ -74,8 +74,8 @@ profiler.wrap(function() {
     //Temporary code to attack neighbor
     const HITPOINTSTOFLEE = 1000;
     let attackCreep = Game.creeps["attackBoy2"];
-    let targetRoom = "W18S44";
-    let homeRoom = "W17S44";
+    let targetRoom = "E3S8";
+    let homeRoom = "E2S8";
     //change to target structures or creeps
     let onlyStructures = false;
     let manualTarget = null;
@@ -94,6 +94,8 @@ profiler.wrap(function() {
         }
         else if(attackCreep.hits > attackCreep.hitsMax - HITPOINTSTOFLEE){
             
+            //attackCreep.travelTo(new RoomPosition(25, 25, targetRoom));
+            
             //Uses manualTarget > memoryTarget > newTarget
             let target = Game.getObjectById(manualTarget);
             if(target == null)
@@ -106,20 +108,21 @@ profiler.wrap(function() {
                 else
                     target = attackCreep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
-                if(target == null)
-                    target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
+                //if(target == null)
+                    //target = attackCreep.pos.findClosestByRange(FIND_STRUCTURES);
                     
-                if(target != null)
-                    attackCreep.memory.target = target.id;
             }
-            
-            if(attackCreep.rangedAttack(target) == ERR_NOT_IN_RANGE){
-            //if(attackCreep.attack(target) == ERR_NOT_IN_RANGE){
-                attackCreep.travelTo(target, {movingTarget: true});
-                attackCreep.heal(attackCreep);
-            }
-            if(attackCreep.hits < attackCreep.hitsMax)
-                attackCreep.heal(attackCreep);
+            if(target != null)
+                attackCreep.memory.workTarget = target.id;
+            else
+                attackCreep.memory.workTarget = null;
+                
+            if(target == null && attackCreep.hits < attackCreep.hitsMax)
+                attackCreep.heal(this)
+            else if(target != null)
+                attackCreep.runAttackingMilitary();
+            else
+                attackCreep.travelTo(new RoomPosition(25, 25, targetRoom));
         }
         else{
             attackCreep.memory.target = null;
@@ -128,12 +131,13 @@ profiler.wrap(function() {
             attackCreep.heal(attackCreep);
         }
     }
-   /*
+   
     //Basic attacker
     else{
-        let body = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE];
-        if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
-            console.log("Spawning an attackboy2");
+        let body = [TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, HEAL];
+        //let body = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL];
+        //if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
+        //    console.log("Spawning an attackboy2");
     }
     // Use this one for extra remote defense
     /*
@@ -144,6 +148,7 @@ profiler.wrap(function() {
     }
     */
     //Use this one for breaking towers
+    /*
     else{
         let body = [];
         body = _.times(6, () => MOVE);
@@ -154,7 +159,7 @@ profiler.wrap(function() {
         if(Game.spawns.Spawn1.spawnCreep( body, "attackBoy2") == 0)
             console.log("Spawning an attackBoy2");
     }
-    
+    */
     
     //attackCreep.travelTo(new RoomPosition(30, 15, targetRoom));
 });

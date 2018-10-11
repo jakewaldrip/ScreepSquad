@@ -73,6 +73,7 @@ Creep.prototype.runRangedAttackingMilitary = function() {
     
     if(target == null){
         this.getMilitaryTarget();
+        this.travelTo(Game.getObjectById(this.memory.workTarget));
     }
     else{
         
