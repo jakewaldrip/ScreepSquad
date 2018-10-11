@@ -14,7 +14,9 @@ Flag.prototype.assignRemoteFlagToRoom = function () {
     
     for(let currentRoom of ownedRooms)
     {   
-        var remoteRooms = Object.keys(currentRoom.memory.remoteRooms); 
+        var remoteRooms = null;
+        if(currentRoom.memory.remoteRooms)
+            remoteRooms = Object.keys(currentRoom.memory.remoteRooms); 
         
         //check if the flag is assigned to this room and trigger the isExist bool and break the loop
         if(_.some(remoteRooms, roomName => roomName == flagRoom))
@@ -78,7 +80,9 @@ Flag.prototype.assignClaimFlagToRoom = function () {
     for(let currentRoom of ownedRooms)
     {   
         
-        var claimRooms = Object.keys(currentRoom.memory.claimRooms); 
+        var claimRooms = null;
+        if(currentRoom.memory.claimRooms)
+            claimRooms = Object.keys(currentRoom.memory.claimRooms); 
         
         //check if the flag is assigned to this room and trigger the isExist bool and break the loop
         if(_.some(claimRooms, roomName => roomName == flagRoom))

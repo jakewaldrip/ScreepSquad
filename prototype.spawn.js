@@ -33,6 +33,8 @@ StructureSpawn.prototype.createRole = function (homeRoom, energyCost, role, depe
 	    
 	    claimer: this.createClaimer,
 	    
+	    colonizer: this.createColonizer,
+	    
 	    remoteDefender: this.createRemoteDefender	
 	};
     
@@ -379,7 +381,40 @@ StructureSpawn.prototype.createClaimer = function(homeRoom, energyCost, dependen
 }
 //-----
 
-
+/**
+ * Create a colonizer
+ * @param {string} homeRoom The name of the homeroom
+ * @param {number} energyCost The max cost of the creep
+ * @param {string} dependentRoom The room to be helped
+ */
+StructureSpawn.prototype.createColonizer = function(homeRoom, energyCost, dependentRoom)
+{
+    var name = 'colonizer - ' + randNum();
+    var body = [];
+    
+    //adjust this to adjust body part ratio, shouldn't have to change anything else
+    //current cost: 200 + 150 + 50 = 400;
+    let w = 2, m = 3, c = 1;
+    
+    let multiplier = energyCost / ( (BODYPART_COST["work"] * w) + (BODYPART_COST["move"] * 3) + (BODYPART_COST["carry"] * 1) );
+    multiplier = Math.floor(multiplier);
+    
+    w *= multiplier; m *= multiplier; c *= multiplier;
+    
+    //create body array
+    body = _.times(w, () => WORK).concat(_.times(m, () => MOVE), _.times(c, () => CARRY) );
+    
+    //create the creep
+    this.spawnCreep(body, name, { memory: {
+        role: 'colonizer',
+        homeRoom: homeRoom,
+        dependentRoom: dependentRoom,
+        state: 'STATE_SPAWNING',
+        workTarget: null
+    }});
+    
+}
+//-----
 /**
  * Create a remote defender
  * @param {string} homeRoom The name of the homeroom

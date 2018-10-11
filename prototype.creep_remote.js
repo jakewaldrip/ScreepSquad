@@ -59,7 +59,6 @@ Creep.prototype.runMovingRemote = function(){
     var targetRoom = this.memory.remoteRoom;
     
     //checks if it's an object stored in memory and if it has an "x" property.
-    //Should also check for y and roomName, but this should work for us w/o wasting CPU
     if(target instanceof Object && target.hasOwnProperty("x")){
         target = new RoomPosition(target.x, target.y, target.roomName);
         targetRoom = target.roomName;

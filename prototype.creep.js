@@ -19,6 +19,8 @@ Creep.prototype.run = function() {
         
         claimer: require('role.Claimer'),
         
+        colonizer: require('role.Colonizer'),
+        
         powerUpgrader: require('role.PowerUpgrader')
         
     };

@@ -19,7 +19,7 @@ module.exports = {
 
 			case 'STATE_MOVING':
                 
-                let destRoom = creep.memory.dependentRoom;
+                let destRoom = creep.memory.claimRoom;
                 let currRoom = creep.room.name;
                         
                 if(currRoom != destRoom)
@@ -28,7 +28,7 @@ module.exports = {
                 }
                 else //currRoom == destRoom
                 {
-                    if(creep.inRangeTo(creep.room.controller, 1)){
+                    if(creep.pos.inRangeTo(creep.room.controller, 1)){
                         creep.memory.state = 'STATE_CLAIMING';
                         //might cause loop?
                         creep.run();
@@ -43,7 +43,7 @@ module.exports = {
             
             case 'STATE_CLAIMING':
                 
-                if(!room.controller.my && room.controller.owner == null)
+                if(!creep.room.controller.my && creep.room.controller.owner == null)
                     creep.claimController(creep.room.controller);
                 
                 creep.memory.state = 'STATE_SIGNING';

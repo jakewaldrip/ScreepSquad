@@ -123,7 +123,8 @@ Overlord.prototype.linkOverseers = function() {
         
         let spawnIDs = room.memory.structures[STRUCTURE_SPAWN];
         
-        if(spawnIDs.length > 0 && Game.getObjectById(spawnIDs[0]).my){
+        //if(spawnIDs.length > 0 && Game.getObjectById(spawnIDs[0]).my){
+        if(room.controller && room.controller.my){
             //Need to sort this by creep role - TO DO
             let creepsInRoom = _.remove(Creeps, c => c.homeRoom == room.name);
             

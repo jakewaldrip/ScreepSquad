@@ -51,27 +51,23 @@ profiler.wrap(function() {
     overlord.run(); 
     
     //Temporary auto-construct code
-    /*
-    if(Game.rooms["W17S44"].controller.level == 5){
-        let room = Game.rooms["W17S44"];
-        if(Game.flags["Flag1"] != undefined){
-            let flag = Game.flags["Flag1"].pos;
+    
+    if(Game.rooms["E1S9"].controller.level == 3){
+        let room = Game.rooms["E1S9"];
+        if(Game.flags["Flag12"] != undefined){
+            let flag = Game.flags["Flag12"].pos;
             room.createConstructionSite(flag.x, flag.y+1, STRUCTURE_EXTENSION);
             room.createConstructionSite(flag.x, flag.y-1, STRUCTURE_EXTENSION);
             room.createConstructionSite(flag.x+1, flag.y, STRUCTURE_EXTENSION);
             room.createConstructionSite(flag.x-1, flag.y, STRUCTURE_EXTENSION);
             room.createConstructionSite(flag.x, flag.y, STRUCTURE_EXTENSION);
-            /*
-            room.createConstructionSite(flag.x+1, flag.y+1, STRUCTURE_ROAD);
-            room.createConstructionSite(flag.x-1, flag.y-1, STRUCTURE_ROAD);
-            room.createConstructionSite(flag.x-1, flag.y+1, STRUCTURE_ROAD);
             
-            room.createConstructionSite(13, 35, STRUCTURE_TOWER);
+            room.createConstructionSite(27, 14, STRUCTURE_TOWER);
             
-            Game.flags["Flag1"].remove();
+            Game.flags["Flag12"].remove();
         }
     }
-    */
+    
     
      //Leaving it just in case for now, will remove later 
     
