@@ -15,6 +15,7 @@ Room.prototype.getNextCreepToSpawn = function () {
         "remoteReserver",
         "remoteDrone",
         "remoteMiner",
+        "colonizer",
         "claimer"
     ];
 
@@ -84,7 +85,7 @@ Room.prototype.spawnNextCreep = function () {
 				{
                     dependentRoom = this.getOpenDefenseRoom(role);
                 }
-                else if(role === 'claimer')
+                else if(role === 'claimer' || role == "colonizer")
                 {
                     dependentRoom = this.getOpenClaimRoom(role);
                 }
@@ -133,6 +134,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             remoteDrone: 1500,
             remoteReserver: 1500,
             remoteDefender: 950,
+            colonizer: 1600,
             claimer: 850
         };
     }
@@ -146,6 +148,7 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             remoteDrone: 2300,
             remoteReserver: 1500,
             remoteDefender: 950,
+            colonizer: 1600,
             claimer: 850
         };
     }
@@ -202,15 +205,16 @@ Room.prototype.getCreepLimits = function ()
 
     //get domestic creep limits
     this.getDomesticCreepLimits(numOfSources, numRemoteRooms);
-
-    //get claimer limit
-    if(this.energyCapacityAvailable >= 650)
-        this.memory.creepLimits["claimer"] = numClaimRooms;
     
+    //get claimer limit
+    if(numClaimRooms > 0)
+    {
+        this.getExpandCreepLimits();
+    }
     //get remote creep limits if we have a remote room
     if(numRemoteRooms > 0)
     {
-        this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms);
+        this.getRemoteCreepLimits(numRemoteRooms, numRemoteSources, numReserveRooms);
     }
     
 
@@ -403,7 +407,7 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
  * @param {int} numReserveRooms number of rooms that need to be reserved
  * @param {int} numClaimRooms number of claim rooms associated with the remote rooms
  */
-Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms, numClaimRooms)
+Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources, numReserveRooms)
 {
 
     var numRemoteMiners = 0;
@@ -423,7 +427,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 			//2 drones per source until we can afford big ass drones
             if(this.energyCapacityAvailable < 1400)
             {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if(this.energyCapacityAvailable < 2500)
             {
@@ -435,7 +439,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             }
 
 			//only spawn reserver if we can afford it
-			if(this.energyCapacityAvailable >= 1400)
+			if(this.energyCapacityAvailable >= 1300)
 			{
 				numReservers = numReserveRooms;
 			}
@@ -452,7 +456,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 
             //2 drones per source until we can afford big ass drones
             if (this.energyCapacityAvailable < 1400) {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if (this.energyCapacityAvailable < 2500) {
                 numRemoteDrones = numRemoteSources + 1;
@@ -462,7 +466,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             }
 
             //only spawn reserver if we can afford it
-            if (this.energyCapacityAvailable >= 1400) {
+            if (this.energyCapacityAvailable >= 1300) {
                 numReservers = numReserveRooms;
             }
 
@@ -477,7 +481,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 
             //2 drones per source until we can afford big ass drones
             if (this.energyCapacityAvailable < 1400) {
-                numRemoteDrones = numRemoteSources;
+                numRemoteDrones = numRemoteSources * 2;
             }
             else if (this.energyCapacityAvailable < 2500) {
                 numRemoteDrones = numRemoteSources + 1;
@@ -487,7 +491,7 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
             }
 
             //only spawn reserver if we can afford it
-            if (this.energyCapacityAvailable >= 1400) {
+            if (this.energyCapacityAvailable >= 1300) {
                 numReservers = numReserveRooms;
             }
 
@@ -524,6 +528,32 @@ Room.prototype.getCombatCreepLimits = function ()
 }
 //------------
 
+/**
+ * Gets the limits for claimers/colonizers
+ */
+Room.prototype.getExpandCreepLimits = function ()
+{
+    
+    var claimedRooms = [], unclaimedRooms = [];
+    
+    _.forEach(Memory.rooms, room => {
+        
+        _.forEach(room.claimRooms, memObj => {
+            
+            if(memObj.isClaimed == false){
+                unclaimedRooms.push(memObj.name);
+            }
+            else{
+                claimedRooms.push(memObj.name);
+            }
+        
+        });
+        
+    });
+    
+    this.memory.creepLimits["claimer"] = unclaimedRooms.length;
+    this.memory.creepLimits["colonizer"] = claimedRooms.length;
+}
 
 /**
  * gets the number of creeps of a specific role passed to it
@@ -633,16 +663,22 @@ Room.prototype.getOpenClaimRoom = function (role) {
     
     var claimRooms = Object.keys(this.memory.claimRooms);
     
-    var claimCreeps = _.filter(Game.creeps, creep => creep.memory.role == role);
+    var creeps = _.filter(Game.creeps, creep => creep.memory.role == role);
     
     _.forEach(claimRooms, function(roomName) {
         
+        //Select the room if it is claimed (flag will be deleted once spawn is completed)
+        if(this.memory.claimRooms[roomName].isClaimed == true)
+        {
+            if(role == "colonizer")
+                claimRoom = roomName;
+        }
        //Check if no claimers are targeting this room
-       if(!_.any(claimCreeps, claimer => claimer.memory.dependentRoom == roomName)){
+        else if(role == "claimer" && !_.any(creeps, claimer => claimer.memory.dependentRoom == roomName)){
            claimRoom = roomName;
-       }
+        }
         
-    });
+    }, this);
     
     return claimRoom;
 }
