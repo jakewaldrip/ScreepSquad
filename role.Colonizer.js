@@ -12,6 +12,7 @@ module.exports = {
 
                 if(!creep.spawning){
                     creep.state = 'STATE_MOVING'
+                    creep.run();
                 }
 
 			break;
@@ -33,11 +34,21 @@ module.exports = {
                     if(target == null){
                         //If creep has energy
                         if(creep.Full || !creep.Empty){
-                            creep.memory.workTarget = creep.getClosest(creep.room.memory.constructionSites.getObjects()).id;
+                            let closestConstSite = creep.getClosest(creep.room.memory.constructionSites.getObjects());
                             
-                            if(creep.memory.workTarget == null || creep.room.controller.ticksToDowngrade < 5000)
+                            if(closestConstSite != null){
+                                creep.memory.workTarget = closestConstSite.id;
+                            }
+                            else if(creep.room.controller.ticksToDowngrade < 5000)
+                            {
                                 creep.memory.workTarget = creep.room.controller.id;
-
+                            }
+                            else
+                            {
+                                if(creep.room.memory.structures && creep.room.memory.structures[STRUCTURE_SPAWN].length > 0){
+                                    creep.memory.workTarget = creep.room.memory.structures[STRUCTURE_SPAWN][0];
+                                }
+                            }
                         }
                         else
                         {
