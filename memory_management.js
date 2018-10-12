@@ -4,7 +4,7 @@ module.exports = {
 	  //creates function to clear up memory
 	garbageCollection: function()
     {
-
+        
 	  	//loop through creep names
 	 	for (let name in Memory.creeps) 
 		{
@@ -67,7 +67,7 @@ module.exports = {
 			
 			//loop over claim rooms for this specific room
 			_.forEach(currentRoom.memory.claimRooms, function(claimRoom) {
-			    
+			    //If the claimRoom in memory does not have a flag in the room, delete it    
 			    if(!_.some(claimFlags, cf => cf.pos.roomName === claimRoom["name"]))
 			    {
 			        delete currentRoom.memory.claimRooms[claimRoom.name];

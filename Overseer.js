@@ -47,6 +47,9 @@ Overseer.prototype.run = function() {
     this.homeRoom.spawnNextCreep();
     this.homeRoom.runStructures();
     
+    //check on claimRooms
+    this.updateClaims();
+    
     //simulate remoteRooms TTL
     this.updateReservationTimers();
     this.updateSourceCounts();
@@ -114,11 +117,48 @@ Overseer.prototype.claimToMemory = function () {
         this.homeRoom.memory.claimRooms = {};
     }
     
+    //Go through each new claimRoom and set it into homeRoom memory
     _.forEach(Object.keys(this.claimRooms), function(roomName) {
+                
         this.homeRoom.memory.claimRooms[roomName] = this.claimRooms[roomName];
+        
     }, this);
 }
 
+//Update Claim Rooms to see if they are claimed yet, and if they have a spawn yet.
+Overseer.prototype.updateClaims = function () {
+    
+    _.forEach(Object.keys(this.homeRoom.memory.claimRooms), function (roomName) {
+        
+        //memoryObject
+        let claimInMemory = this.homeRoom.memory.claimRooms[roomName];
+        let room = Game.rooms[roomName];
+        
+        //if we can see the room, check to see if it is claimed
+        if(room != null && room.controller && room.controller.my)
+        {
+            claimInMemory.isClaimed = true;
+            
+            if(room.memory.structures && room.memory.structures[STRUCTURE_SPAWN].length > 0){
+                
+                //Delete the flag if there is a spawn
+                var claimFlags = _.filter(Game.flags, f => f.color === COLOR_WHITE && f.secondaryColor === COLOR_WHITE);
+                
+                _.forEach(claimFlags, flag => {
+                    if(flag.pos.roomName == roomName){
+                        flag.remove();
+                    }
+                });
+                
+            }    
+        }
+        else{
+            claimInMemory.isClaimed = false;
+        }
+        
+    }, this);
+    
+}
 
 //Update Reservation Timers
 Overseer.prototype.updateReservationTimers = function () {
