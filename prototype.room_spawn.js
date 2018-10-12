@@ -149,6 +149,16 @@ Room.prototype.getCreepSpawnEnergyCost = function (role) {
             claimer: 850
         };
     }
+    else if (roomState == "ROOM_STATE_POWERHOUSE") {
+        roleMaxCost = {
+            //TODO
+        };
+    }
+    else if (roomState == "ROOM_STATE_END") {
+        roleMaxCost = {
+            //TODO
+        };
+    }
     
     if(roleMaxCost[role] && energyCapacity >= roleMaxCost[role]){
         energyCost = roleMaxCost[role];
@@ -232,15 +242,18 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
     //get creep limits for each room state
     switch(roomState)
     {
+        //for intro room state
         case 'ROOM_STATE_INTRO':
             
             numMiners = 1;
             numDrones = 1;
             numWorkers = 1;
             
-        break;
+            break;
+        //---------------
+
         
-        
+        //for beginner room state
         case 'ROOM_STATE_BEGINNER':
             
             var workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
@@ -271,7 +284,10 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             
             
             break;
+        //---------------
 
+
+        //intermediate room state
         case 'ROOM_STATE_INTERMEDIATE':
 
             var workPerCreep = 2 * Math.floor(this.energyCapacityAvailable / (BODYPART_COST["work"] * 2 + BODYPART_COST["move"] * 1));
@@ -292,6 +308,8 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
             numWorkers = 5;
             
             break;
+        //---------------
+
 
         //for advanced room state
         case 'ROOM_STATE_ADVANCED':
@@ -343,10 +361,24 @@ Room.prototype.getDomesticCreepLimits = function (numOfSources, numRemoteRooms)
 				}
 			}
 
+			break;
+        //---------------
 
-            
+
+        //for powerhouse roomState
+        case 'ROOM_STATE_POWERHOUSE':
+
+
             break;
+        //---------------
 
+
+        //for end game roomstate
+        case 'ROOM_STATE_END':
+
+
+            break;
+        //---------------
 
         default:
 
@@ -408,11 +440,57 @@ Room.prototype.getRemoteCreepLimits = function (numRemoteRooms, numRemoteSources
 				numReservers = numReserveRooms;
 			}
 
-            break;
+			break;
+        //---------------
 
-          
-         default:
-            //if not at least room state intermediate then won't spawn any remote creeps
+
+        //for power upgrader roomstate
+        case 'ROOM_STATE_POWERHOUSE':
+
+            //1 miner per source
+            numRemoteMiners = numRemoteSources;
+
+            //2 drones per source until we can afford big ass drones
+            if (this.energyCapacityAvailable < 1400) {
+                numRemoteDrones = numRemoteSources;
+            }
+            else if (this.energyCapacityAvailable < 2500) {
+                numRemoteDrones = numRemoteSources + 1;
+            }
+            else {
+                numRemoteDrones = numRemoteSources;
+            }
+
+            //only spawn reserver if we can afford it
+            if (this.energyCapacityAvailable >= 1400) {
+                numReservers = numReserveRooms;
+            }
+
+            break;
+        //---------------
+
+        //for end game room state
+        case 'ROOM_STATE_END':
+
+            //1 miner per source
+            numRemoteMiners = numRemoteSources;
+
+            //2 drones per source until we can afford big ass drones
+            if (this.energyCapacityAvailable < 1400) {
+                numRemoteDrones = numRemoteSources;
+            }
+            else if (this.energyCapacityAvailable < 2500) {
+                numRemoteDrones = numRemoteSources + 1;
+            }
+            else {
+                numRemoteDrones = numRemoteSources;
+            }
+
+            //only spawn reserver if we can afford it
+            if (this.energyCapacityAvailable >= 1400) {
+                numReservers = numReserveRooms;
+            }
+
             break;
     }
 

@@ -148,36 +148,74 @@ Object.defineProperty(Room.prototype, 'roomState', {
 
 //set room state to memory
 Room.prototype.setRoomState = function () {
-	
-    //add 2 states, end state, and power upgrader state (names up for debate)
-    //power upgrader state is 2300 energy + 3 links
-    //end state is lvl 8, changes power upgrader
-    //possibly 1 other state for a full time supporting room, or just lump together with end state?
-    //possibly a state/something that tags a room as a military outpost if its main purpose is
-    //attacking other rooms as a forward base, but not sure what we would perform differently in the room
-    //if this happened to be the case
 
-    var containers = this.memory.structures[STRUCTURE_CONTAINER];
+    /*
+        TODO for room state overhaul
+        Change spawn cost finder to use new states
+        Change creep limits finder to use new states
+        Change job queues to use new states (might be able to rework a little too)
+        Add anything else you can think of here, this is gonna be a big project that will break
+        stuff as its being worked on, so im not going to push until its completely done
+        (or at least stable enough where you can assist with bug fixing)
+        not going to get to this until this/next weekend tho so just setting the stage
+        considering making global constants for the room states so they're easier to deal with tbh
+        help me figure out how to do this please (i could look it up in 1 second but need you lol)
+    */
+    //right when we're starting a room out
+    const INTRO = "ROOM_STATE_INTRO";
 
-    //check if containers exist
-    if(this.memory.creepsInRoom.length >= 3 && containers.length > 0)
+    //once creeps are established, but no containers and stuff, early game
+    const BEGINNER = "ROOM_STATE_BEGINNER";
+
+    //pre-storage, but we're good to go with miners and stuff
+    const INTERMEDIATE = "ROOM_STATE_INTERMEDIATE";
+
+    //post storage economy, pre upgrader
+    const ADVANCED = "ROOM_STATE_ADVANCED";
+
+    //named this powerhouse because our powerUpgrader is an absolute unit
+    //power upgrading is being used
+    const POWERHOUSE = "ROOM_STATE_POWERHOUSE";
+
+    //end game for the room, level 8 controller
+    const END = "ROOM_STATE_END";
+
+    var roomState;
+
+    var numContainers = this.memory.structures[STRUCTURE_CONTAINER].length;
+    var numLinks = this.memory.structures[STRUCTURE_LINK].length;
+    var energy = this.energyCapacityAvailable;
+    var storage = this.storage;
+    var numCreepsInRoom = this.memory.creepsInRoom.length;
+
+    //check if containers exist -----
+    if(numCreepsInRoom >= 3 && numContainers > 0)
     {
-        if(this.storage && this.memory.creepsInRoom.length >= 6)
-        {
-            this.memory.roomState = "ROOM_STATE_ADVANCED";
+        if (storage && numCreepsInRoom >= 6) {
+
+            //storage and plenty o creeps
+            roomState = ADVANCED;
         }
-        else
-        {
-            this.memory.roomState = "ROOM_STATE_INTERMEDIATE";
+        else {
+
+            //containers exist, but no storage or not enough creeps to support it
+            roomState = INTERMEDIATE;
         }
     }
-    else if(this.memory.creepsInRoom.length >= 3)
-    {
-        this.memory.roomState = "ROOM_STATE_BEGINNER";
+    else if (numCreepsInRoom >= 3) {
+        
+        //if we have no containers, but over or at 3 creeps, beginner
+        roomState = BEGINNER;
     }
-    else{
-        this.memory.roomState = "ROOM_STATE_INTRO";
+    else {
+
+        //no containers, and less than 3 creeps
+        roomState = INTRO;
     }
+    //-------
+
+    //put the roomstate into the room's memory
+    this.memory.roomState = roomState;
 }
 //------
 
