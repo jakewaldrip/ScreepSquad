@@ -51,7 +51,7 @@ profiler.wrap(function() {
     overlord.run(); 
     
     //Temporary auto-construct code
-    
+    /*
     if(Game.rooms["E1S9"].controller.level == 3){
         let room = Game.rooms["E1S9"];
         if(Game.flags["Flag12"] != undefined){
